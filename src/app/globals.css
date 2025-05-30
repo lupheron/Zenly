@@ -12,15 +12,29 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
+@font-face {
+  font-family: "Mulish-Regular";
+  src: url(../fonts/Mulish-Regular.ttf);
+}
+
+@theme {
+  --color-dark-green: #102217;
+  --color-light-green: #63AB45;
+  --color-black-muted: #1C231F;
+  --color-light-gray: #F9F9F7;
+  --color-orange: #F7921E;
+  --font-mulish: "Mulish", sans-serif;
+}
+
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
+} */
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-mulish), sans-serif;
 }
