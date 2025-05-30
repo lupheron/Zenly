@@ -13,17 +13,17 @@
 }
 
 @font-face {
-  font-family: "Mulish-Regular";
-  src: url(../fonts/Mulish-Regular.ttf);
+  font-family: "Poppins-Regular";
+  src: url(../fonts/Poppins-Regular.ttf);
 }
 
 @theme {
-  --color-dark-green: #102217;
+  --color-dark-green: #1F2521;
   --color-light-green: #63AB45;
-  --color-black-muted: #1C231F;
+  --color-black-muted: #3A413D;
   --color-light-gray: #F9F9F7;
   --color-orange: #F7921E;
-  --font-mulish: "Mulish", sans-serif;
+  --font-poppins: "Poppins-Regular", sans-serif;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -36,5 +36,5 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-mulish), sans-serif;
+  font-family: var(--font-poppins), sans-serif;
 }
