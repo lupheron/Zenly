@@ -45,6 +45,7 @@ const IntroSection = () => {
             </button>
 
             <IntroSlider
+                key={currentSlide}
                 title={slides[currentSlide].title}
                 text={slides[currentSlide].text}
                 src={slides[currentSlide].src}
