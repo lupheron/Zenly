@@ -9,7 +9,7 @@ interface AboutBannerProps {
 
 const AboutBanner: React.FC<AboutBannerProps> = ({ img, title, paragraph }) => {
     return (
-        <div className="relative w-full h-[550px] group overflow-hidden">
+        <div className="relative w-full h-[550px] group overflow-hidden z-1">
             <div className="w-full h-full">
                 <Image
                     width={1000}
