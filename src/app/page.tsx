@@ -2,6 +2,7 @@
 
 import AboutSection from "../components/About";
 import PageHeader from "../components/PageHeader";
+import PopularActivity from "../components/PopActivitiy";
 import ReadySection from "../components/ReadySection";
 
 export default function Home() {
@@ -10,6 +11,7 @@ export default function Home() {
       <PageHeader />
       <AboutSection />
       <ReadySection />
+      <PopularActivity />
     </div>
   );
 }
