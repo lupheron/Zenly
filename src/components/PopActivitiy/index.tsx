@@ -2,6 +2,7 @@ import React from 'react'
 import SwiperDefault from '../Swiper/SwiperDefault'
 import SerivecesBanner from '../Banners/SerivecesBanner'
 import TitleButtons from '../Button/TitleButtons';
+import Services from './Services';
 
 const PopularActivity = () => {
     const banners = [
@@ -66,6 +67,8 @@ const PopularActivity = () => {
                     />
                 ))}
             </SwiperDefault>
+
+            <Services />
         </div>
     )
 }
