@@ -54,19 +54,21 @@ const PopularActivity = () => {
     ];
     return (
         <div className="popular-activities mt-20">
-            <div className='w-50 mx-auto mb-20'>
+            <div className='w-50 mx-auto mb-20' data-aos="fade-down">
                 <TitleButtons label='Mashhur servislar' customClasses='text-green-700 bg-green-50' />
             </div>
-            <SwiperDefault pagination={false} slidesPerView={3} spaceBetween={5} className='bg-gray-50 w-[70%]'>
-                {banners.map((banner, index) => (
-                    <SerivecesBanner
-                        key={index}
-                        title={banner.title}
-                        paragraph={banner.paragraph}
-                        src={banner.src}
-                    />
-                ))}
-            </SwiperDefault>
+            <div data-aos="fade-down" >
+                <SwiperDefault pagination={false} slidesPerView={3} spaceBetween={5} className='bg-gray-50 w-[70%]'>
+                    {banners.map((banner, index) => (
+                        <SerivecesBanner
+                            key={index}
+                            title={banner.title}
+                            paragraph={banner.paragraph}
+                            src={banner.src}
+                        />
+                    ))}
+                </SwiperDefault>
+            </div>
 
             <Services />
         </div>
