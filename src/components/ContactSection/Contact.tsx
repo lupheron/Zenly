@@ -24,13 +24,23 @@ let data = [
 const Contact = () => {
     return (
         <div className='flex flex-col items-center mt-30'>
-            <h1 className="text-5xl font-bold mb-6">Biz Bilan Bog'lanish</h1>
+            <h1
+                className="text-5xl font-bold mb-6"
+                data-aos="fade-down"
+            >
+                Biz Bilan Bog'lanish
+            </h1>
 
             <div className='flex items-center justify-between gap-45 mt-10'>
                 {data.map((item, index) => {
                     const Icon = item.icon;
                     return (
-                        <div key={index} className="mb-4">
+                        <div
+                            key={index}
+                            className="mb-4"
+                            data-aos="fade-up"
+                            data-aos-delay={index * 150}
+                        >
                             <h2 className="text-2xl font-semibold">{item.title}</h2>
                             <div className='flex items-center gap-3 mt-3'>
                                 <Icon />
