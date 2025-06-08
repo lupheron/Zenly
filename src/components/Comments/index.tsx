@@ -35,12 +35,15 @@ const Comments = () => {
 
     return (
         <div className='py-20 mt-20 bg-dark-green text-white'>
-            <div className='mb-20 flex flex-col text-center items-center'>
+            <div
+                data-aos="fade-top"
+                className='mb-20 flex flex-col text-center items-center'
+            >
                 <TitleButtons label='Biz haqimizdagi fikrlar' customClasses='text-white bg-orange' />
                 <h1 className='text-6xl font-semibold mt-5'>Biz haqimizda mijozlarning fikrlari</h1>
             </div>
 
-            <div className='flex items-center justify-center gap-10 px-10'>
+            <div className='flex items-center justify-center gap-10 px-10' data-aos="fade-right">
                 <div className='w-1/2'>
                     <Image
                         width={600}
@@ -51,7 +54,7 @@ const Comments = () => {
                     />
                 </div>
 
-                <div className='w-1/2 p-10 rounded-lg'>
+                <div className='w-1/2 p-10 rounded-lg' data-aos="fade-left">
                     <SwiperDefault
                         slidesPerView={1}
                         spaceBetween={30}
