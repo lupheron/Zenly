@@ -14,7 +14,7 @@ const ReadySection = () => {
                 />
             </div>
 
-            <div className='relative z-10 h-full flex flex-col justify-center items-center gap-5 text-white'>
+            <div className='relative z-10 h-full flex flex-col justify-center items-center gap-5 text-white' data-aos="fade-down">
                 <h1 className='w-200 text-center text-5xl font-bold mb-5'>Haqiqiy sarguzasht bilan sayohat qilishga tayyormisiz?</h1>
                 <ButtonDefault
                     label='Hoziroq bron qiling'
