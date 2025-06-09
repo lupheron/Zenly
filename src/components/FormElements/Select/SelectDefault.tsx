@@ -37,3 +37,5 @@ const SelectDefault: React.FC<SelectDefaultProps> = ({
         </div>
     );
 };
+
+export default SelectDefault
