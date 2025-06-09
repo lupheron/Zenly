@@ -7,6 +7,7 @@ interface SelectDefaultProps {
     name: string;
     customClassesLabel?: string;
     customClassesSelect?: string;
+    customClassesOptions?: string;
     options: string[];
 }
 
@@ -17,6 +18,7 @@ const SelectDefault: React.FC<SelectDefaultProps> = ({
     name,
     customClassesLabel = '',
     customClassesSelect = '',
+    customClassesOptions = '',
     options
 }) => {
     return (
@@ -29,7 +31,7 @@ const SelectDefault: React.FC<SelectDefaultProps> = ({
             >
                 <option value="">Select an option</option>
                 {options.map((opt, index) => (
-                    <option key={index} value={opt}>
+                    <option key={index} value={opt} className={`${customClassesOptions}`}>
                         {opt}
                     </option>
                 ))}
