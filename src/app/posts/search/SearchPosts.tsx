@@ -3,7 +3,7 @@ import React from 'react'
 
 const SearchPosts = () => {
     return (
-        <div>
+        <div className='mt-10'>
             <BookingForm />
         </div>
     )

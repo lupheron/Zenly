@@ -22,14 +22,13 @@ const SelectDefault: React.FC<SelectDefaultProps> = ({
     options
 }) => {
     return (
-        <div>
+        <div className='w-45'>
             <LabelDefault label={label} htmlFor={htmlFor} customClasses={customClassesLabel} />
             <select
                 name={name}
                 id={htmlFor}
                 className={`${customClassesSelect}`}
             >
-                <option value="">Select an option</option>
                 {options.map((opt, index) => (
                     <option key={index} value={opt} className={`${customClassesOptions}`}>
                         {opt}
