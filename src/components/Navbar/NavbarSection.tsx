@@ -23,7 +23,7 @@ const NavbarSection = () => {
         }
     ];
     return (
-        <nav className='w-full fixed bg-dark-green z-99'>
+        <nav className='w-full sticky top-0 bottom-0 bg-dark-green z-99'>
             <div className='flex items-center justify-between flex-wrap w-[76%] mx-auto'>
                 <Link href={"/"}>
                     <Image

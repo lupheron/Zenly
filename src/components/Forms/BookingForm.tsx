@@ -12,7 +12,7 @@ interface BookingFormProps {
 
 const BookingForm = () => {
     return (
-        <div className='grid grid-cols-2 gap-4'>
+        <div>
             <SelectDefault
                 label="Region"
                 htmlFor="region"
