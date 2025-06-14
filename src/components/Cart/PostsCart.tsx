@@ -16,7 +16,7 @@ interface PostsCartProps {
 
 const PostsCart: React.FC<PostsCartProps> = ({ src, title, about, location, rating, rateNumber, price, onClick, customClasses = '' }) => {
     return (
-        <div className={`flex items-center justify-between bg-white rounded-xl shadow p-4 w-full ${customClasses}`}>
+        <div className={`flex items-center justify-between bg-white rounded-xl shadow p-4 ${customClasses}`}>
             <Image
                 width={250}
                 height={350}

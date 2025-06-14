@@ -10,7 +10,7 @@ const PostsSection = () => {
         <div>
             <NavbarSection />
             <SearchPosts />
-            <div className='flex justify-between p-5 mt-10'>
+            <div className='flex justify-between items-start gap-10 p-5 mt-10 bg-light-gray'>
                 <Filter />
                 <PostsContainer />
             </div>
