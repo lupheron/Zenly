@@ -10,12 +10,13 @@ interface PostsCartProps {
     rating: number,
     rateNumber: number,
     price: number,
-    onClick: () => void
+    onClick: () => void,
+    customClasses?: string
 }
 
-const PostsCart: React.FC<PostsCartProps> = ({ src, title, about, location, rating, rateNumber, price, onClick }) => {
+const PostsCart: React.FC<PostsCartProps> = ({ src, title, about, location, rating, rateNumber, price, onClick, customClasses = '' }) => {
     return (
-        <div className='flex items-center justify-between bg-white rounded-xl shadow p-4 w-full'>
+        <div className={`flex items-center justify-between bg-white rounded-xl shadow p-4 w-full ${customClasses}`}>
             <Image
                 width={250}
                 height={350}

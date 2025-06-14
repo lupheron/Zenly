@@ -9,7 +9,7 @@ interface InputProps {
     onChange(): (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const InputDefault: React.FC<InputProps> = ({ customClasses = "", name, value, required, onChange, type, placeholder = "", icon: Icon }) => {
+const InputDefault: React.FC<InputProps> = ({ customClasses = "", name, required, onChange, type, placeholder = ""}) => {
     return (
         <div className={`${customClasses} flex items-center justify-center`}>
             <input
