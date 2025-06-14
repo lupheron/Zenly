@@ -7,7 +7,7 @@ const Amenities = () => {
         console.log("Hello world")
     }
     return (
-        <div>
+        <div className='flex items-center gap-3'>
             <InputDefault
                 type='checkbox'
                 name='amenity'

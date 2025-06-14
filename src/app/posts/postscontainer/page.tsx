@@ -1,14 +1,10 @@
 import PostsCart from '@/src/components/Cart/PostsCart'
 import React from 'react'
-import Filter from '../../filters/page'
 
 const PostsContainer = () => {
     return (
-        <div className='flex justify-between bg-light-gray mt-10 p-5'>
+        <div className='grid grid-cols-3 gap-10 bg-light-gray'>
             <div>
-                <Filter />
-            </div>
-            <div className='grid grid-cols-3'>
                 <PostsCart
                     src="/intro/intro1.jpg" // Replace with your backend image URL
                     title="Modern Apartment in Tashkent"
