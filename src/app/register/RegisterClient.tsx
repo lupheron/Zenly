@@ -5,7 +5,7 @@ import React from 'react'
 const RegisterClient = () => {
     return (
         <div className='flex items-center justify-center mt-50'>
-            <div className='w-140 h-130 bg-light-gray p-5'>
+            <div className='w-140 h-130 bg-gray-200 p-5'>
                 <RegisterForm />
             </div>
             <div className='w-150 h-130 flex flex-col gap-2 bg-dark-green text-white p-5'>

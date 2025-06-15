@@ -3,7 +3,7 @@
 import { useMutation } from '@tanstack/react-query'
 
 const registerUser = async (data: any) => {
-    const res = await fetch('http://zenlyserver.test/api/users', {
+    const res = await fetch('http://zenlyserver.test/api/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
