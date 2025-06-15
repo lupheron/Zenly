@@ -27,7 +27,7 @@ const RegisterForm = () => {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4 w-150 mx-auto mt-10">
+        <form onSubmit={handleSubmit} className="space-y-4">
             <div>
                 <LabelDefault label="F.I.SH" htmlFor="fullname" />
                 <InputDefault
