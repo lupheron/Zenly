@@ -1,3 +1,5 @@
+"use client"
+
 import Image from 'next/image'
 import Link from 'next/link';
 import React from 'react'
@@ -43,12 +45,14 @@ const NavbarSection = () => {
                         </li>
                     ))}
                 </ul>
-                <ButtonDefault
-                    label="Bron qilish"
-                    isDisabled={false}
-                    customClasses='tracking-[1]'
-                    onClick={() => console.log("clicked")}
-                />
+                <Link href="/register">
+                    <ButtonDefault
+                        label="Post joylash"
+                        isDisabled={false}
+                        customClasses='tracking-[1]'
+                        onClick={() => console.log("Clicked")}
+                    />
+                </Link>
             </div>
             <div className='w-[76%] h-[0.1px] bg-black-muted mx-auto'></div>
         </nav>
