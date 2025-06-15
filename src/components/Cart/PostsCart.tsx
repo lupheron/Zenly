@@ -16,17 +16,17 @@ interface PostsCartProps {
 
 const PostsCart: React.FC<PostsCartProps> = ({ src, title, about, location, rating, rateNumber, price, onClick, customClasses = '' }) => {
     return (
-        <div className={`flex items-center justify-between bg-white rounded-xl shadow p-4 ${customClasses}`}>
+        <div className={`w-100 bg-white rounded-xl shadow p-4 ${customClasses}`}>
             <Image
-                width={250}
-                height={350}
+                width={350}
+                height={450}
                 src={src}
                 alt=''
-                className='h-50'
+                className='w-full h-60 rounded-xl'
             />
 
-            <div className='flex flex-col gap-3 w-[45%] px-4'>
-                <h2 className='text-lg font-bold'>{title}</h2>
+            <div className='flex flex-col gap-2 mt-5 px-4'>
+                <h2 className='text-xl font-bold'>{title}</h2>
                 <p className='text-sm text-gray-700'>{about}</p>
                 <p className='text-sm text-gray-600'>{location}</p>
                 <div className='flex items-center gap-2'>
@@ -35,7 +35,7 @@ const PostsCart: React.FC<PostsCartProps> = ({ src, title, about, location, rati
                 </div>
             </div>
 
-            <div className='flex flex-col gap-10 bg-blue-50 rounded-lg px-4 py-3 w-[320px]'>
+            <div className='flex flex-col gap-10 bg-blue-50 rounded-lg px-4 py-3 mt-5'>
                 <div>
                     <p className='text-sm text-gray-500'>From</p>
                     <h2 className='text-2xl font-bold text-blue-800'>${price}</h2>

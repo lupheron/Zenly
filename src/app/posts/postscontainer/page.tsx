@@ -3,7 +3,7 @@ import React from 'react'
 
 const PostsContainer = () => {
     return (
-        <div className='grid grid-cols-2 gap-2 w-[85%]'>
+        <div className='grid grid-cols-4 gap-2 w-[85%]'>
                 <PostsCart
                     src="/intro/intro1.jpg" // Replace with your backend image URL
                     title="Modern Apartment in Tashkent"
