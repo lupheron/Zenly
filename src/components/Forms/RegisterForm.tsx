@@ -1,9 +1,10 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import LabelDefault from '../FormElements/label/LabelDefault'
 import InputDefault from '../FormElements/Input/InputDefault'
 import { useRegisterUser } from '@/src/hooks/useRegisterUser'
+import AlertDefault from '../Alert/AlertDefault'
 
 const RegisterForm = () => {
     const [form, setForm] = useState({
@@ -26,6 +27,15 @@ const RegisterForm = () => {
         mutate(form)
     }
 
+    useEffect(() => {
+        if (isSuccess) {
+            AlertDefault.success("Ro‘yxatdan o‘tish muvaffaqiyatli yakunlandi!")
+        }
+        if (isError) {
+            AlertDefault.error("Ro‘yxatdan o‘tishda xatolik yuz berdi!")
+        }
+    }, [isSuccess, isError])
+
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -36,6 +46,7 @@ const RegisterForm = () => {
                     value={form.fullname}
                     onChange={handleChange}
                     customClasses='bg-white rounded border-1 border-light-green'
+                    required={true}
                 />
             </div>
 
@@ -47,6 +58,7 @@ const RegisterForm = () => {
                     value={form.username}
                     onChange={handleChange}
                     customClasses='bg-white rounded border-1 border-light-green'
+                    required={true}
                 />
             </div>
 
@@ -58,6 +70,7 @@ const RegisterForm = () => {
                     value={form.phone}
                     onChange={handleChange}
                     customClasses='bg-white rounded border-1 border-light-green'
+                    required={true}
                 />
             </div>
 
@@ -69,6 +82,7 @@ const RegisterForm = () => {
                     value={form.address}
                     onChange={handleChange}
                     customClasses='bg-white rounded border-1 border-light-green'
+                    required={true}
                 />
             </div>
 
@@ -80,19 +94,17 @@ const RegisterForm = () => {
                     value={form.password}
                     onChange={handleChange}
                     customClasses='bg-white rounded border-1 border-light-green'
+                    required={true}
                 />
             </div>
 
             <button
                 type="submit"
                 disabled={isPending}
-                className="bg-light-green text-white px-6 py-2 rounded-md cursor-pointer     hover:bg-opacity-90"
+                className="bg-light-green text-white px-6 py-2 rounded-md cursor-pointer hover:bg-opacity-90"
             >
                 {isPending ? 'Yuborilmoqda...' : 'Ro‘yxatdan o‘tish'}
             </button>
-
-            {isSuccess && <p className="text-green-600">Ro‘yxatdan o‘tish muvaffaqiyatli!</p>}
-            {isError && <p className="text-red-500">Xatolik yuz berdi!</p>}
         </form>
     )
 }
