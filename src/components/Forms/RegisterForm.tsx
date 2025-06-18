@@ -5,6 +5,7 @@ import LabelDefault from '../FormElements/label/LabelDefault'
 import InputDefault from '../FormElements/Input/InputDefault'
 import { useRegisterUser } from '@/src/hooks/useRegisterUser'
 import AlertDefault from '../Alert/AlertDefault'
+import { useRouter } from 'next/navigation'
 
 const RegisterForm = () => {
     const [form, setForm] = useState({
@@ -14,6 +15,7 @@ const RegisterForm = () => {
         address: '',
         password: '',
     })
+    const router = useRouter()
 
     const { mutate, isPending, isSuccess, isError } = useRegisterUser()
 
@@ -30,6 +32,7 @@ const RegisterForm = () => {
     useEffect(() => {
         if (isSuccess) {
             AlertDefault.success("Ro‘yxatdan o‘tish muvaffaqiyatli yakunlandi!")
+            router.push("/")
         }
         if (isError) {
             AlertDefault.error("Ro‘yxatdan o‘tishda xatolik yuz berdi!")
