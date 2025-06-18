@@ -3,7 +3,7 @@ import React from 'react'
 
 const Dashboard = () => {
     return (
-        <div>
+        <div className='h-[100vh]'>
             <Aside />
         </div>
     )
