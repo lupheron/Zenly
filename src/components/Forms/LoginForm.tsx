@@ -32,7 +32,7 @@ const LoginForm = () => {
                 localStorage.setItem('user_id', data.user_id)
 
                 AlertDefault.success("Tizimga muvaffaqiyatli kirdingiz!")
-                router.push('/admin')
+                router.push('/dashboard')
             },
             onError: () => {
                 AlertDefault.error("Login qilishda xatolik yuz berdi.")

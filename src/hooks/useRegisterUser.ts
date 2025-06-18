@@ -12,7 +12,7 @@ const registerUser = async (data: any) => {
     })
 
     if (!res.ok) {
-        throw new Error('Failed to register user')
+        throw new Error('Failed to register user')  
     }
 
     return res.json()

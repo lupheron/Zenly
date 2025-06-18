@@ -47,7 +47,7 @@ const NavbarSection = () => {
 
                 <div className="flex items-center space-x-4">
                     {hasToken ? (
-                        <Link href="/profile">
+                        <Link href="/dashboard">
                             <Image
                                 src="/images/profile.jpg"
                                 alt="Profile"
