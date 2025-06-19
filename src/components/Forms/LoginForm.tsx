@@ -27,15 +27,15 @@ const LoginForm = () => {
 
         mutate(form, {
             onSuccess: (data) => {
-                localStorage.setItem('token', data.token)
-                localStorage.setItem('username', data.name)
-                localStorage.setItem('user_id', data.user_id)
+                if (data.remember_token && data.id) {
+                    localStorage.setItem('token', data.remember_token)
+                    localStorage.setItem('user_id', data.id.toString())
 
-                AlertDefault.success("Tizimga muvaffaqiyatli kirdingiz!")
-                router.push('/user')
-            },
-            onError: () => {
-                AlertDefault.error("Login qilishda xatolik yuz berdi.")
+                    AlertDefault.success(data.message || "Tizimga muvaffaqiyatli kirdingiz!")
+                    router.push('/user')
+                } else {
+                    AlertDefault.error("Serverdan noto'g'ri javob qaytdi.")
+                }
             },
         })
     }
