@@ -3,6 +3,8 @@
 import { useUserComments } from '@/src/hooks/comments/useUserComments'
 import React, { useEffect, useState } from 'react'
 import AlertDefault from '../Alert/AlertDefault'
+import CommentCart from '../Cart/CommentCart'
+import SwiperDefault from '../Swiper/SwiperDefault'
 
 const UserComments = () => {
     const [userId, setUserId] = useState<string | null>(null)
@@ -21,16 +23,25 @@ const UserComments = () => {
     }
 
     return (
-        <div className="bg-white p-6 rounded-xl shadow-md">
+        <div className="bg-white p-6 rounded-xl shadow-md w-150">
             <h1 className="text-2xl font-bold mb-4">Mijozlar Fikri</h1>
             <div className="space-y-4">
-                {data?.map((comment) => (
-                    <div key={comment.id} className="border p-4 rounded">
-                        <h2 className="font-semibold">{comment.postTitle}</h2>
-                        <p className="italic">“{comment.text}”</p>
-                        <p className="text-sm text-blue-600">Post: {comment.postTitle}</p>
-                    </div>
-                ))}
+                <SwiperDefault
+                    slidesPerView={1}
+                    spaceBetween={30}
+                    className='w-full'
+                    autoplay={{ delay: 8000 }}
+                    pagination={false}
+                >
+                    {data?.map((comment, index) => (
+                        <CommentCart
+                            key={index}
+                            comTitle={comment.postTitle}
+                            comment={comment.text}
+                            nameTitle={comment.name}
+                        />
+                    ))}
+                </SwiperDefault>
             </div>
         </div>
     )

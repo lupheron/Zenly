@@ -8,10 +8,11 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import ButtonDefault from '@/src/components/Button/ButtonDefault';
 import Image from 'next/image';
 import UserComments from '@/src/components/Comments/UserComments';
+import PostsRatingCart from '@/src/components/Cart/PostsRatingCart';
 
 const Profile = () => {
     return (
-        <div>
+        <div className='flex items-center justify-between'>
             <div className='p-10 mt-25 bg-light-gray w-fit mx-auto rounded-2xl'>
                 <div className='flex flex-col items-center '>
                     <Image
@@ -37,7 +38,10 @@ const Profile = () => {
                     customClasses='w-full mt-10 cursor-pointer'
                 />
             </div>
-            <UserComments />
+            <div>
+                <UserComments />
+                <PostsRatingCart />
+            </div>
         </div>
     )
 }
