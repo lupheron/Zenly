@@ -8,8 +8,10 @@ import ButtonDefault from '@/src/components/Button/ButtonDefault';
 import Image from 'next/image';
 import UserComments from '@/src/components/Comments/UserComments';
 import PostsRatingCart from '@/src/components/Cart/PostsRatingCart';
+import { useUser } from '@/src/hooks/users/useUser';
 
 const Profile = () => {
+    const { data } = useUser()
     return (
         <div className='flex flex-row items-center gap-20 h-full'>
             <div className='p-10 w-fit mx-auto bg-white shadow-xl rounded-2xl'>
@@ -17,18 +19,18 @@ const Profile = () => {
                     <Image
                         width={150}
                         height={150}
-                        src={"/logo/black-logo-text.png"}
+                        src={data?.profile_image || "/logo/black-logo-text.png"}
                         alt='Profile Picture'
                         className='rounded-full mt-5 mb-10'
                     />
                 </div>
                 <div className='flex flex-col gap-2 text-center'>
-                    <h1 className='text-gray-600 text-5xl font-bold tracking-[1px]'>Suxrob Nuriddinov</h1>
-                    <p className='text-lg'><LocationOnIcon className='text-black text-xl' /> Samarqand, O'zbekiston</p>
-                    <div className='flex items-center gap-15 text-xl mt-15'>
-                        <h2><InsertEmoticonIcon className='text-black text-xl' /> lupheron</h2>
-                        <p><LocalPhoneIcon className='text-black text-xl' /> 50 883 99 11</p>
-                        <p><VerifiedIcon className='text-black text-xl' /> Status: VIP</p>
+                    <h1 className='text-gray-600 text-5xl font-bold tracking-[1px]'>{data?.fullname}</h1>
+                    <p className='text-lg'><LocationOnIcon className='text-black text-xl' /> {data?.address || "Joy ko'rsatilmagan"}</p>
+                    <div className='flex items-center gap-15 text-xl mt-15 justify-center'>
+                        <h2><InsertEmoticonIcon className='text-black text-xl' /> {data?.username}</h2>
+                        <p><LocalPhoneIcon className='text-black text-xl' /> {data?.phone || "Telefon mavjud emas"}</p>
+                        <p><VerifiedIcon className='text-black text-xl' /> Status: {data?.vip_status || "Standart"}</p>
                     </div>
                 </div>
                 <ButtonDefault
