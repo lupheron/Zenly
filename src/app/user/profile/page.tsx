@@ -14,11 +14,11 @@ const Profile = () => {
     const { data } = useUser()
     return (
         <div className='flex flex-row items-center gap-20 h-full'>
-            <div className='p-10 w-fit mx-auto bg-white shadow-xl rounded-2xl'>
+            <div className='p-10 w-fit h-full mx-auto bg-white shadow-xl rounded-2xl'>
                 <div className='flex flex-col items-center '>
                     <Image
-                        width={150}
-                        height={150}
+                        width={250}
+                        height={250}
                         src={data?.profile_image || "/logo/black-logo-text.png"}
                         alt='Profile Picture'
                         className='rounded-full mt-5 mb-10'
@@ -39,7 +39,7 @@ const Profile = () => {
                     customClasses='w-full mt-10 cursor-pointer'
                 />
             </div>
-            <div className='flex flex-col gap-20'>
+            <div className='flex flex-col gap-10'>
                 <UserComments />
                 <PostsRatingCart />
             </div>

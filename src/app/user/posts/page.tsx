@@ -10,7 +10,6 @@ const UserPosts = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const postsPerPage = 6
 
-  // Pagination logic
   const indexOfLastPost = currentPage * postsPerPage
   const indexOfFirstPost = indexOfLastPost - postsPerPage
   const currentPosts = data?.slice(indexOfFirstPost, indexOfLastPost) || []
