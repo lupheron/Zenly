@@ -4,11 +4,13 @@ import UsersPosts from '@/src/components/Cart/UserPosts'
 import Pagination from '@/src/components/pagination/Pagination'
 import { useUsersPosts } from '@/src/hooks/posts/useUsersPosts'
 import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 const UserPosts = () => {
   const { data, isLoading, error } = useUsersPosts()
   const [currentPage, setCurrentPage] = useState(1)
   const postsPerPage = 6
+  const router = useRouter()
 
   const indexOfLastPost = currentPage * postsPerPage
   const indexOfFirstPost = indexOfLastPost - postsPerPage
@@ -33,7 +35,7 @@ const UserPosts = () => {
             location={post.location}
             rating={post.id}
             price={post.price_daily}
-            onClick={() => { }}
+            onClick={() => router.push(`/user/posts/${post.id}`)}
             customClasses=''
           />
         ))}

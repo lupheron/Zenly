@@ -6,10 +6,11 @@ import React from 'react'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import PanoramaIcon from '@mui/icons-material/Panorama'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
 const Aside = () => {
     const pathname = usePathname()
+    const router = useRouter()
     const routes = [
         {
             label: "Boshqaruv paneli",
@@ -36,6 +37,8 @@ const Aside = () => {
                     height={85}
                     src="/logo/black-logo-with-text.png"
                     alt="Logo"
+                    onClick={() => router.push('/')}
+                    className='cursor-pointer'
                 />
             </div>
 
