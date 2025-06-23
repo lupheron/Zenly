@@ -1,20 +1,20 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
-import AlertDefault from '@/src/components/Alert/AlertDefault'
 
 const fetchPostById = async (id: number): Promise<any> => {
-    const res = await fetch(`http://zenlyserver.test/api/post/${id}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    })
-
+    const res = await fetch(`http://zenlyserver.test/api/post/${id}`)
     const responseData = await res.json()
 
     if (!res.ok) {
-        AlertDefault.error("Post ma'lumotlarini olishda xatolik yuz berdi.")
+        throw new Error("Failed to fetch post.")
+    }
+
+    // Ensure image URL is properly formatted
+    if (responseData.data?.img) {
+        responseData.data.img = responseData.data.img.startsWith('http')
+            ? responseData.data.img
+            : `http://zenlyserver.test${responseData.data.img}`
     }
 
     return responseData.data
@@ -25,6 +25,7 @@ export const usePostById = (id: number) => {
         queryKey: ['post', id],
         queryFn: () => fetchPostById(id),
         enabled: !!id,
+        staleTime: 60 * 1000, // Cache for 1 minute
         retry: false,
     })
 }
