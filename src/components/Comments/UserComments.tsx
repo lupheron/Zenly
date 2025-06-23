@@ -23,7 +23,7 @@ const UserComments = () => {
     }
 
     return (
-        <div className="bg-white p-6 rounded-xl shadow-md w-150">
+        <div className="bg-white p-6 rounded-xl shadow-xl w-150">
             <h1 className="text-2xl font-bold mb-4">Mijozlar Fikri</h1>
             <div className="space-y-4">
                 <SwiperDefault

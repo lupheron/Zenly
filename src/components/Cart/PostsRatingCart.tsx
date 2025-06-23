@@ -11,7 +11,7 @@ const PostsRatingCart = () => {
     if (error || !posts) return <p>Xatolik yuz berdi</p>
 
     return (
-        <div>
+        <div className='bg-white p-6 rounded-xl shadow-xl w-150'>
             <h1 className="text-xl font-semibold mb-4">Postlarning reytinglari</h1>
 
             {posts.map((post) => (

@@ -1,6 +1,5 @@
 "use client"
 import React from 'react'
-import PersonIcon from '@mui/icons-material/Person';
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
@@ -12,8 +11,8 @@ import PostsRatingCart from '@/src/components/Cart/PostsRatingCart';
 
 const Profile = () => {
     return (
-        <div className='flex items-center justify-between'>
-            <div className='p-10 mt-25 bg-light-gray w-fit mx-auto rounded-2xl'>
+        <div className='flex flex-row items-center gap-20 h-full'>
+            <div className='p-10 w-fit mx-auto bg-white shadow-xl rounded-2xl'>
                 <div className='flex flex-col items-center '>
                     <Image
                         width={150}
@@ -38,7 +37,7 @@ const Profile = () => {
                     customClasses='w-full mt-10 cursor-pointer'
                 />
             </div>
-            <div>
+            <div className='flex flex-col gap-20'>
                 <UserComments />
                 <PostsRatingCart />
             </div>
