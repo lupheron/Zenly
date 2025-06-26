@@ -9,17 +9,19 @@ import Image from 'next/image';
 import UserComments from '@/src/components/Comments/UserComments';
 import PostsRatingCart from '@/src/components/Cart/PostsRatingCart';
 import { useUser } from '@/src/hooks/users/useUser';
+import { useRouter } from 'next/navigation';
 
 const Profile = () => {
     const { data } = useUser()
+    const router = useRouter()
     return (
         <div className='flex flex-row items-center gap-20 h-full'>
-            <div className='p-10 w-fit h-full mx-auto bg-white shadow-xl rounded-2xl'>
+            <div className='p-10 w-fit h-fit mx-auto bg-white shadow-xl rounded-2xl'>
                 <div className='flex flex-col items-center '>
                     <Image
                         width={250}
                         height={250}
-                        src={data?.profile_image || "/logo/black-logo-text.png"}
+                        src={data?.img}
                         alt='Profile Picture'
                         className='rounded-full mt-5 mb-10'
                     />
@@ -35,7 +37,7 @@ const Profile = () => {
                 </div>
                 <ButtonDefault
                     label='Tahrirlash'
-                    onClick={() => console.log("Clicked")}
+                    onClick={() => router.push('/user/profile/edit')}
                     customClasses='w-full mt-10 cursor-pointer'
                 />
             </div>
