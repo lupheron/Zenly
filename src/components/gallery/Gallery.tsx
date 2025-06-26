@@ -13,13 +13,11 @@ const Gallery: React.FC<GalleryProps> = ({ postId, mainImg }) => {
     const { data: galleryImages = [], isLoading } = useGalleryByPostId(postId)
     const [displayedImage, setDisplayedImage] = useState<string>(mainImg)
 
-    // Memoize the combined images array
     const allImages = useMemo(() => [
         { id: 'main', img: mainImg },
         ...galleryImages
     ], [mainImg, galleryImages])
 
-    // Reset displayed image when mainImg changes
     useEffect(() => {
         setDisplayedImage(mainImg)
     }, [mainImg])
@@ -44,14 +42,13 @@ const Gallery: React.FC<GalleryProps> = ({ postId, mainImg }) => {
                 />
             </div>
 
-            {/* Thumbnail gallery */}
             <div className="flex gap-4 overflow-x-auto py-2 w-full px-4">
                 {allImages.map((image) => (
                     <div
                         key={image.id}
                         className={`flex-shrink-0 w-20 h-16 relative rounded-lg overflow-hidden cursor-pointer border-2 transition-all ${displayedImage === image.img
-                                ? 'border-blue-500 scale-105'
-                                : 'border-transparent hover:scale-105'
+                            ? 'border-blue-500 scale-105'
+                            : 'border-transparent hover:scale-105'
                             }`}
                         onClick={() => handleImageClick(image.img)}
                     >
