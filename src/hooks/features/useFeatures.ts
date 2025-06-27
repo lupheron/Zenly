@@ -58,11 +58,29 @@ export const useFeatures = (post_id: number) => {
 
     const mutation = useMutation({
         mutationFn: createFeature,
+        onMutate: async (newFeature) => {
+            await queryClient.cancelQueries({ queryKey: ['features', post_id] })
+
+            const previousFeatures = queryClient.getQueryData<any[]>(['features', post_id])
+
+            queryClient.setQueryData(['features', post_id], (old = []) => [...old, { id: Date.now(), ...newFeature }])
+
+            return { previousFeatures }
+        },
+        onError: (_err, _newFeature, context) => {
+            if (context?.previousFeatures) {
+                queryClient.setQueryData(['features', post_id], context.previousFeatures)
+            }
+            AlertDefault.error('Xatolik yuz berdi.')
+        },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['features', post_id] })
             AlertDefault.success('Imkoniyat yaratildi.')
         },
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ['features', post_id] })
+        }
     })
+
 
     const deleteMutation = useMutation({
         mutationFn: deleteFeature,

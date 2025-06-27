@@ -1,6 +1,6 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 const fetchPostById = async (id: number): Promise<any> => {
     const res = await fetch(`http://zenlyserver.test/api/post/${id}`)
@@ -10,7 +10,6 @@ const fetchPostById = async (id: number): Promise<any> => {
         throw new Error("Failed to fetch post.")
     }
 
-    // Ensure image URL is properly formatted
     if (responseData.data?.img) {
         responseData.data.img = responseData.data.img.startsWith('http')
             ? responseData.data.img
@@ -20,12 +19,35 @@ const fetchPostById = async (id: number): Promise<any> => {
     return responseData.data
 }
 
+const deletePostById = async (id: number) => {
+    const res = await fetch(`http://zenlyserver.test/api/post/${id}`, {
+        method: 'DELETE',
+    })
+
+    if (!res.ok) {
+        throw new Error("Failed to delete post.")
+    }
+
+    return res.json()
+}
+
 export const usePostById = (id: number) => {
-    return useQuery({
+    const queryClient = useQueryClient()
+
+    const postQuery = useQuery({
         queryKey: ['post', id],
         queryFn: () => fetchPostById(id),
         enabled: !!id,
         staleTime: 60 * 1000,
         retry: false,
     })
+
+    const deleteMutation = useMutation({
+        mutationFn: () => deletePostById(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['posts'] })
+        },
+    })
+
+    return { ...postQuery, deleteMutation }
 }

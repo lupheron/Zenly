@@ -30,9 +30,11 @@ const EditPostForm = () => {
 
     const [form, setForm] = useState({
         title: '',
-        description: '',
         small_description: '',
+        description: '',
         price_daily: '',
+        location: '',
+        members: '',
         features: [] as { id: number, name: string }[]
     })
 
@@ -48,6 +50,8 @@ const EditPostForm = () => {
                 description: post.description || '',
                 small_description: post.small_description || '',
                 price_daily: post.price_daily?.toString() || '',
+                location: post.location || '',
+                members: post.members || '',
                 features: post.features?.map((f: any) => ({ id: f.id, name: f.name })) || []
             })
 
@@ -128,9 +132,11 @@ const EditPostForm = () => {
 
         const payload = {
             title: form.title,
-            description: form.description,
             small_description: form.small_description,
+            description: form.description,
             price_daily: form.price_daily,
+            location: form.location,
+            members: form.members,
             user_id: userId,
             img: imgBase64 || null,
         };
@@ -176,7 +182,7 @@ const EditPostForm = () => {
                                 `}
                             </style>
                         </div>
-                        <div className='mt-60'>
+                        <div className='mt-60 mb-10'>
                             <LabelDefault label="Galereya rasmlari:" htmlFor="gallery-imgs" />
                             <EditGalleryForm
                                 postId={postId}
@@ -184,6 +190,38 @@ const EditPostForm = () => {
                                 setGalleryFileList={setGalleryFileList}
                                 userId={userId}
                             />
+                        </div>
+
+                        <LabelDefault label="Imkoniyatlar:" htmlFor="features" />
+                        <div className="flex flex-wrap gap-2 mt-2">
+                            {form.features.map((feature) => (
+                                <Tag
+                                    key={feature.id}
+                                    closable
+                                    onClose={() => handleDeleteFeature(feature.id)}
+                                    className="custom-tag"
+                                >
+                                    <span className='text-xl p-3'>{feature.name}</span>
+                                </Tag>
+                            ))}
+
+                            <button
+                                type="button"
+                                onClick={() => setCreateModalOpen(true)}
+                                className="ml-2 text-blue-600 hover:text-blue-800 align-middle"
+                                aria-label="Yangi imkoniyat qo'shish"
+                                style={{ verticalAlign: 'middle', background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+                            >
+                                <AddIcon />
+                            </button>
+
+                            <style>
+                                {`
+                                    .custom-tag .anticon-close {
+                                        font-size: 1.05rem;
+                                    }
+                                `}
+                            </style>
                         </div>
                     </div>
 
@@ -229,37 +267,25 @@ const EditPostForm = () => {
                             customClasses="w-full border border-gray-300 rounded px-3 py-2"
                         />
 
-                        <LabelDefault label="Imkoniyatlar:" htmlFor="features" />
-                        <div className="flex flex-wrap gap-2 mt-2">
-                            {form.features.map((feature) => (
-                                <Tag
-                                    key={feature.id}
-                                    closable
-                                    onClose={() => handleDeleteFeature(feature.id)}
-                                    className="custom-tag"
-                                >
-                                    <span className='text-xl p-3'>{feature.name}</span>
-                                </Tag>
-                            ))}
+                        <LabelDefault label="Manzili:" htmlFor="location" />
+                        <InputDefault
+                            name="location"
+                            type="text"
+                            value={form.location}
+                            onChange={handleChange}
+                            required
+                            customClasses="w-full border border-gray-300 rounded px-3 py-2"
+                        />
 
-                            <button
-                                type="button"
-                                onClick={() => setCreateModalOpen(true)}
-                                className="ml-2 text-blue-600 hover:text-blue-800 align-middle"
-                                aria-label="Yangi imkoniyat qo'shish"
-                                style={{ verticalAlign: 'middle', background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
-                            >
-                                <AddIcon />
-                            </button>
-
-                            <style>
-                                {`
-                                    .custom-tag .anticon-close {
-                                        font-size: 1.05rem;
-                                    }
-                                `}
-                            </style>
-                        </div>
+                        <LabelDefault label="Kishi Soni" htmlFor="members" />
+                        <InputDefault
+                            name="members"
+                            type="number"
+                            value={form.members}
+                            onChange={handleChange}
+                            required
+                            customClasses="w-full border border-gray-300 rounded px-3 py-2"
+                        />
 
                         <div className="flex gap-4 mt-4">
                             <ButtonDefault label="Saqlash" type="submit" customClasses="w-full" />

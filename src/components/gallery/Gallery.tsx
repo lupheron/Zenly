@@ -16,20 +16,24 @@ const Gallery: React.FC<GalleryProps> = ({ postId, mainImg }) => {
 
     // Function to properly format image URLs
     const formatImageUrl = (imgPath: string) => {
-        if (!imgPath) return ''
-        if (imgPath.startsWith('http')) return imgPath
-        return `http://zenlyserver.test/uploads/${imgPath.startsWith('/') ? '' : '/'}${imgPath}`
-    }
+        if (!imgPath) return '';
+        if (imgPath.startsWith('http') || imgPath.startsWith('https')) return imgPath;
+        return `http://zenlyserver.test/${imgPath.startsWith('/') ? imgPath.slice(1) : imgPath}`;
+    };
+
 
     const allImages = useMemo(() => [
-        { id: 'main', img: formatImageUrl(mainImg) },
+        { id: 'main', img: mainImg },
         ...galleryImages
-    ], [mainImg, galleryImages])
+    ], [mainImg, galleryImages]);
 
     useEffect(() => {
-        setDisplayedImage(formatImageUrl(mainImg))
-        setImageError(false)
-    }, [mainImg])
+        if (mainImg) {
+            setDisplayedImage(formatImageUrl(mainImg));
+            setImageError(false);
+        }
+    }, [mainImg]);
+
 
     const handleImageClick = (clickedImg: string) => {
         setDisplayedImage(clickedImg)
@@ -63,8 +67,8 @@ const Gallery: React.FC<GalleryProps> = ({ postId, mainImg }) => {
                     <div
                         key={image.id}
                         className={`flex-shrink-0 w-20 h-16 relative rounded-lg overflow-hidden cursor-pointer border-2 transition-all ${displayedImage === image.img
-                                ? 'border-blue-500 scale-105'
-                                : 'border-transparent hover:scale-105'
+                            ? 'border-blue-500 scale-105'
+                            : 'border-transparent hover:scale-105'
                             }`}
                         onClick={() => handleImageClick(image.img)}
                     >
