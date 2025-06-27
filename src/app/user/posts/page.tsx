@@ -7,7 +7,10 @@ import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 const UserPosts = () => {
-  const { data, isLoading, error } = useUsersPosts()
+  const user = localStorage.getItem("user_id")
+  const userId = user ? Number(user) : 0
+
+  const { data, isLoading, error } = useUsersPosts(userId)
   const [currentPage, setCurrentPage] = useState(1)
   const postsPerPage = 6
   const router = useRouter()
@@ -53,3 +56,4 @@ const UserPosts = () => {
 }
 
 export default UserPosts
+

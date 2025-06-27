@@ -1,6 +1,6 @@
 'use client'
 
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import Gallery from '@/src/components/gallery/Gallery'
 import Rating from '@/src/components/Rating/Rating'
 import React from 'react'
@@ -10,6 +10,7 @@ import Features from '@/src/components/Features/Features'
 
 const UserPostInfo = () => {
     const params = useParams()
+    const router = useRouter()
 
     if (!params?.id) return null
 
@@ -43,7 +44,7 @@ const UserPostInfo = () => {
                 <div className='flex gap-3 mt-10'>
                     <ButtonDefault
                         label='Tahrirlash'
-                        onClick={() => console.log('Edit post clicked')}
+                        onClick={() => router.push(`/user/posts/${post.id}/edit`)}
                         customClasses='w-full tracking-[1px] text-lg'
                     />
                     <ButtonDefault

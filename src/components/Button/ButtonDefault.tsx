@@ -2,7 +2,7 @@ import React from "react";
 
 interface ButtonProps {
     label: string;
-    onClick: () => void;
+    onClick?: () => void;
     isDisabled?: boolean;
     customClasses?: string;
     children?: React.ReactNode;

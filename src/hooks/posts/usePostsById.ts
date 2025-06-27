@@ -25,7 +25,7 @@ export const usePostById = (id: number) => {
         queryKey: ['post', id],
         queryFn: () => fetchPostById(id),
         enabled: !!id,
-        staleTime: 60 * 1000, 
+        staleTime: 60 * 1000,
         retry: false,
     })
 }
