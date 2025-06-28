@@ -32,7 +32,7 @@ const UserPosts = () => {
         {currentPosts.map((post) => (
           <UsersPosts
             key={post.id}
-            src={post.image || "/intro/intro1.jpg"}
+            src={post.img}
             title={post.title}
             description={post.description}
             location={post.location}

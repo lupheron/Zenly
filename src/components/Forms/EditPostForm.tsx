@@ -5,7 +5,7 @@ import LabelDefault from '../FormElements/label/LabelDefault'
 import InputDefault from '../FormElements/Input/InputDefault'
 import ButtonDefault from '../Button/ButtonDefault'
 import { PlusOutlined } from '@ant-design/icons'
-import { Upload, Tag } from 'antd'
+import { Upload, Tag, Spin, message } from 'antd'
 import { useParams, useRouter } from 'next/navigation'
 import { useFeatures } from '@/src/hooks/features/useFeatures'
 import ReusableModal from '../Modal/ReusableModal'
@@ -21,12 +21,27 @@ const EditPostForm = () => {
     const postId = Number(params.id)
     const [userId, setUserId] = useState<number | null>(null)
     const [createModalOpen, setCreateModalOpen] = useState(false)
-    const { data: posts, isLoading, editPost } = useUsersPosts(userId ?? 0)
+
+    // Fetch all required data
+    const { data: posts, isLoading: isPostsLoading, error: postsError } = useUsersPosts(userId ?? 0)
+    const {
+        data: featuresList = [],
+        isLoading: isFeaturesLoading,
+        error: featuresError,
+        deleteFeature
+    } = useFeatures(postId)
+    const {
+        data: galleryImages = [],
+        isLoading: isGalleryLoading,
+        error: galleryError
+    } = useGalleryByPostId(postId)
+
     const post = posts?.find((p: any) => p.id === postId)
-    const { data: featuresList = [], deleteFeature } = useFeatures(postId)
-    const { data: galleryImages = [] } = useGalleryByPostId(postId)
+    const { editPost } = useUsersPosts(userId ?? 0)
+
     const [mainFileList, setMainFileList] = useState<any[]>([])
     const [galleryFileList, setGalleryFileList] = useState<any[]>([])
+    const [isInitialized, setIsInitialized] = useState(false)
 
     const [form, setForm] = useState({
         title: '',
@@ -43,8 +58,9 @@ const EditPostForm = () => {
         if (id) setUserId(id)
     }, [])
 
+    // Initialize all form data at once when all data is loaded
     useEffect(() => {
-        if (post) {
+        if (post && !isFeaturesLoading && !isGalleryLoading && !isInitialized) {
             setForm({
                 title: post.title || '',
                 description: post.description || '',
@@ -52,7 +68,7 @@ const EditPostForm = () => {
                 price_daily: post.price_daily?.toString() || '',
                 location: post.location || '',
                 members: post.members || '',
-                features: post.features?.map((f: any) => ({ id: f.id, name: f.name })) || []
+                features: featuresList.map((f: any) => ({ id: f.id, name: f.name })) || []
             })
 
             setMainFileList(post.img ? [{
@@ -61,11 +77,7 @@ const EditPostForm = () => {
                 status: 'done',
                 url: post.img
             }] : [])
-        }
-    }, [post])
 
-    useEffect(() => {
-        if (galleryImages) {
             const galleryList = galleryImages.map((img: any) => ({
                 uid: `gallery-${img.id}`,
                 name: `gallery-${img.id}.png`,
@@ -74,26 +86,19 @@ const EditPostForm = () => {
                 id: img.id
             }))
             setGalleryFileList(galleryList)
-        }
-    }, [galleryImages])
 
-    useEffect(() => {
-        if (featuresList?.length) {
-            setForm(prev => ({
-                ...prev,
-                features: featuresList.map((f: any) => ({ id: f.id, name: f.name }))
-            }))
+            setIsInitialized(true)
         }
-    }, [featuresList])
+    }, [post, featuresList, galleryImages, isFeaturesLoading, isGalleryLoading, isInitialized])
 
     const handleMainChange = ({ fileList }: any) => {
-        const newFileList = fileList.slice(-1); // Keep only the last file
+        const newFileList = fileList.slice(-1);
         if (newFileList.length > 0 && newFileList[0].originFileObj) {
             const reader = new FileReader();
             reader.onload = (e) => {
                 setMainFileList([{
                     ...newFileList[0],
-                    url: e.target?.result as string // This will be the base64 string
+                    url: e.target?.result as string
                 }]);
             };
             reader.readAsDataURL(newFileList[0].originFileObj);
@@ -111,53 +116,73 @@ const EditPostForm = () => {
         setForm(prev => ({ ...prev, [name]: value }))
     }
 
-    const handleDeleteFeature = (featureId: number) => {
+    const handleDeleteFeature = async (featureId: number) => {
         if (!postId) return
 
-        deleteFeature.mutate(featureId)
-
-        setForm(prev => ({
-            ...prev,
-            features: prev.features.filter(f => f.id !== featureId)
-        }))
+        try {
+            await deleteFeature.mutateAsync(featureId)
+            setForm(prev => ({
+                ...prev,
+                features: prev.features.filter(f => f.id !== featureId)
+            }))
+            message.success('Feature deleted successfully')
+        } catch (error) {
+            message.error('Failed to delete feature')
+        }
     }
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Get the base64 string (remove the data URL prefix if needed)
-        const imgBase64 = mainFileList[0]?.url?.startsWith('data:image')
-            ? mainFileList[0].url.split(',')[1]
-            : mainFileList[0]?.url;
+        try {
+            const imgBase64 = mainFileList[0]?.url?.startsWith('data:image')
+                ? mainFileList[0].url.split(',')[1]
+                : mainFileList[0]?.url;
 
-        const payload = {
-            title: form.title,
-            small_description: form.small_description,
-            description: form.description,
-            price_daily: form.price_daily,
-            location: form.location,
-            members: form.members,
-            user_id: userId,
-            img: imgBase64 || null,
-        };
+            const payload = {
+                title: form.title,
+                small_description: form.small_description,
+                description: form.description,
+                price_daily: form.price_daily,
+                location: form.location,
+                members: form.members,
+                user_id: userId,
+                img: imgBase64 || null,
+            };
 
-        editPost.mutate({ postId, data: payload }, {
-            onSuccess: () => {
-                router.back();
-            }
-        });
+            await editPost.mutateAsync({ postId, data: payload })
+            message.success('Post updated successfully')
+            router.back()
+        } catch (error) {
+            message.error('Failed to update post')
+        }
     };
 
-    if (isLoading) return <p>Yuklanmoqda...</p>
+    // Handle errors
+    if (postsError || featuresError || galleryError) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <p>Error loading data. Please try again.</p>
+            </div>
+        )
+    }
+
+    // Show loading spinner until all data is ready
+    if (isPostsLoading || isFeaturesLoading || isGalleryLoading || !isInitialized) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <Spin size="large" />
+            </div>
+        )
+    }
 
     return (
         <>
             <form onSubmit={handleSubmit} className="flex flex-col gap-6 mx-auto">
                 <div className="flex flex-col md:flex-row">
-                    {/* Images Section */}
                     <div className="min-w-[220px] md:w-1/3">
                         <div>
-                            <LabelDefault label="Asosiy rasm:" htmlFor="main-img" />
+                            <LabelDefault label="Main Image:" htmlFor="main-img" />
                             <Upload
                                 listType="picture-circle"
                                 fileList={mainFileList}
@@ -168,7 +193,7 @@ const EditPostForm = () => {
                             >
                                 {mainFileList.length >= 1 ? null : (
                                     <button type="button" style={{ border: 0, background: 'none' }}>
-                                        <PlusOutlined /> <div>Yuklash</div>
+                                        <PlusOutlined /> <div>Upload</div>
                                     </button>
                                 )}
                             </Upload>
@@ -183,7 +208,7 @@ const EditPostForm = () => {
                             </style>
                         </div>
                         <div className='mt-60 mb-10'>
-                            <LabelDefault label="Galereya rasmlari:" htmlFor="gallery-imgs" />
+                            <LabelDefault label="Gallery Images:" htmlFor="gallery-imgs" />
                             <EditGalleryForm
                                 postId={postId}
                                 galleryFileList={galleryFileList}
@@ -192,7 +217,7 @@ const EditPostForm = () => {
                             />
                         </div>
 
-                        <LabelDefault label="Imkoniyatlar:" htmlFor="features" />
+                        <LabelDefault label="Features:" htmlFor="features" />
                         <div className="flex flex-wrap gap-2 mt-2">
                             {form.features.map((feature) => (
                                 <Tag
@@ -209,25 +234,16 @@ const EditPostForm = () => {
                                 type="button"
                                 onClick={() => setCreateModalOpen(true)}
                                 className="ml-2 text-blue-600 hover:text-blue-800 align-middle"
-                                aria-label="Yangi imkoniyat qo'shish"
+                                aria-label="Add new feature"
                                 style={{ verticalAlign: 'middle', background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
                             >
                                 <AddIcon />
                             </button>
-
-                            <style>
-                                {`
-                                    .custom-tag .anticon-close {
-                                        font-size: 1.05rem;
-                                    }
-                                `}
-                            </style>
                         </div>
                     </div>
 
-                    {/* Info Section */}
                     <div className="flex-1 flex flex-col gap-4">
-                        <LabelDefault label="Sarlavha:" htmlFor="title" />
+                        <LabelDefault label="Title:" htmlFor="title" />
                         <InputDefault
                             type='text'
                             name="title"
@@ -237,7 +253,7 @@ const EditPostForm = () => {
                             customClasses="w-full border border-gray-300 rounded px-3 py-2"
                         />
 
-                        <LabelDefault label="Qisqa tavsif (20 ta so'zgacha):" htmlFor="small_description" />
+                        <LabelDefault label="Short Description (max 20 words):" htmlFor="small_description" />
                         <textarea
                             name="small_description"
                             value={form.small_description}
@@ -247,7 +263,7 @@ const EditPostForm = () => {
                             rows={2}
                         />
 
-                        <LabelDefault label="Tavsif:" htmlFor="description" />
+                        <LabelDefault label="Description:" htmlFor="description" />
                         <textarea
                             name="description"
                             value={form.description}
@@ -257,7 +273,7 @@ const EditPostForm = () => {
                             rows={4}
                         />
 
-                        <LabelDefault label="Kunlik narxi ($):" htmlFor="price_daily" />
+                        <LabelDefault label="Daily Price ($):" htmlFor="price_daily" />
                         <InputDefault
                             name="price_daily"
                             type="number"
@@ -267,7 +283,7 @@ const EditPostForm = () => {
                             customClasses="w-full border border-gray-300 rounded px-3 py-2"
                         />
 
-                        <LabelDefault label="Manzili:" htmlFor="location" />
+                        <LabelDefault label="Location:" htmlFor="location" />
                         <InputDefault
                             name="location"
                             type="text"
@@ -277,7 +293,7 @@ const EditPostForm = () => {
                             customClasses="w-full border border-gray-300 rounded px-3 py-2"
                         />
 
-                        <LabelDefault label="Kishi Soni" htmlFor="members" />
+                        <LabelDefault label="Number of People:" htmlFor="members" />
                         <InputDefault
                             name="members"
                             type="number"
@@ -288,9 +304,9 @@ const EditPostForm = () => {
                         />
 
                         <div className="flex gap-4 mt-4">
-                            <ButtonDefault label="Saqlash" type="submit" customClasses="w-full" />
+                            <ButtonDefault label="Save" type="submit" customClasses="w-full" />
                             <ButtonDefault
-                                label="Bekor qilish"
+                                label="Cancel"
                                 type="button"
                                 onClick={() => router.back()}
                                 customClasses="w-full !bg-gray-300 !text-black"
@@ -300,7 +316,7 @@ const EditPostForm = () => {
                 </div>
             </form>
 
-            <ReusableModal open={createModalOpen} onClose={() => setCreateModalOpen(false)} title="Yangi imkoniyat qo'shish">
+            <ReusableModal open={createModalOpen} onClose={() => setCreateModalOpen(false)} title="Add New Feature">
                 <CreateFeatureForm
                     postId={postId}
                     onClose={() => setCreateModalOpen(false)}
