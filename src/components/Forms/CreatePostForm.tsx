@@ -82,7 +82,7 @@ const CreatePostForm = () => {
 
             const response = await createPost.mutateAsync(payload)
             message.success('Post created successfully! Now you can add gallery images.')
-            setCreatedPostId(response.post_id) // Use the post_id from response
+            setCreatedPostId(response.post_id)
         } catch (error) {
             message.error('Failed to create post')
         } finally {
@@ -91,7 +91,7 @@ const CreatePostForm = () => {
     }
 
     const handleFinish = () => {
-        router.push('/dashboard')
+        window.history.back()
     }
 
     return (

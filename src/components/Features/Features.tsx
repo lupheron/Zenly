@@ -13,7 +13,12 @@ const Features: React.FC<FeatureProps> = ({ postId }) => {
     const [showAll, setShowAll] = useState(false)
 
     if (isLoading) return <div>Loading...</div>
-    if (error) return <div>Error loading features.</div>
+    if (error) {
+        if (error.status === 404) {
+            return <div>{error.message}</div>;
+        }
+        return <div>Error loading features.</div>;
+    }
     if (!features || features.length === 0) return <div>No features available.</div>
 
     const firstSix = features.slice(0, 6)

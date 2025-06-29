@@ -9,7 +9,9 @@ const fetchFeatures = async (post_id: number): Promise<any[]> => {
 
     if (!res.ok) {
         AlertDefault.error("Imkoniyatlarni olishda xatolik yuz berdi.")
-        throw new Error("Failed to fetch features.")
+        const error = new Error(responseData.message || "Failed to fetch features.");
+        error.status = responseData.status || res.status;
+        throw error
     }
 
     return responseData.data

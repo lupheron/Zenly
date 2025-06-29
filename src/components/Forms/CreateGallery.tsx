@@ -48,7 +48,7 @@ const CreateGalleryForm: React.FC<CreateGalleryFormProps> = ({
                         uid: `gallery-${result.data.id}`,
                         name: `gallery-${result.data.id}.png`,
                         status: 'done',
-                        url: result.data.img.startsWith('http') ? result.data.img : `http://zenlyserver.test${result.data.img}`,
+                        url: result.data.img.startsWith('http') ? result.data.img : `http://zenlyserver.test/${result.data.img}`,
                         id: result.data.id
                     }
                 ])

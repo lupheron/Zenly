@@ -16,7 +16,7 @@ interface UsersPostsProps {
 
 const UsersPosts: React.FC<UsersPostsProps> = ({ src, title, description, location, rating, price, onClick, customClasses = '' }) => {
     return (
-        <div className={`w-100 bg-white rounded-xl shadow p-4 ${customClasses}`}>
+        <div className={`w-100 flex flex-col justify-between bg-white rounded-xl shadow p-4 ${customClasses}`}>
             <Image
                 width={350}
                 height={450}
@@ -25,7 +25,7 @@ const UsersPosts: React.FC<UsersPostsProps> = ({ src, title, description, locati
                 className='w-full h-60 rounded-xl'
             />
 
-            <div className='flex flex-col gap-2 mt-5 px-4'>
+            <div className='flex flex-col justify-between gap-2 mt-5 px-4'>
                 <h2 className='text-xl font-bold'>{title}</h2>
                 <p className='text-sm text-gray-700'>{description}</p>
                 <p className='text-sm text-gray-600'>{location}</p>
