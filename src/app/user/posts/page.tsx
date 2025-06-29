@@ -5,6 +5,7 @@ import Pagination from '@/src/components/pagination/Pagination'
 import { useUsersPosts } from '@/src/hooks/posts/useUsersPosts'
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import ButtonDefault from '@/src/components/Button/ButtonDefault'
 
 const UserPosts = () => {
   const [userId, setUserId] = useState<number>(0)
@@ -25,7 +26,13 @@ const UserPosts = () => {
 
   return (
     <div>
-      <h1 className='text-4xl font-bold tracking-[1px]'>Sizning Postlaringiz</h1>
+      <div className='flex items-center justify-between'>
+        <h1 className='text-4xl font-bold tracking-[1px]'>Sizning Postlaringiz</h1>
+        <ButtonDefault
+          label='Yangi Post Joylash'
+          onClick={() => router.push('/user/posts/create')}
+        />
+      </div>
       <hr className='mt-5' />
       <div className='grid grid-cols-3 gap-2 mt-5'>
         {isLoading && <p>Yuklanmoqda...</p>}

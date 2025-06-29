@@ -4,10 +4,10 @@ import { useParams, useRouter } from 'next/navigation'
 import Gallery from '@/src/components/gallery/Gallery'
 import Rating from '@/src/components/Rating/Rating'
 import React, { useState } from 'react'
-import { usePostById } from '@/src/hooks/posts/usePostsById'
 import ButtonDefault from '@/src/components/Button/ButtonDefault'
 import Features from '@/src/components/Features/Features'
 import DeleteModal from '@/src/components/Modal/DeleteModal'
+import { usePostById } from '@/src/hooks/posts/usePostsById'
 
 const UserPostInfo = () => {
     const params = useParams()
