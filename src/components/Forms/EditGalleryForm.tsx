@@ -1,16 +1,14 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons'
-import { Upload, message } from 'antd'
-import type { UploadFile, UploadProps } from 'antd'
-import { useGalleryByPostId } from '@/src/hooks/gallery/useGalleryByPostId'
 import AlertDefault from '@/src/components/Alert/AlertDefault'
+import { useGalleryByPostId } from '@/src/hooks/gallery/useGalleryByPostId'
 
 interface EditGalleryFormProps {
     postId: number
-    galleryFileList: UploadFile[]
-    setGalleryFileList: React.Dispatch<React.SetStateAction<UploadFile[]>>
+    galleryFileList: any[]
+    setGalleryFileList: React.Dispatch<React.SetStateAction<any[]>>
     userId: number
 }
 
@@ -21,6 +19,7 @@ const EditGalleryForm: React.FC<EditGalleryFormProps> = ({
     userId
 }) => {
     const [uploading, setUploading] = useState(false)
+    const galleryFileInputRef = useRef<HTMLInputElement>(null)
     const { data: galleryImages = [], refetch } = useGalleryByPostId(postId)
 
     useEffect(() => {
@@ -36,24 +35,27 @@ const EditGalleryForm: React.FC<EditGalleryFormProps> = ({
         }
     }, [galleryImages, setGalleryFileList])
 
-    const handleDelete = async (file: UploadFile) => {
-        if (file.id) {
-            try {
-                const res = await fetch(`http://zenlyserver.test/api/gallery/${file.id}`, {
-                    method: 'DELETE'
-                })
-                if (!res.ok) throw new Error()
-                AlertDefault.success('Rasm o‘chirildi.')
-                refetch()
-            } catch (err) {
-                AlertDefault.error("O'chirishda xatolik yuz berdi.")
-            }
+    const handleDelete = async (fileId: number) => {
+        try {
+            const res = await fetch(`http://zenlyserver.test/api/gallery/${fileId}`, {
+                method: 'DELETE'
+            })
+            if (!res.ok) throw new Error()
+            AlertDefault.success('Rasm o‘chirildi.')
+            refetch()
+        } catch (err) {
+            AlertDefault.error("O'chirishda xatolik yuz berdi.")
         }
     }
 
-    const handleUpload = async (file: File) => {
+    const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files
+        if (!files || files.length === 0) return
+
         setUploading(true)
         const formData = new FormData()
+
+        const file = files[0]
         formData.append('img', file)
         formData.append('post_id', postId.toString())
         formData.append('user_id', userId.toString())
@@ -66,57 +68,67 @@ const EditGalleryForm: React.FC<EditGalleryFormProps> = ({
 
             if (!res.ok) throw new Error('Upload failed')
 
-            const result = await res.json()
             AlertDefault.success('Rasm muvaffaqiyatli yuklandi!')
             refetch()
-            return result
         } catch (error) {
             AlertDefault.error('Yuklashda xatolik yuz berdi')
-            throw error
         } finally {
             setUploading(false)
+            if (galleryFileInputRef.current) {
+                galleryFileInputRef.current.value = ''
+            }
         }
     }
 
-    const handleChange: UploadProps['onChange'] = async ({ file, fileList }) => {
-        // Handle new file upload
-        if (file.status === 'uploading') {
-            return
-        }
-
-        if (file.status === 'done') {
-            message.success(`${file.name} file uploaded successfully`)
-        } else if (file.status === 'error') {
-            message.error(`${file.name} file upload failed.`)
-        }
-
-        // Filter out files that don't exist in the gallery (failed uploads)
-        const validFiles = fileList.filter(f => f.status === 'done' || f.id)
-        setGalleryFileList(validFiles.slice(0, 4))
+    const triggerGalleryFileInput = () => {
+        galleryFileInputRef.current?.click()
     }
-
-    const uploadButton = (
-        <button type="button" style={{ border: 0, background: 'none' }}>
-            {uploading ? <LoadingOutlined /> : <PlusOutlined />}
-            <div style={{ marginTop: 8 }}>Yuklash</div>
-        </button>
-    )
 
     return (
-        <Upload
-            listType="picture-card"
-            fileList={galleryFileList}
-            onChange={handleChange}
-            maxCount={4}
-            beforeUpload={(file) => {
-                handleUpload(file)
-                return false // Prevent default upload
-            }}
-            onRemove={handleDelete}
-            accept="image/*"
-        >
-            {galleryFileList.length >= 4 ? null : uploadButton}
-        </Upload>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <input
+                type="file"
+                ref={galleryFileInputRef}
+                onChange={handleGalleryUpload}
+                accept="image/*"
+                className="hidden"
+                multiple
+            />
+
+            {galleryFileList.map((file) => (
+                <div key={file.uid} className="relative border-2 border-dashed border-gray-300 rounded-lg w-full h-28">
+                    <img
+                        src={file.url}
+                        alt="Gallery preview"
+                        className="w-full h-full object-cover rounded-lg"
+                    />
+                    <button
+                        type="button"
+                        onClick={() => handleDelete(file.id)}
+                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 text-md w-8"
+                    >
+                        ×
+                    </button>
+                </div>
+            ))}
+
+            {galleryFileList.length < 4 && (
+                <button
+                    type="button"
+                    onClick={triggerGalleryFileInput}
+                    disabled={uploading}
+                    className="border-2 border-dashed border-gray-300 rounded-lg w-full h-28 flex items-center justify-center text-gray-500"
+                >
+                    {uploading ? (
+                        <LoadingOutlined className="text-2xl" />
+                    ) : (
+                        <>
+                            <PlusOutlined className="text-4xl mb-2" />
+                        </>
+                    )}
+                </button>
+            )}
+        </div>
     )
 }
 

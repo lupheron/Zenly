@@ -1,10 +1,10 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import LabelDefault from '../FormElements/label/LabelDefault'
 import InputDefault from '../FormElements/Input/InputDefault'
 import ButtonDefault from '../Button/ButtonDefault'
-import { PlusOutlined } from '@ant-design/icons'
+import { PlusOutlined, LoadingOutlined } from '@ant-design/icons'
 import { Upload, Tag, Spin, message } from 'antd'
 import { useParams, useRouter } from 'next/navigation'
 import { useFeatures } from '@/src/hooks/features/useFeatures'
@@ -14,6 +14,7 @@ import { useGalleryByPostId } from '@/src/hooks/gallery/useGalleryByPostId'
 import EditGalleryForm from './EditGalleryForm'
 import AddIcon from '@mui/icons-material/Add'
 import { useUsersPosts } from '@/src/hooks/posts/useUsersPosts'
+import AlertDefault from '../Alert/AlertDefault'
 
 const EditPostForm = () => {
     const params = useParams()
@@ -22,7 +23,6 @@ const EditPostForm = () => {
     const [userId, setUserId] = useState<number | null>(null)
     const [createModalOpen, setCreateModalOpen] = useState(false)
 
-    // Fetch all required data
     const { data: posts, isLoading: isPostsLoading, error: postsError } = useUsersPosts(userId ?? 0)
     const {
         data: featuresList = [],
@@ -58,7 +58,6 @@ const EditPostForm = () => {
         if (id) setUserId(id)
     }, [])
 
-    // Initialize all form data at once when all data is loaded
     useEffect(() => {
         if (post && !isFeaturesLoading && !isGalleryLoading && !isInitialized) {
             setForm({
@@ -90,21 +89,25 @@ const EditPostForm = () => {
             setIsInitialized(true)
         }
     }, [post, featuresList, galleryImages, isFeaturesLoading, isGalleryLoading, isInitialized])
+    const mainFileInputRef = useRef<HTMLInputElement>(null)
+    const handleMainImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (!file) return
 
-    const handleMainChange = ({ fileList }: any) => {
-        const newFileList = fileList.slice(-1);
-        if (newFileList.length > 0 && newFileList[0].originFileObj) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                setMainFileList([{
-                    ...newFileList[0],
-                    url: e.target?.result as string
-                }]);
-            };
-            reader.readAsDataURL(newFileList[0].originFileObj);
-        } else {
-            setMainFileList(newFileList);
+        const reader = new FileReader()
+        reader.onload = (event) => {
+            setMainFileList([{
+                uid: '-1',
+                name: file.name,
+                status: 'done',
+                url: event.target?.result as string
+            }])
         }
+        reader.readAsDataURL(file)
+    }
+
+    const triggerMainFileInput = () => {
+        mainFileInputRef.current?.click()
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -158,16 +161,10 @@ const EditPostForm = () => {
         }
     };
 
-    // Handle errors
     if (postsError || featuresError || galleryError) {
-        return (
-            <div className="flex justify-center items-center h-screen">
-                <p>Error loading data. Please try again.</p>
-            </div>
-        )
+        AlertDefault.error("Error loading data. Please try again later.")
     }
 
-    // Show loading spinner until all data is ready
     if (isPostsLoading || isFeaturesLoading || isGalleryLoading || !isInitialized) {
         return (
             <div className="flex justify-center items-center h-screen">
@@ -179,35 +176,47 @@ const EditPostForm = () => {
     return (
         <>
             <form onSubmit={handleSubmit} className="flex flex-col gap-6 mx-auto">
-                <div className="flex flex-col md:flex-row">
+                <div className="flex flex-col gap-10 md:flex-row">
                     <div className="min-w-[220px] md:w-1/3">
-                        <div>
+                        <div className='h-80 w-auto'>
                             <LabelDefault label="Main Image:" htmlFor="main-img" />
-                            <Upload
-                                listType="picture-circle"
-                                fileList={mainFileList}
-                                onChange={handleMainChange}
-                                maxCount={1}
-                                beforeUpload={() => false}
-                                className="flex justify-center items-center"
-                            >
-                                {mainFileList.length >= 1 ? null : (
-                                    <button type="button" style={{ border: 0, background: 'none' }}>
-                                        <PlusOutlined /> <div>Upload</div>
+                            <input
+                                type="file"
+                                ref={mainFileInputRef}
+                                onChange={handleMainImageChange}
+                                accept="image/*"
+                                className="hidden"
+                                id="main-img"
+                            />
+                            <div className="relative border-2 border-dashed border-gray-300 rounded-lg w-full h-64 flex items-center justify-center">
+                                {mainFileList.length > 0 ? (
+                                    <div className="relative w-full h-full">
+                                        <img
+                                            src={mainFileList[0].url}
+                                            alt="Main preview"
+                                            className="w-full h-full object-cover rounded-lg"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setMainFileList([])}
+                                            className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 w-8"
+                                        >
+                                            ×
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        onClick={triggerMainFileInput}
+                                        className="flex flex-col items-center justify-center text-gray-500"
+                                    >
+                                        <PlusOutlined className="text-2xl mb-2" />
+                                        <span>Upload Main Image</span>
                                     </button>
                                 )}
-                            </Upload>
-                            <style>
-                                {`
-                                .ant-upload-list-picture-circle .ant-upload-list-item,
-                                .ant-upload.ant-upload-select-picture-circle {
-                                    width: 320px !important;
-                                    height: 320px !important;
-                                }
-                                `}
-                            </style>
+                            </div>
                         </div>
-                        <div className='mt-60 mb-10'>
+                        <div className='mb-10'>
                             <LabelDefault label="Gallery Images:" htmlFor="gallery-imgs" />
                             <EditGalleryForm
                                 postId={postId}
@@ -322,6 +331,20 @@ const EditPostForm = () => {
                     onClose={() => setCreateModalOpen(false)}
                 />
             </ReusableModal>
+
+            <style jsx global>{`
+                .main-image-upload .ant-upload.ant-upload-select-picture-card,
+                .main-image-upload .ant-upload-list-picture-card .ant-upload-list-item {
+                    width: 300px !important;
+                    height: 300px !important;
+                }
+
+                .gallery-upload .ant-upload.ant-upload-select-picture-card,
+                .gallery-upload .ant-upload-list-picture-card .ant-upload-list-item {
+                    width: 120px !important;
+                    height: 320px !important;
+                }
+            `}</style>
         </>
     )
 }

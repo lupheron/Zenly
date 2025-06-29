@@ -13,7 +13,7 @@ const fetchPostById = async (id: number): Promise<any> => {
     if (responseData.data?.img) {
         responseData.data.img = responseData.data.img.startsWith('http')
             ? responseData.data.img
-            : `http://zenlyserver.test${responseData.data.img}`
+            : `http://zenlyserver.test/${responseData.data.img.replace(/^\//, '')}`
     }
 
     return responseData.data

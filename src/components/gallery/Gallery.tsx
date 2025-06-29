@@ -14,30 +14,34 @@ const Gallery: React.FC<GalleryProps> = ({ postId, mainImg }) => {
     const [displayedImage, setDisplayedImage] = useState<string>('')
     const [imageError, setImageError] = useState(false)
 
-    // Function to properly format image URLs
-    const formatImageUrl = (imgPath: string) => {
+    const formatImageUrl = (imgPath: string | null | undefined): string => {
         if (!imgPath) return '';
-        if (imgPath.startsWith('http') || imgPath.startsWith('https')) return imgPath;
-        return `http://zenlyserver.test/${imgPath.startsWith('/') ? imgPath.slice(1) : imgPath}`;
+        if (imgPath.startsWith('http')) return imgPath;
+        const cleanPath = imgPath.startsWith('/') ? imgPath.slice(1) : imgPath;
+        return `http://zenlyserver.test/${cleanPath}`;
     };
 
-
     const allImages = useMemo(() => [
-        { id: 'main', img: mainImg },
-        ...galleryImages
+        { id: 'main', img: formatImageUrl(mainImg) },
+        ...galleryImages.map(img => ({
+            ...img,
+            img: formatImageUrl(img.img)
+        }))
     ], [mainImg, galleryImages]);
 
     useEffect(() => {
         if (mainImg) {
-            setDisplayedImage(formatImageUrl(mainImg));
+            const formattedUrl = formatImageUrl(mainImg);
+            setDisplayedImage(formattedUrl);
             setImageError(false);
+        } else {
+            setDisplayedImage('');
         }
     }, [mainImg]);
 
-
     const handleImageClick = (clickedImg: string) => {
-        setDisplayedImage(clickedImg)
-        setImageError(false)
+        setDisplayedImage(clickedImg);
+        setImageError(false);
     }
 
     if (isLoading) return <p>Yuklanmoqda...</p>
@@ -53,6 +57,7 @@ const Gallery: React.FC<GalleryProps> = ({ postId, mainImg }) => {
                         className="object-cover"
                         priority
                         onError={() => setImageError(true)}
+                        onLoad={() => setImageError(false)}
                         unoptimized={process.env.NODE_ENV !== 'production'}
                     />
                 ) : (
@@ -67,8 +72,8 @@ const Gallery: React.FC<GalleryProps> = ({ postId, mainImg }) => {
                     <div
                         key={image.id}
                         className={`flex-shrink-0 w-20 h-16 relative rounded-lg overflow-hidden cursor-pointer border-2 transition-all ${displayedImage === image.img
-                            ? 'border-blue-500 scale-105'
-                            : 'border-transparent hover:scale-105'
+                                ? 'border-blue-500 scale-105'
+                                : 'border-transparent hover:scale-105'
                             }`}
                         onClick={() => handleImageClick(image.img)}
                     >
@@ -82,6 +87,7 @@ const Gallery: React.FC<GalleryProps> = ({ postId, mainImg }) => {
                                 const target = e.target as HTMLImageElement
                                 target.style.display = 'none'
                             }}
+                            onLoad={() => setImageError(false)}
                             unoptimized={process.env.NODE_ENV !== 'production'}
                         />
                     </div>

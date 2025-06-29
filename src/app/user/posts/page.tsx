@@ -3,17 +3,20 @@
 import UsersPosts from '@/src/components/Cart/UserPosts'
 import Pagination from '@/src/components/pagination/Pagination'
 import { useUsersPosts } from '@/src/hooks/posts/useUsersPosts'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
 const UserPosts = () => {
-  const user = localStorage.getItem("user_id")
-  const userId = user ? Number(user) : 0
-
+  const [userId, setUserId] = useState<number>(0)
   const { data, isLoading, error } = useUsersPosts(userId)
   const [currentPage, setCurrentPage] = useState(1)
   const postsPerPage = 6
   const router = useRouter()
+
+  useEffect(() => {
+    const user = localStorage.getItem("user_id")
+    setUserId(user ? Number(user) : 0)
+  }, [])
 
   const indexOfLastPost = currentPage * postsPerPage
   const indexOfFirstPost = indexOfLastPost - postsPerPage
@@ -56,4 +59,3 @@ const UserPosts = () => {
 }
 
 export default UserPosts
-

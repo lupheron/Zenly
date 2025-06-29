@@ -36,7 +36,9 @@ const UserPostInfo = () => {
     return (
         <>
             <div className="flex gap-20 mx-auto bg-white rounded-xl shadow-xl p-6 mt-10">
-                <Gallery postId={post.id} mainImg={post.img} />
+                <div className='w-200'>
+                    <Gallery postId={post.id} mainImg={post.img} />
+                </div>
 
                 <div className="mt-5">
                     <h1 className="text-4xl text-dark-green font-bold mt-5">{post.title}</h1>
