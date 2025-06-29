@@ -4,9 +4,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import ButtonDefault from '../Button/ButtonDefault';
+import { useUser } from '@/src/hooks/users/useUser';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const NavbarSection = () => {
     const [hasToken, setHasToken] = useState(false);
+    const { data } = useUser()
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -47,15 +50,28 @@ const NavbarSection = () => {
 
                 <div className="flex items-center space-x-4">
                     {hasToken ? (
-                        <Link href="/user">
-                            <Image
-                                src="/images/profile.jpg"
-                                alt="Profile"
-                                width={40}
-                                height={40}
-                                className="rounded-full object-cover"
-                            />
-                        </Link>
+                        <>
+                            <Link href="/user">
+                                <Image
+                                    src={data?.img}
+                                    alt="Profile"
+                                    width={60}
+                                    height={60}
+                                    className="rounded-full object-cover"
+                                />
+                            </Link>
+                            <button
+                                onClick={() => {
+                                    localStorage.removeItem("token");
+                                    localStorage.removeItem("user_id");
+                                    setHasToken(false);
+                                }}
+                                className="ml-4 text-white hover:text-light-green transition duration-300"
+                                aria-label="Logout"
+                            >
+                                <LogoutIcon fontSize="large" className='cursor-pointer'/>
+                            </button>
+                        </>
                     ) : (
                         <>
                             <Link href="/register">
@@ -66,6 +82,7 @@ const NavbarSection = () => {
                             </Link>
                         </>
                     )}
+
                 </div>
             </div>
             <div className='w-[80%] h-[0.1px] bg-black-muted mx-auto'></div>
