@@ -8,21 +8,23 @@ import { useRouter } from 'next/navigation'
 import ButtonDefault from '@/src/components/Button/ButtonDefault'
 
 const UserPosts = () => {
-  const [userId, setUserId] = useState<number>(0)
-  const { data, isLoading, error } = useUsersPosts(userId)  
+  const [userId, setUserId] = useState<number | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const postsPerPage = 6
   const router = useRouter()
 
+  const { data, isLoading, error, refetch } = useUsersPosts(userId ?? 0)
+
   useEffect(() => {
     const user = localStorage.getItem("user_id")
-    setUserId(user ? Number(user) : 0)
+    if (user) setUserId(Number(user))
   }, [])
 
+  const posts = Array.isArray(data) ? data : []
+  const totalPages = Math.ceil(posts.length / postsPerPage)
   const indexOfLastPost = currentPage * postsPerPage
   const indexOfFirstPost = indexOfLastPost - postsPerPage
-  const currentPosts = data?.slice(indexOfFirstPost, indexOfLastPost) || []
-  const totalPages = data ? Math.ceil(data.length / postsPerPage) : 1
+  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost)
 
   return (
     <div>
@@ -34,32 +36,37 @@ const UserPosts = () => {
         />
       </div>
       <hr className='mt-5' />
-      <div className='grid grid-cols-3 gap-2 mt-5'>
-        {isLoading && <p>Yuklanmoqda...</p>}
-        {error && <p className="text-red-500">Xatolik yuz berdi: {error.message}</p>}
-        {data?.length === 0 && !isLoading && <p>Postlar mavjud emas</p>}
 
-        {currentPosts.map((post) => (
-          <UsersPosts
-            key={post.id}
-            src={post.img}
-            title={post.title}
-            description={post.description}
-            location={post.location}
-            rating={post.id}
-            price={post.price_daily}
-            onClick={() => router.push(`/user/posts/${post.id}`)}
-            customClasses=''
-          />
-        ))}
-      </div>
+      {isLoading && <p>Yuklanmoqda...</p>}
+      {error && <p className="text-red-500">Olishda xatolik yuz berdi.</p>}
+      {!isLoading && !error && posts.length === 0 && <p>Postlar mavjud emas</p>}
 
-      {data && data.length > postsPerPage && (
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
+      {!isLoading && !error && posts.length > 0 && (
+        <>
+          <div className='grid grid-cols-3 gap-2 mt-5'>
+            {currentPosts.map((post) => (
+              <UsersPosts
+                key={post.id}
+                src={post.img}
+                title={post.title}
+                description={post.description}
+                location={post.location}
+                rating={post.id}
+                price={post.price_daily}
+                onClick={() => router.push(`/user/posts/${post.id}`)}
+                customClasses=''
+              />
+            ))}
+          </div>
+
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          )}
+        </>
       )}
     </div>
   )
