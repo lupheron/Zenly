@@ -6,11 +6,10 @@ import Rating from '../Rating/Rating'
 interface PostsCartProps {
     src: string,
     title: string,
-    about: string,
+    small_description: string,
     location: string,
     rating: number,
-    rateNumber: number,
-    price: number,
+    price_daily: number,
     onClick: () => void,
     customClasses?: string
 }
@@ -18,11 +17,10 @@ interface PostsCartProps {
 const PostsCart: React.FC<PostsCartProps> = ({
     src,
     title,
-    about,
+    small_description,
     location,
     rating,
-    rateNumber,
-    price,
+    price_daily,
     onClick,
     customClasses = ''
 }) => {
@@ -48,7 +46,7 @@ const PostsCart: React.FC<PostsCartProps> = ({
 
             <div className='flex flex-col gap-2 mt-5 px-4'>
                 <h2 className='text-xl font-bold'>{title}</h2>
-                <p className='text-sm text-gray-700'>{about}</p>
+                <p className='text-sm text-gray-700'>{small_description}</p>
                 <p className='text-sm text-gray-600'>{location}</p>
                 <div className='flex items-center gap-2'>
                     <Rating postId={rating} />
@@ -59,7 +57,7 @@ const PostsCart: React.FC<PostsCartProps> = ({
             <div className='flex flex-col gap-10 bg-blue-50 rounded-lg px-4 py-3 mt-5'>
                 <div>
                     <p className='text-sm text-gray-500'>From</p>
-                    <h2 className='text-2xl font-bold text-blue-800'>${price}</h2>
+                    <h2 className='text-2xl font-bold text-blue-800'>${price_daily}</h2>
                 </div>
                 <div className='mt-3'>
                     <ButtonDefault

@@ -14,17 +14,16 @@ const PostsContainer: React.FC<PostsContainerProps> = ({ posts }) => {
                         key={post.id}
                         src={post.img}
                         title={post.title}
-                        about={post.about}
+                        small_description={post.small_description}
                         location={post.location}
                         rating={post.id}
-                        rateNumber={post.rateNumber}
-                        price={post.price}
+                        price_daily={post.price_daily}
                         onClick={() => { }}
                         customClasses=''
                     />
                 ))
             ) : (
-                <p className='col-span-4 text-center'>No posts found.</p>
+                <p className='col-span-4 text-center text-red-900 text-bold text-2xl tracking-[1px]'>Bu turdagi dam olish maskanlari hali mavjud emas!</p>
             )}
         </div>
     )
