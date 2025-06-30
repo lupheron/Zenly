@@ -16,7 +16,6 @@ const fetchGalleryByPostId = async (postId: number): Promise<GalleryImage[]> => 
         throw new Error("Failed to fetch gallery.")
     }
 
-    // Ensure URLs are properly formatted
     return responseData.data.map((img: GalleryImage) => ({
         ...img,
         img: img.img.startsWith('http') ? img.img : `http://zenlyserver.test${img.img}`
@@ -28,7 +27,7 @@ export const useGalleryByPostId = (postId: number) => {
         queryKey: ['gallery', postId],
         queryFn: () => fetchGalleryByPostId(postId),
         enabled: !!postId,
-        staleTime: 60 * 1000, // Cache for 1 minute
+        staleTime: 60 * 1000, 
         retry: false,
     })
 }

@@ -20,7 +20,7 @@ const fetchPostById = async (id: number): Promise<any> => {
 }
 
 const deletePostById = async (id: number) => {
-    const res = await fetch(`http://zenlyserver.test/api/post/${id}`, {
+    const res = await fetch(`http://zenlyserver.test/api/posts/${id}`, {
         method: 'DELETE',
     })
 
