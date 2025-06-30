@@ -54,7 +54,8 @@ const UserPosts = () => {
                 rating={post.id}
                 price={post.price_daily}
                 onClick={() => router.push(`/user/posts/${post.id}`)}
-                customClasses=''
+                postOwnerId={post.user_id} // assuming your post has user_id field
+                postId={post.id}
               />
             ))}
           </div>
