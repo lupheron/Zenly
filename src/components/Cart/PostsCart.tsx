@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import React from 'react'
 import ButtonDefault from '../Button/ButtonDefault'
+import Rating from '../Rating/Rating'
 
 interface PostsCartProps {
     src: string,
@@ -14,15 +15,35 @@ interface PostsCartProps {
     customClasses?: string
 }
 
-const PostsCart: React.FC<PostsCartProps> = ({ src, title, about, location, rating, rateNumber, price, onClick, customClasses = '' }) => {
+const PostsCart: React.FC<PostsCartProps> = ({
+    src,
+    title,
+    about,
+    location,
+    rating,
+    rateNumber,
+    price,
+    onClick,
+    customClasses = ''
+}) => {
+    const formatImageUrl = (imgPath: string | null | undefined): string => {
+        if (!imgPath) return '/no-image.jpg';
+        if (imgPath.startsWith('http')) return imgPath;
+        const cleanPath = imgPath.startsWith('/') ? imgPath.slice(1) : imgPath;
+        return `http://zenlyserver.test/${cleanPath}`;
+    };
+
+    const formattedSrc = formatImageUrl(src);
+
     return (
         <div className={`w-100 bg-white rounded-xl shadow p-4 ${customClasses}`}>
             <Image
                 width={350}
                 height={450}
-                src={src}
-                alt=''
-                className='w-full h-60 rounded-xl'
+                src={formattedSrc}
+                alt='Post Image'
+                className='w-full h-60 rounded-xl object-cover'
+                unoptimized={process.env.NODE_ENV !== 'production'}
             />
 
             <div className='flex flex-col gap-2 mt-5 px-4'>
@@ -30,8 +51,8 @@ const PostsCart: React.FC<PostsCartProps> = ({ src, title, about, location, rati
                 <p className='text-sm text-gray-700'>{about}</p>
                 <p className='text-sm text-gray-600'>{location}</p>
                 <div className='flex items-center gap-2'>
-                    <span className='bg-gray-200 px-2 py-1 rounded-md text-sm font-medium'>{rating}</span>
-                    <span className='text-sm text-gray-600'>({rateNumber} ratings)</span>
+                    <Rating postId={rating} />
+                    <span className='text-sm text-gray-600'>Ratings:</span>
                 </div>
             </div>
 

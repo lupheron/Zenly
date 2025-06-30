@@ -80,7 +80,7 @@ const UserPostInfo = () => {
                         </div>
                         <div className='flex gap-3 items-center'>
                             <span>Korilgan Soni:</span>
-                            <h2 className="text-gray-500 mt-1">{post.members}</h2>
+                            <h2 className="text-gray-500 mt-1">{post.clicked}</h2>
                         </div>
                     </div>
                     <ButtonDefault

@@ -1,20 +1,31 @@
 import PostsCart from '@/src/components/Cart/PostsCart'
 import React from 'react'
 
-const PostsContainer = () => {
+interface PostsContainerProps {
+    posts: any[];
+}
+
+const PostsContainer: React.FC<PostsContainerProps> = ({ posts }) => {
     return (
         <div className='grid grid-cols-4 gap-2 w-[85%]'>
-                <PostsCart
-                    src="/intro/intro1.jpg" // Replace with your backend image URL
-                    title="Modern Apartment in Tashkent"
-                    about="A beautiful, well-located apartment near the city center with all modern facilities."
-                    location="Tashkent, Uzbekistan"
-                    rating={4.5}
-                    rateNumber={3465}
-                    price={120}
-                    onClick={() => { }}
-                    customClasses=''
-                />
+            {posts.length > 0 ? (
+                posts.map((post) => (
+                    <PostsCart
+                        key={post.id}
+                        src={post.img}
+                        title={post.title}
+                        about={post.about}
+                        location={post.location}
+                        rating={post.id}
+                        rateNumber={post.rateNumber}
+                        price={post.price}
+                        onClick={() => { }}
+                        customClasses=''
+                    />
+                ))
+            ) : (
+                <p className='col-span-4 text-center'>No posts found.</p>
+            )}
         </div>
     )
 }

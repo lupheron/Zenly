@@ -1,6 +1,7 @@
+'use client'
+
 import InputDefault from '@/src/components/FormElements/Input/InputDefault'
 import LabelDefault from '@/src/components/FormElements/label/LabelDefault'
-import React from 'react'
 
 const amenities = [
     { value: 'wifi', label: 'Wi-Fi' },
@@ -13,26 +14,37 @@ const amenities = [
     { value: 'pool', label: 'Suzish havzasi' },
 ]
 
-const Amenities = () => {
-    const onChange = (value: string) => {
-        console.log("Selected amenity:", value)
-    }
+interface AmenitiesProps {
+    selectedAmenities: string[];
+    onChange: (selected: string[]) => void;
+}
+
+const Amenities: React.FC<AmenitiesProps> = ({ selectedAmenities, onChange }) => {
+    const handleChange = (label: string) => {
+        const newSelected = selectedAmenities.includes(label)
+            ? selectedAmenities.filter((item) => item !== label)
+            : [...selectedAmenities, label];
+        onChange(newSelected);
+    };
 
     return (
-        <div className='flex flex-wrap'>
-            {amenities.map((item) => (
-                <div key={item.value} className='flex items-center gap-2'>
-                    <InputDefault
-                        type='checkbox'
-                        name='amenity'
-                        id={item.value}
-                        onChange={() => onChange(item.value)}
-                    />
-                    <LabelDefault label={item.label} htmlFor={item.value} />
-                </div>
-            ))}
+        <div>
+            <div className='flex flex-wrap gap-4 mb-6'>
+                {amenities.map((item) => (
+                    <div key={item.label} className='flex items-center gap-2'>
+                        <InputDefault
+                            type='checkbox'
+                            name='amenity'
+                            id={item.label}
+                            checked={selectedAmenities.includes(item.label)}
+                            onChange={() => handleChange(item.label)}
+                        />
+                        <LabelDefault label={item.label} htmlFor={item.label} />
+                    </div>
+                ))}
+            </div>
         </div>
-    )
-}
+    );
+};
 
 export default Amenities

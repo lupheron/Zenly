@@ -21,6 +21,17 @@ const banners = [
     { id: 4, title: 'Eko sayohatlar' },
 ]
 
+const staticFeatures = [
+    "Wi-Fi",
+    "Tashqi va ichki oshxona",
+    "Shaxsiy hammom",
+    "Isitish / Konditsioner",
+    "Sauna / Issiq vannalar",
+    "Mangal / Kamin",
+    "Avtoturargoh",
+    "Suzish havzasi"
+]
+
 const CreatePostForm = () => {
     const router = useRouter()
     const [userId, setUserId] = useState<number | null>(null)
@@ -28,7 +39,7 @@ const CreatePostForm = () => {
     const [galleryFileList, setGalleryFileList] = useState<any[]>([])
     const [createdPostId, setCreatedPostId] = useState<number | null>(null)
     const [createModalOpen, setCreateModalOpen] = useState(false)
-    const { data: features = [] } = useFeatures(createdPostId) ?? { data: [] }
+    const { data: features = [], createFeature, deleteFeature } = useFeatures(createdPostId)
 
     const { createPost } = useUsersPosts(userId, false)
 
@@ -97,12 +108,28 @@ const CreatePostForm = () => {
 
             const response = await createPost.mutateAsync(payload)
             message.success('Post created successfully! Now you can add gallery images.')
+
             setCreatedPostId(response.post_id)
+
+            await Promise.all(
+                staticFeatures.map(feature =>
+                    createFeature.mutateAsync({
+                        post_id: response.post_id,
+                        user_id: userId,
+                        name: feature
+                    })
+                )
+            )
+
         } catch (error) {
             message.error('Failed to create post')
         } finally {
             setIsSubmitting(false)
         }
+    }
+
+    const handleDeleteFeature = (featureId: number) => {
+        deleteFeature.mutate(featureId)
     }
 
     const handleFinish = () => {
@@ -168,8 +195,7 @@ const CreatePostForm = () => {
                                     type="button"
                                     onClick={() => setCreateModalOpen(true)}
                                     className="ml-2 text-blue-600 hover:text-blue-800 align-middle"
-                                    aria-label="Add new feature"
-                                    style={{ verticalAlign: 'middle', background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+                                    style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
                                 >
                                     <AddIcon />
                                 </button>
@@ -178,7 +204,12 @@ const CreatePostForm = () => {
                             {features.length > 0 && (
                                 <div className="flex flex-wrap gap-2 mt-2">
                                     {features.map((feature) => (
-                                        <Tag key={feature.id} className="custom-tag">
+                                        <Tag
+                                            key={feature.id}
+                                            closable
+                                            onClose={() => handleDeleteFeature(feature.id)}
+                                            className="custom-tag"
+                                        >
                                             <span className='text-xl p-3'>{feature.name}</span>
                                         </Tag>
                                     ))}
