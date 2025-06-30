@@ -14,6 +14,13 @@ import CreateFeatureForm from './CreateFeatureForm'
 import AddIcon from '@mui/icons-material/Add'
 import { useFeatures } from '@/src/hooks/features/useFeatures'
 
+const banners = [
+    { id: 1, title: 'Plyajdagi dam olish' },
+    { id: 2, title: 'Wellness maskanlari' },
+    { id: 3, title: 'Kabina zonalari' },
+    { id: 4, title: 'Eko sayohatlar' },
+]
+
 const CreatePostForm = () => {
     const router = useRouter()
     const [userId, setUserId] = useState<number | null>(null)
@@ -23,7 +30,7 @@ const CreatePostForm = () => {
     const [createModalOpen, setCreateModalOpen] = useState(false)
     const { data: features = [] } = useFeatures(createdPostId) ?? { data: [] }
 
-    const { createPost } = useUsersPosts(userId ?? 0)
+    const { createPost } = useUsersPosts(userId, false)
 
     const [form, setForm] = useState({
         title: '',
@@ -31,7 +38,8 @@ const CreatePostForm = () => {
         description: '',
         price_daily: '',
         location: '',
-        members: ''
+        members: '',
+        area_id: ''
     })
 
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -42,6 +50,7 @@ const CreatePostForm = () => {
     }, [])
 
     const mainFileInputRef = useRef<HTMLInputElement>(null)
+
     const handleMainImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (!file) return
@@ -62,7 +71,7 @@ const CreatePostForm = () => {
         mainFileInputRef.current?.click()
     }
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target
         if (name === 'small_description') {
             const wordCount = value.trim().split(/\s+/).filter(Boolean).length
@@ -152,6 +161,7 @@ const CreatePostForm = () => {
                                 setGalleryFileList={setGalleryFileList}
                                 userId={userId}
                             />
+
                             <div className='mt-10'>
                                 <h1>Sharoitlarni kiritish</h1>
                                 <button
@@ -164,6 +174,7 @@ const CreatePostForm = () => {
                                     <AddIcon />
                                 </button>
                             </div>
+
                             {features.length > 0 && (
                                 <div className="flex flex-wrap gap-2 mt-2">
                                     {features.map((feature) => (
@@ -255,6 +266,22 @@ const CreatePostForm = () => {
                                 required
                                 customClasses="w-full border border-gray-300 rounded px-3 py-2"
                             />
+
+                            <LabelDefault label="Dam olish zonasining turi:" htmlFor="area_id" />
+                            <select
+                                name="area_id"
+                                value={form.area_id}
+                                onChange={handleChange}
+                                required
+                                className="w-full border border-gray-300 rounded px-3 py-2"
+                            >
+                                <option value="">Tanlang</option>
+                                {banners.map((banner) => (
+                                    <option key={banner.id} value={banner.id}>
+                                        {banner.title}
+                                    </option>
+                                ))}
+                            </select>
 
                             <div className="flex gap-4 mt-4">
                                 <ButtonDefault

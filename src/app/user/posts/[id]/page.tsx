@@ -14,6 +14,13 @@ const UserPostInfo = () => {
     const router = useRouter()
     const [deleteModalOpen, setDeleteModalOpen] = useState(false)
 
+    const banners = [
+        { id: 1, title: 'Plyajdagi dam olish' },
+        { id: 2, title: 'Wellness maskanlari' },
+        { id: 3, title: 'Kabina zonalari' },
+        { id: 4, title: 'Eko sayohatlar' },
+    ]
+
     if (!params?.id) return null
 
     const { data: post, isLoading, error, deleteMutation } = usePostById(Number(params.id))
@@ -33,10 +40,12 @@ const UserPostInfo = () => {
     if (isLoading) return <p>Yuklanmoqda...</p>
     if (error || !post) return <p>Xatolik yuz berdi yoki post topilmadi</p>
 
+    const areaTitle = banners.find(b => b.id === post.area_id)?.title ?? 'Nomaʼlum tur'
+
     return (
         <>
-            <div className="flex gap-20 mx-auto bg-white rounded-xl shadow-xl p-6 mt-10">
-                <div className='w-200'>
+            <div className="flex gap-10 mx-auto bg-white rounded-xl shadow-xl p-6 mt-10">
+                <div className='w-150'>
                     <Gallery postId={post.id} mainImg={post.img} />
                 </div>
 
@@ -48,7 +57,7 @@ const UserPostInfo = () => {
                         <h1 className='text-xl text-light-green font-bold tracking-[1px] mb-2'>Mavjud Bo'lgan Imkoniyatlar:</h1>
                         <Features postId={post.id} />
                     </div>
-                    <div className='grid grid-cols-2 gap-5 mt-10 text-2xl'>
+                    <div className='grid grid-cols-2 gap-x-20 gap-y-3 mt-10 text-xl'>
                         <div className="flex gap-3 items-center">
                             <span className=" font-medium">Reyting:</span>
                             <Rating postId={post.id} />
@@ -65,7 +74,19 @@ const UserPostInfo = () => {
                             <span>Odam Soni:</span>
                             <h2 className="text-gray-500 mt-1">{post.members}</h2>
                         </div>
+                        <div className='flex gap-3 items-center'>
+                            <span>Maskan turi:</span>
+                            <h2 className="text-gray-500 mt-1">{areaTitle}</h2>
+                        </div>
+                        <div className='flex gap-3 items-center'>
+                            <span>Korilgan Soni:</span>
+                            <h2 className="text-gray-500 mt-1">{post.members}</h2>
+                        </div>
                     </div>
+                    <ButtonDefault
+                        label="Komentlarni ko'rish"
+                        customClasses='!bg-orange-500 !rounded-lg !cursor-auto !text-sm mt-5 w-full'
+                    />
                     <div className='flex gap-3 mt-10'>
                         <ButtonDefault
                             label='Tahrirlash'
@@ -86,9 +107,9 @@ const UserPostInfo = () => {
                 onConfirm={handleDelete}
                 onCancel={() => setDeleteModalOpen(false)}
             />
-
         </>
     )
 }
+
 
 export default UserPostInfo

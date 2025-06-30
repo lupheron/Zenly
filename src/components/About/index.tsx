@@ -1,31 +1,17 @@
 import React from 'react'
 import AboutBanner from '../Banners/AboutBanner'
 import TitleButtons from '../Button/TitleButtons';
+import { useRouter } from 'next/navigation';
 
 const banners = [
-    {
-        title: 'Plyajdagi dam olish',
-        paragraph: 'Yumshoq qum, mayin to‘lqinlar va to‘liq xotirjamlik.',
-        img: "/about/beach.jpg",
-    },
-    {
-        title: 'Wellness maskanlari',
-        paragraph: 'Yoga, meditatsiya va spa xizmatlari.',
-        img: "/about/wellness.jpg",
-    },
-    {
-        title: 'Vanlife zonalari',
-        paragraph: 'Tabiyat qo‘ynida mashinangizni to‘xtatib, xotirjam dam oling.',
-        img: "/about/van.jpg",
-    },
-    {
-        title: 'Eko sayohatlar',
-        paragraph: 'Tabiiy go‘zalliklarni o‘rganing va atrof-muhitni asrang.',
-        img: "/about/eco.jpg",
-    },
+    { id: 1, title: 'Plyajdagi dam olish', paragraph: 'Yumshoq qum, mayin to‘lqinlar va to‘liq xotirjamlik.', img: "/about/beach.jpg" },
+    { id: 2, title: 'Wellness maskanlari', paragraph: 'Yoga, meditatsiya va spa xizmatlari.', img: "/about/wellness.jpg" },
+    { id: 3, title: 'Kabina zonalari', paragraph: 'Tabiat qo‘ynida mashinangizni to‘xtatib, xotirjam dam oling.', img: "/about/cabine.jpg" },
+    { id: 4, title: 'Eko sayohatlar', paragraph: 'Tabiiy go‘zalliklarni o‘rganing va atrof-muhitni asrang.', img: "/about/eco.jpg" },
 ];
 
 const AboutSection = () => {
+    const router = useRouter()
     return (
         <div className='mt-25'>
             <div className='w-[60%] mx-auto flex flex-col items-center justify-between gap-5 px-25' data-aos="fade-down">
@@ -35,13 +21,9 @@ const AboutSection = () => {
             </div>
 
             <div className="flex flex-wrap justify-center gap-6 mt-18 px-4" data-aos="fade-up">
-                {banners.map((banner, index) => (
-                    <div key={index} className="w-full md:w-[45%] lg:w-[22%] mb-6">
-                        <AboutBanner
-                            title={banner.title}
-                            paragraph={banner.paragraph}
-                            img={banner.img}
-                        />
+                {banners.map((banner) => (
+                    <div key={banner.id} className="w-full md:w-[45%] lg:w-[22%] mb-6 cursor-pointer" onClick={() => router.push(`/posts?area_id=${banner.id}`)}>
+                        <AboutBanner title={banner.title} paragraph={banner.paragraph} img={banner.img} />
                     </div>
                 ))}
             </div>

@@ -7,9 +7,7 @@ const API_BASE_URL = 'http://zenlyserver.test/api'
 
 const fetchUsersPosts = async (user_id: number): Promise<any[]> => {
     const res = await fetch(`${API_BASE_URL}/posts/user/${user_id}`)
-
     const text = await res.text()
-
     try {
         const json = JSON.parse(text)
         if (!res.ok) {
@@ -47,13 +45,14 @@ const createPost = async (data: any): Promise<any> => {
     }
 }
 
-export const useUsersPosts = (user_id: number) => {
+// fetchOnMount = true by default for backward compatibility
+export const useUsersPosts = (user_id: number, fetchOnMount: boolean = true) => {
     const queryClient = useQueryClient()
 
     const query = useQuery({
         queryKey: ['user-posts', user_id],
         queryFn: () => fetchUsersPosts(user_id),
-        enabled: !!user_id,
+        enabled: !!user_id && fetchOnMount, // Only fetch if fetchOnMount is true
         retry: false,
     })
 
