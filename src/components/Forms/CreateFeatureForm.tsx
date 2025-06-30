@@ -11,18 +11,24 @@ interface CreateFeatureFormProps {
 }
 
 const CreateFeatureForm: React.FC<CreateFeatureFormProps> = ({ postId, onClose }) => {
-    const { createFeature } = useFeatures()
+    const { createFeature } = useFeatures(postId)
     const [name, setName] = useState('')
 
     const handleSubmit = () => {
         if (!name) return
-        createFeature.mutate({
-            post_id: postId,
-            user_id: Number(localStorage.getItem('user_id')),
-            name,
-        })
-        setName('')
-        onClose()
+        createFeature.mutate(
+            {
+                post_id: postId,
+                user_id: Number(localStorage.getItem('user_id')),
+                name,
+            },
+            {
+                onSuccess: () => {
+                    setName('')
+                    onClose()
+                }
+            }
+        )
     }
 
     return (

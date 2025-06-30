@@ -5,16 +5,23 @@ import LabelDefault from '../FormElements/label/LabelDefault'
 import InputDefault from '../FormElements/Input/InputDefault'
 import ButtonDefault from '../Button/ButtonDefault'
 import { PlusOutlined } from '@ant-design/icons'
-import { message } from 'antd'
+import { message, Tag } from 'antd'
 import { useRouter } from 'next/navigation'
 import { useUsersPosts } from '@/src/hooks/posts/useUsersPosts'
 import CreateGalleryForm from './CreateGallery'
+import ReusableModal from '../Modal/ReusableModal'
+import CreateFeatureForm from './CreateFeatureForm'
+import AddIcon from '@mui/icons-material/Add'
+import { useFeatures } from '@/src/hooks/features/useFeatures'
 
 const CreatePostForm = () => {
     const router = useRouter()
     const [userId, setUserId] = useState<number | null>(null)
     const [mainFileList, setMainFileList] = useState<any[]>([])
     const [galleryFileList, setGalleryFileList] = useState<any[]>([])
+    const [createdPostId, setCreatedPostId] = useState<number | null>(null)
+    const [createModalOpen, setCreateModalOpen] = useState(false)
+    const { data: features = [] } = useFeatures(createdPostId) ?? { data: [] }
 
     const { createPost } = useUsersPosts(userId ?? 0)
 
@@ -27,7 +34,6 @@ const CreatePostForm = () => {
         members: ''
     })
 
-    const [createdPostId, setCreatedPostId] = useState<number | null>(null)
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     useEffect(() => {
@@ -146,6 +152,34 @@ const CreatePostForm = () => {
                                 setGalleryFileList={setGalleryFileList}
                                 userId={userId}
                             />
+                            <div className='mt-10'>
+                                <h1>Sharoitlarni kiritish</h1>
+                                <button
+                                    type="button"
+                                    onClick={() => setCreateModalOpen(true)}
+                                    className="ml-2 text-blue-600 hover:text-blue-800 align-middle"
+                                    aria-label="Add new feature"
+                                    style={{ verticalAlign: 'middle', background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+                                >
+                                    <AddIcon />
+                                </button>
+                            </div>
+                            {features.length > 0 && (
+                                <div className="flex flex-wrap gap-2 mt-2">
+                                    {features.map((feature) => (
+                                        <Tag key={feature.id} className="custom-tag">
+                                            <span className='text-xl p-3'>{feature.name}</span>
+                                        </Tag>
+                                    ))}
+                                </div>
+                            )}
+
+                            <ReusableModal open={createModalOpen} onClose={() => setCreateModalOpen(false)} title="Add New Feature">
+                                <CreateFeatureForm
+                                    postId={createdPostId}
+                                    onClose={() => setCreateModalOpen(false)}
+                                />
+                            </ReusableModal>
 
                             <div className="mt-4 flex justify-end">
                                 <ButtonDefault

@@ -39,6 +39,7 @@ export const useUsersPosts = (user_id: number) => {
         queryKey: ['user-posts', user_id],
         queryFn: () => fetchUsersPosts(user_id),
         enabled: !!user_id,
+        retry: false
     })
 
     const createMutation = useMutation({

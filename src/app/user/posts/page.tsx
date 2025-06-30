@@ -9,7 +9,7 @@ import ButtonDefault from '@/src/components/Button/ButtonDefault'
 
 const UserPosts = () => {
   const [userId, setUserId] = useState<number>(0)
-  const { data, isLoading, error } = useUsersPosts(userId)
+  const { data, isLoading, error } = useUsersPosts(userId)  
   const [currentPage, setCurrentPage] = useState(1)
   const postsPerPage = 6
   const router = useRouter()

@@ -47,14 +47,14 @@ const deleteFeature = async (featureId: number) => {
     return res.json()
 }
 
-export const useFeatures = (post_id: number) => {
+export const useFeatures = (post_id?: number) => {
     const queryClient = useQueryClient()
 
     const query = useQuery({
         queryKey: ['features', post_id],
-        queryFn: () => fetchFeatures(post_id),
-        staleTime: 60 * 1000,
+        queryFn: () => fetchFeatures(post_id!),
         enabled: !!post_id,
+        staleTime: 0,
         retry: false,
     })
 
