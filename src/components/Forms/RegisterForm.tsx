@@ -32,7 +32,7 @@ const RegisterForm = () => {
     useEffect(() => {
         if (isSuccess) {
             AlertDefault.success("Ro‘yxatdan o‘tish muvaffaqiyatli yakunlandi!")
-            router.push('/dashboard')
+            router.push('/login')
         }
         if (isError) {
             AlertDefault.error("Ro‘yxatdan o‘tishda xatolik yuz berdi!")

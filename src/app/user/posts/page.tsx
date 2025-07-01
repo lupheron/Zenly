@@ -13,12 +13,20 @@ const UserPosts = () => {
   const postsPerPage = 6
   const router = useRouter()
 
-  const { data, isLoading, error, refetch } = useUsersPosts(userId ?? 0)
+  const { data, isLoading, error } = useUsersPosts(userId ?? 0)
 
   useEffect(() => {
     const user = localStorage.getItem("user_id")
     if (user) setUserId(Number(user))
+
+    const savedPage = sessionStorage.getItem('user_posts_page')
+    if (savedPage) setCurrentPage(Number(savedPage))
   }, [])
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+    sessionStorage.setItem('user_posts_page', String(page))
+  }
 
   const posts = Array.isArray(data) ? data : []
   const totalPages = Math.ceil(posts.length / postsPerPage)
@@ -54,7 +62,7 @@ const UserPosts = () => {
                 rating={post.id}
                 price={post.price_daily}
                 onClick={() => router.push(`/user/posts/${post.id}`)}
-                postOwnerId={post.user_id} // assuming your post has user_id field
+                postOwnerId={post.user_id}
                 postId={post.id}
               />
             ))}
@@ -64,7 +72,7 @@ const UserPosts = () => {
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
-              onPageChange={setCurrentPage}
+              onPageChange={handlePageChange}
             />
           )}
         </>
