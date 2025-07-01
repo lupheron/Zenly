@@ -23,11 +23,11 @@ const PostsRatingCart = () => {
     const totalPages = Math.ceil(userPosts.length / postsPerPage)
 
     return (
-        <div className='bg-white p-6 rounded-xl shadow-xl w-150 h-80'>
+        <div className='bg-white p-6 rounded-xl shadow-xl w-150 h-75'>
             <h1 className="text-xl font-semibold mb-4">Postlaringizning reytinglari</h1>
 
             {currentPosts.length === 0 ? (
-                <p>Sizda postlar mavjud emas yoki reytinglar topilmadi!</p>
+                <p>Sizda postlar mavjud emas!</p>
             ) : (
                 currentPosts.map((post) => (
                     <div key={post.id} className="border p-4 rounded mb-3">

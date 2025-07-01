@@ -23,7 +23,7 @@ const UserComments = () => {
     }
 
     return (
-        <div className="bg-white p-6 rounded-xl shadow-xl w-150">
+        <div className="bg-white p-6 rounded-xl shadow-xl w-150 h-75">
             <h1 className="text-2xl font-bold mb-4">Mijozlar Fikri</h1>
             <div className="space-y-4">
                 <SwiperDefault
@@ -33,14 +33,18 @@ const UserComments = () => {
                     autoplay={{ delay: 8000 }}
                     pagination={false}
                 >
-                    {data?.map((comment, index) => (
-                        <CommentCart
-                            key={index}
-                            comTitle={comment.postTitle}
-                            comment={comment.text}
-                            nameTitle={comment.name}
-                        />
-                    ))}
+                    {data?.length === 0 ? (
+                        <p>Sizda komentlar mavjud emas!</p>
+                    ) : (
+                        data?.map((comment, index) => (
+                            <CommentCart
+                                key={index}
+                                comTitle={comment.postTitle}
+                                comment={comment.text}
+                                nameTitle={comment.name}
+                            />
+                        ))
+                    )}
                 </SwiperDefault>
             </div>
         </div>

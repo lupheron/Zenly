@@ -2,12 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query'
 
-interface PostRatingResponse {
-    average_rating: number
-    user_id: number
-}
-
-const fetchPostRating = async (post_id: number): Promise<PostRatingResponse> => {
+const fetchPostRating = async (post_id: number): Promise<number> => {
     const res = await fetch(`http://zenlyserver.test/api/rating/${post_id}`, {
         method: 'GET',
         headers: {
@@ -21,7 +16,7 @@ const fetchPostRating = async (post_id: number): Promise<PostRatingResponse> => 
         throw new Error(responseData.message || 'Reytingni olishda xatolik yuz berdi.')
     }
 
-    return responseData
+    return responseData.average_rating
 }
 
 export const usePostRating = (post_id: number) => {
