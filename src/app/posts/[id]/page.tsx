@@ -6,11 +6,12 @@ import Rating from '@/src/components/Rating/Rating'
 import React from 'react'
 import ButtonDefault from '@/src/components/Button/ButtonDefault'
 import Features from '@/src/components/Features/Features'
-import { usePostById } from '@/src/hooks/posts/usePostsById'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import { usePostById } from '@/src/hooks/posts/usePostsById'
 
 const PostInfo = () => {
     const params = useParams()
+    const postId = Number(params?.id)
 
     const banners = [
         { id: 1, title: 'Plyajdagi dam olish' },
@@ -23,11 +24,9 @@ const PostInfo = () => {
         window.history.back()
     }
 
-    if (!params?.id) return null
+    const { data: post, isLoading, error } = usePostById(postId)
 
-    const { data: post, isLoading, error } = usePostById(Number(params.id))
-
-
+    if (!postId) return null
     if (isLoading) return <p>Yuklanmoqda...</p>
     if (error || !post) return <p>Xatolik yuz berdi yoki post topilmadi</p>
 
@@ -53,7 +52,7 @@ const PostInfo = () => {
                         <p className="text-gray-700 text-sm mt-3">{post.small_description}</p>
                         <p className='text-gray-700 text-lg font-bold tracking-[1px] mt-5'>{post.description}</p>
                         <div className='mt-5'>
-                            <h1 className='text-xl text-light-green font-bold tracking-[1px] mb-2'>Mavjud Bo'lgan Imkoniyatlar:</h1>
+                            <h1 className='text-xl text-light-green font-bold tracking-[1px] mb-2'>Mavjud Bo&apos;lgan Imkoniyatlar:</h1>
                             <Features postId={post.id} />
                         </div>
                         <div className='grid grid-cols-2 gap-x-20 gap-y-3 mt-10 text-xl'>
@@ -78,7 +77,7 @@ const PostInfo = () => {
                                 <h2 className="text-gray-500 mt-1">{areaTitle}</h2>
                             </div>
                             <div className='flex gap-3 items-center'>
-                                <span>Korilgan Soni:</span>
+                                <span>Ko&apos;rilgan Soni:</span>
                                 <h2 className="text-gray-500 mt-1">{post.clicked}</h2>
                             </div>
                         </div>
@@ -92,6 +91,5 @@ const PostInfo = () => {
         </div>
     )
 }
-
 
 export default PostInfo

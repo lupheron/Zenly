@@ -3,7 +3,7 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import EmailIcon from '@mui/icons-material/Email';
 import BusinessIcon from '@mui/icons-material/Business';
 
-let data = [
+const data = [
     {
         title: "Telefon Raqam",
         icon: PhoneIcon,
@@ -28,7 +28,7 @@ const Contact = () => {
                 className="text-5xl font-bold mb-6"
                 data-aos="fade-down"
             >
-                Biz Bilan Bog'lanish
+                Biz Bilan Bog&apos;lanish
             </h1>
 
             <div className='flex items-center justify-between gap-45 mt-10'>

@@ -14,6 +14,21 @@ import CreateFeatureForm from './CreateFeatureForm'
 import AddIcon from '@mui/icons-material/Add'
 import { useFeatures } from '@/src/hooks/features/useFeatures'
 
+interface GalleryFile {
+    uid: string
+    name: string
+    status: string
+    url: string
+    id: number
+}
+
+interface MainFile {
+    uid: string
+    name: string
+    status: string
+    url: string
+}
+
 const banners = [
     { id: 1, title: 'Plyajdagi dam olish' },
     { id: 2, title: 'Wellness maskanlari' },
@@ -35,8 +50,8 @@ const staticFeatures = [
 const CreatePostForm = () => {
     const router = useRouter()
     const [userId, setUserId] = useState<number | null>(null)
-    const [mainFileList, setMainFileList] = useState<any[]>([])
-    const [galleryFileList, setGalleryFileList] = useState<any[]>([])
+    const [mainFileList, setMainFileList] = useState<MainFile[]>([])
+    const [galleryFileList, setGalleryFileList] = useState<GalleryFile[]>([])
     const [createdPostId, setCreatedPostId] = useState<number | null>(null)
     const [createModalOpen, setCreateModalOpen] = useState(false)
     const { data: features = [], createFeature, deleteFeature } = useFeatures(createdPostId)
@@ -93,10 +108,19 @@ const CreatePostForm = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+        if (!userId) {
+            message.error('Foydalanuvchi aniqlanmadi.')
+            return
+        }
+        if (mainFileList.length === 0) {
+            message.error('Iltimos, asosiy rasm yuklang.')
+            return
+        }
+
         setIsSubmitting(true)
 
         try {
-            const imgBase64 = mainFileList[0]?.url?.startsWith('data:image')
+            const imgBase64 = mainFileList[0]?.url.includes('data:image')
                 ? mainFileList[0].url.split(',')[1]
                 : null
 
@@ -107,8 +131,7 @@ const CreatePostForm = () => {
             }
 
             const response = await createPost.mutateAsync(payload)
-            message.success('Post created successfully! Now you can add gallery images.')
-
+            message.success('Post muvaffaqiyatli yaratildi! Endi galereya rasmlarni yuklashingiz mumkin.')
             setCreatedPostId(response.post_id)
 
             await Promise.all(
@@ -122,7 +145,7 @@ const CreatePostForm = () => {
             )
 
         } catch (error) {
-            message.error('Failed to create post')
+            message.error('Post yaratishda xatolik yuz berdi.')
         } finally {
             setIsSubmitting(false)
         }
@@ -133,7 +156,7 @@ const CreatePostForm = () => {
     }
 
     const handleFinish = () => {
-        window.history.back()
+        router.back()
     }
 
     return (
@@ -141,7 +164,7 @@ const CreatePostForm = () => {
             <div className="flex flex-col gap-10 md:flex-row">
                 <div className="min-w-[220px] md:w-1/3">
                     <div className='h-80 w-auto'>
-                        <LabelDefault label="Main Image:" htmlFor="main-img" />
+                        <LabelDefault label="Asosiy rasm:" htmlFor="main-img" />
                         <input
                             type="file"
                             ref={mainFileInputRef}
@@ -155,7 +178,7 @@ const CreatePostForm = () => {
                                 <div className="relative w-full h-full">
                                     <img
                                         src={mainFileList[0].url}
-                                        alt="Main preview"
+                                        alt="Asosiy rasm"
                                         className="w-full h-full object-cover rounded-lg"
                                     />
                                     <button
@@ -173,7 +196,7 @@ const CreatePostForm = () => {
                                     className="flex flex-col items-center justify-center text-gray-500"
                                 >
                                     <PlusOutlined className="text-2xl mb-2" />
-                                    <span>Upload Main Image</span>
+                                    <span>Asosiy rasm yuklash</span>
                                 </button>
                             )}
                         </div>
@@ -181,7 +204,7 @@ const CreatePostForm = () => {
 
                     {createdPostId && (
                         <div className="mt-6">
-                            <LabelDefault label="Gallery Images:" htmlFor="gallery-imgs" />
+                            <LabelDefault label="Galereya rasmlari:" />
                             <CreateGalleryForm
                                 postId={createdPostId}
                                 galleryFileList={galleryFileList}
@@ -216,7 +239,7 @@ const CreatePostForm = () => {
                                 </div>
                             )}
 
-                            <ReusableModal open={createModalOpen} onClose={() => setCreateModalOpen(false)} title="Add New Feature">
+                            <ReusableModal open={createModalOpen} onClose={() => setCreateModalOpen(false)} title="Yangi sharoit qo'shish">
                                 <CreateFeatureForm
                                     postId={createdPostId}
                                     onClose={() => setCreateModalOpen(false)}
@@ -225,7 +248,7 @@ const CreatePostForm = () => {
 
                             <div className="mt-4 flex justify-end">
                                 <ButtonDefault
-                                    label="Finish"
+                                    label="Tugatish"
                                     type="button"
                                     onClick={handleFinish}
                                     customClasses="bg-green-500 hover:bg-green-600 text-white"
@@ -238,7 +261,7 @@ const CreatePostForm = () => {
                 <div className="flex-1 flex flex-col gap-4">
                     {!createdPostId ? (
                         <>
-                            <LabelDefault label="Title:" htmlFor="title" />
+                            <LabelDefault label="Sarlavha:" htmlFor="title" />
                             <InputDefault
                                 type='text'
                                 name="title"
@@ -248,7 +271,7 @@ const CreatePostForm = () => {
                                 customClasses="w-full border border-gray-300 rounded px-3 py-2"
                             />
 
-                            <LabelDefault label="Short Description (max 20 words):" htmlFor="small_description" />
+                            <LabelDefault label="Qisqa tavsif (20 ta so'zgacha):" htmlFor="small_description" />
                             <textarea
                                 name="small_description"
                                 value={form.small_description}
@@ -258,7 +281,7 @@ const CreatePostForm = () => {
                                 rows={2}
                             />
 
-                            <LabelDefault label="Description:" htmlFor="description" />
+                            <LabelDefault label="Tavsif:" htmlFor="description" />
                             <textarea
                                 name="description"
                                 value={form.description}
@@ -268,7 +291,7 @@ const CreatePostForm = () => {
                                 rows={4}
                             />
 
-                            <LabelDefault label="Daily Price ($):" htmlFor="price_daily" />
+                            <LabelDefault label="Kunlik narxi ($):" htmlFor="price_daily" />
                             <InputDefault
                                 name="price_daily"
                                 type="number"
@@ -278,7 +301,7 @@ const CreatePostForm = () => {
                                 customClasses="w-full border border-gray-300 rounded px-3 py-2"
                             />
 
-                            <LabelDefault label="Location:" htmlFor="location" />
+                            <LabelDefault label="Manzil:" htmlFor="location" />
                             <InputDefault
                                 name="location"
                                 type="text"
@@ -288,7 +311,7 @@ const CreatePostForm = () => {
                                 customClasses="w-full border border-gray-300 rounded px-3 py-2"
                             />
 
-                            <LabelDefault label="Number of People:" htmlFor="members" />
+                            <LabelDefault label="Odam soni:" htmlFor="members" />
                             <InputDefault
                                 name="members"
                                 type="number"
@@ -316,13 +339,13 @@ const CreatePostForm = () => {
 
                             <div className="flex gap-4 mt-4">
                                 <ButtonDefault
-                                    label={isSubmitting ? "Creating..." : "Create Post"}
+                                    label={isSubmitting ? "Yaratilmoqda..." : "Post yaratish"}
                                     type="submit"
                                     customClasses="w-full"
                                     disabled={isSubmitting}
                                 />
                                 <ButtonDefault
-                                    label="Cancel"
+                                    label="Bekor qilish"
                                     type="button"
                                     onClick={() => router.back()}
                                     customClasses="w-full !bg-gray-300 !text-black"
@@ -331,9 +354,9 @@ const CreatePostForm = () => {
                         </>
                     ) : (
                         <div className="bg-blue-50 p-4 rounded-lg">
-                            <h3 className="text-lg font-medium text-blue-800">Post Created Successfully!</h3>
+                            <h3 className="text-lg font-medium text-blue-800">Post muvaffaqiyatli yaratildi!</h3>
                             <p className="text-blue-600 mt-2">
-                                You can now add gallery images to your post. When you're done, click "Finish".
+                                Endi galereya rasmlarni qo'shishingiz mumkin. Tugatish uchun "Tugatish" tugmasini bosing.
                             </p>
                         </div>
                     )}

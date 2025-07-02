@@ -1,15 +1,23 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import SearchPosts from './search/SearchPosts'
-import NavbarSection from '@/src/components/Navbar/NavbarSection'
-import PostsContainer from './postscontainer/page'
-import Filter from '../filters/page'
 import { useSearchParams } from 'next/navigation'
+import SearchPosts from '../search/SearchPosts';
+import Filter from '../../filters/page';
+import PostsContainer from './page';
+
+interface Post {
+    id: number;
+    img: string;
+    title: string;
+    small_description: string;
+    location: string;
+    price_daily: number;
+}
 
 const PostsSection = () => {
     const [selectedAmenities, setSelectedAmenities] = useState<string[]>([])
-    const [posts, setPosts] = useState<any[]>([])
+    const [posts, setPosts] = useState<Post[]>([])
     const searchParams = useSearchParams()
 
     const areaId = searchParams.get('area_id')

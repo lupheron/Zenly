@@ -14,6 +14,8 @@ const UserPostInfo = () => {
     const router = useRouter()
     const [deleteModalOpen, setDeleteModalOpen] = useState(false)
 
+    const postId = Number(params?.id) || 0
+
     const banners = [
         { id: 1, title: 'Plyajdagi dam olish' },
         { id: 2, title: 'Wellness maskanlari' },
@@ -21,9 +23,7 @@ const UserPostInfo = () => {
         { id: 4, title: 'Eko sayohatlar' },
     ]
 
-    if (!params?.id) return null
-
-    const { data: post, isLoading, error, deleteMutation } = usePostById(Number(params.id))
+    const { data: post, isLoading, error, deleteMutation } = usePostById(postId)
 
     const handleDelete = () => {
         deleteMutation.mutate(undefined, {
@@ -37,6 +37,7 @@ const UserPostInfo = () => {
         })
     }
 
+    if (!postId) return null
     if (isLoading) return <p>Yuklanmoqda...</p>
     if (error || !post) return <p>Xatolik yuz berdi yoki post topilmadi</p>
 
@@ -54,7 +55,7 @@ const UserPostInfo = () => {
                     <p className="text-gray-700 text-sm mt-3">{post.small_description}</p>
                     <p className='text-gray-700 text-lg font-bold tracking-[1px] mt-5'>{post.description}</p>
                     <div className='mt-5'>
-                        <h1 className='text-xl text-light-green font-bold tracking-[1px] mb-2'>Mavjud Bo'lgan Imkoniyatlar:</h1>
+                        <h1 className='text-xl text-light-green font-bold tracking-[1px] mb-2'>Mavjud Bo&apos;lgan Imkoniyatlar:</h1>
                         <Features postId={post.id} />
                     </div>
                     <div className='grid grid-cols-2 gap-x-20 gap-y-3 mt-10 text-xl'>
@@ -79,7 +80,7 @@ const UserPostInfo = () => {
                             <h2 className="text-gray-500 mt-1">{areaTitle}</h2>
                         </div>
                         <div className='flex gap-3 items-center'>
-                            <span>Korilgan Soni:</span>
+                            <span>Ko&apos;rilgan Soni:</span>
                             <h2 className="text-gray-500 mt-1">{post.clicked}</h2>
                         </div>
                     </div>
@@ -110,6 +111,5 @@ const UserPostInfo = () => {
         </>
     )
 }
-
 
 export default UserPostInfo

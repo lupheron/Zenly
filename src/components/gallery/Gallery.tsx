@@ -71,7 +71,7 @@ const Gallery: React.FC<GalleryProps> = ({ postId, mainImg }) => {
                 {allImages.filter(img => img.img).map((image) => (
                     <div
                         key={image.id}
-                        className={`flex-shrink-0 w-20 h-16 relative rounded-lg overflow-hidden cursor-pointer border-2 transition-all ${displayedImage === image.img
+                        className={`flex-shrink-0 w-25 h-20 relative rounded-lg overflow-hidden cursor-pointer border-2 transition-all ${displayedImage === image.img
                                 ? 'border-blue-500 scale-105'
                                 : 'border-transparent hover:scale-105'
                             }`}

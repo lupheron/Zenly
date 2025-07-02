@@ -18,7 +18,7 @@ interface UsersPostsProps {
 
 const UsersPosts: React.FC<UsersPostsProps> = ({
     src, title, description, location, rating, price,
-    onClick, customClasses = '', postOwnerId, postId
+    onClick, customClasses = '', postId
 }) => {
 
     const handleReadMoreClick = () => {

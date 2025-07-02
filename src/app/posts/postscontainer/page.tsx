@@ -1,10 +1,20 @@
-"use client"
+'use client'
+
 import PostsCart from '@/src/components/Cart/PostsCart'
 import { useRouter } from 'next/navigation';
 import React from 'react'
 
+interface Post {
+    id: number;
+    img: string;
+    title: string;
+    small_description: string;
+    location: string;
+    price_daily: number;
+}
+
 interface PostsContainerProps {
-    posts: any[];
+    posts: Post[];
 }
 
 const PostsContainer: React.FC<PostsContainerProps> = ({ posts }) => {
@@ -21,12 +31,14 @@ const PostsContainer: React.FC<PostsContainerProps> = ({ posts }) => {
                         location={post.location}
                         rating={post.id}
                         price_daily={post.price_daily}
-                        onClick={() => router.push(`posts/${post.id}`)}
+                        onClick={() => router.push(`/posts/${post.id}`)}
                         customClasses=''
                     />
                 ))
             ) : (
-                <p className='col-span-4 text-center text-red-900 text-bold text-2xl tracking-[1px]'>Bu turdagi dam olish maskanlari hali mavjud emas!</p>
+                <p className='col-span-4 text-center text-red-900 font-bold text-2xl tracking-[1px]'>
+                    Bu turdagi dam olish maskanlari hali mavjud emas!
+                </p>
             )}
         </div>
     )

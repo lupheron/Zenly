@@ -1,7 +1,7 @@
 'use client'
 
 import MainContainer from "@/src/components/Containers/MainContainer"
-import PostsSection from "./PostsSection"
+import PostsSection from "./postscontainer/PostsSection"
 
 
 const PostsPage = () => {
