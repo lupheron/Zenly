@@ -2,30 +2,21 @@
 
 import React, { useState } from 'react'
 import SelectDefault from '../FormElements/Select/SelectDefault'
-import DateRangePicker from '../FormElements/DatePciker/DatePicker'
 import InputDefault from '../FormElements/Input/InputDefault'
 import ButtonDefault from '../Button/ButtonDefault'
 import LabelDefault from '../FormElements/label/LabelDefault'
+import SearchIcon from '@mui/icons-material/Search';
 
 const BookingForm = () => {
-    const [dateRange, setDateRange] = useState<{ checkIn: Date | null, checkOut: Date | null }>({
-        checkIn: null,
-        checkOut: null,
-    })
 
     const [guests, setGuests] = useState<string>('')
-
-    const handleDateChange = (checkIn: Date | null, checkOut: Date | null) => {
-        setDateRange({ checkIn, checkOut })
-    }
 
     const handleSearch = () => {
         console.log('Searching with:')
         console.log('Guests:', guests)
-        console.log('Check In:', dateRange.checkIn)
-        console.log('Check Out:', dateRange.checkOut)
-        // You can handle API calls here
     }
+
+    const sortOptions = ['Reyting', 'Narxi', 'Oxirgi joylanganlar']
 
     return (
         <div className="w-[55%] mx-auto">
@@ -34,7 +25,7 @@ const BookingForm = () => {
                     e.preventDefault()
                     handleSearch()
                 }}
-                className="flex items-center justify-between px-10 bg-white rounded-lg shadow-sm"
+                className="flex h-30 items-center justify-between px-10 bg-white rounded-lg shadow-sm"
             >
                 <div className="px-5 border-r-gray-300 border-r">
                     <SelectDefault
@@ -43,15 +34,20 @@ const BookingForm = () => {
                         name="region"
                         options={['Toshkent', 'Samarqand', 'Buxoro']}
                         customClassesLabel="block text-sm font-medium text-gray-700 mb-1"
-                        customClassesSelect="w-full border border-gray-300 rounded-lg p-2 text-gray-800 cursor-pointer"
+                        customClassesSelect="w-full border border-gray-300 rounded-lg p-2 text-gray-800 cursor-pointer focus:outline-none"
                         customClassesOptions="cursor-pointer"
                     />
                 </div>
 
-                <div className="mt-5 px-5">
-                    <DateRangePicker
-                        onDateChange={handleDateChange}
-                        className="mb-6"
+                <div className="px-5">
+                    <SelectDefault
+                        label="Saralash"
+                        htmlFor="sort"
+                        name="sort"
+                        options={sortOptions}
+                        customClassesLabel="block text-sm font-medium text-gray-700 mb-1"
+                        customClassesSelect="w-full border border-gray-300 rounded-lg p-2 text-gray-800 cursor-pointer focus:outline-none "
+                        customClassesOptions="cursor-pointer"
                     />
                 </div>
 
@@ -69,8 +65,9 @@ const BookingForm = () => {
                 </div>
 
                 <ButtonDefault
-                    label="Qidirish"
+                    label={<SearchIcon fontSize='large' />}
                     type="submit"
+                    customClasses='rounded-[50%] w-15 h-15 flex items-center justify-center'
                 />
             </form>
         </div>
