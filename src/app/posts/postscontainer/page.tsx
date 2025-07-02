@@ -1,4 +1,5 @@
 import PostsCart from '@/src/components/Cart/PostsCart'
+import { useRouter } from 'next/navigation';
 import React from 'react'
 
 interface PostsContainerProps {
@@ -6,6 +7,7 @@ interface PostsContainerProps {
 }
 
 const PostsContainer: React.FC<PostsContainerProps> = ({ posts }) => {
+    const router = useRouter()
     return (
         <div className='grid grid-cols-4 gap-2 w-[85%]'>
             {posts.length > 0 ? (
@@ -18,7 +20,7 @@ const PostsContainer: React.FC<PostsContainerProps> = ({ posts }) => {
                         location={post.location}
                         rating={post.id}
                         price_daily={post.price_daily}
-                        onClick={() => { }}
+                        onClick={() => router.push(`posts/${post.id}`)}
                         customClasses=''
                     />
                 ))

@@ -31,7 +31,6 @@ const IntroSlider: React.FC<IntroProps> = ({ title, text, src, alt }) => {
                             initial={{ x: -20, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
                             transition={{ duration: 0.5, delay: 0.2 }}
-                            className='w-[300px]'
                         >
                             {text}
                         </motion.p>
@@ -40,11 +39,6 @@ const IntroSlider: React.FC<IntroProps> = ({ title, text, src, alt }) => {
                             animate={{ x: 0, opacity: 1 }}
                             transition={{ duration: 0.5, delay: 0.4 }}
                         >
-                            <ButtonDefault
-                                label="Batafsil Ma'lumot"
-                                onClick={() => { console.log("Clicked") }}
-                                isDisabled={false}
-                            />
                         </motion.div>
                     </div>
                 </div>
