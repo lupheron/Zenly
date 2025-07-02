@@ -1,12 +1,16 @@
 import BookingForm from '@/src/components/Forms/BookingForm'
 import React from 'react'
 
-const SearchPosts = () => {
-    return (
-        <div className='mt-10'>
-            <BookingForm />
-        </div>
-    )
+interface SearchPostsProps {
+    onSearch: (params: { location: string; sort: string; guests: string }) => void;
 }
 
-export default SearchPosts
+const SearchPosts: React.FC<SearchPostsProps> = ({ onSearch }) => {
+    return (
+        <div className="mt-10">
+            <BookingForm onSearch={onSearch} />
+        </div>
+    );
+};
+
+export default SearchPosts;

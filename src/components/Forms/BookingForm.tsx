@@ -7,23 +7,46 @@ import ButtonDefault from '../Button/ButtonDefault'
 import LabelDefault from '../FormElements/label/LabelDefault'
 import SearchIcon from '@mui/icons-material/Search';
 
-const BookingForm = () => {
+interface BookingFormProps {
+    onSearch: (params: {
+        location: string;
+        sort: string;
+        guests: string;
+    }) => void;
+}
 
-    const [guests, setGuests] = useState<string>('')
+const BookingForm: React.FC<BookingFormProps> = ({ onSearch }) => {
+    const [location, setLocation] = useState<string>('');
+    const [sort, setSort] = useState<string>('');
+    const [guests, setGuests] = useState<string>('');
+
+    const sortOptions = [
+        { value: 'rating', label: 'Reyting' },
+        { value: 'price_low', label: 'Narxi (Eng arzon)' },
+        { value: 'price_high', label: 'Narxi (Eng qimmat)' },
+        { value: 'recent', label: 'Oxirgi joylanganlar' }
+    ];
+
+    const locations = [
+        { value: 'Toshkent', label: 'Toshkent' },
+        { value: 'Samarqand', label: 'Samarqand' },
+        { value: 'Buxoro', label: 'Buxoro' }
+    ];
 
     const handleSearch = () => {
-        console.log('Searching with:')
-        console.log('Guests:', guests)
-    }
-
-    const sortOptions = ['Reyting', 'Narxi', 'Oxirgi joylanganlar']
+        onSearch({
+            location,
+            sort,
+            guests
+        });
+    };
 
     return (
         <div className="w-[55%] mx-auto">
             <form
                 onSubmit={(e) => {
-                    e.preventDefault()
-                    handleSearch()
+                    e.preventDefault();
+                    handleSearch();
                 }}
                 className="flex h-30 items-center justify-between px-10 bg-white rounded-lg shadow-sm"
             >
@@ -32,7 +55,9 @@ const BookingForm = () => {
                         label="Shahar"
                         htmlFor="region"
                         name="region"
-                        options={['Toshkent', 'Samarqand', 'Buxoro']}
+                        options={locations}
+                        value={location}
+                        onChange={(e) => setLocation(e.target.value)}
                         customClassesLabel="block text-sm font-medium text-gray-700 mb-1"
                         customClassesSelect="w-full border border-gray-300 rounded-lg p-2 text-gray-800 cursor-pointer focus:outline-none"
                         customClassesOptions="cursor-pointer"
@@ -45,6 +70,8 @@ const BookingForm = () => {
                         htmlFor="sort"
                         name="sort"
                         options={sortOptions}
+                        value={sort}
+                        onChange={(e) => setSort(e.target.value)}
                         customClassesLabel="block text-sm font-medium text-gray-700 mb-1"
                         customClassesSelect="w-full border border-gray-300 rounded-lg p-2 text-gray-800 cursor-pointer focus:outline-none "
                         customClassesOptions="cursor-pointer"
@@ -65,9 +92,9 @@ const BookingForm = () => {
                 </div>
 
                 <ButtonDefault
-                    label={<SearchIcon fontSize='large' />}
+                    label={<SearchIcon fontSize="large" />}
                     type="submit"
-                    customClasses='rounded-[50%] w-15 h-15 flex items-center justify-center'
+                    customClasses="rounded-[50%] w-15 h-15 flex items-center justify-center"
                 />
             </form>
         </div>
