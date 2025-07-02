@@ -9,21 +9,26 @@ const Breadcrumb = () => {
 
     const pathParts = pathname.split('/').filter(Boolean)
 
+    const capitalizeFirstLetter = (str: string) => {
+        if (!str) return str;
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    };
+
     return (
-        <div className="text-sm text-gray-500 my-4">
+        <div className="text-xl text-gray-500 my-4">
             <Link href="/" className="hover:underline">Home</Link>
             {pathParts.map((part, index) => {
                 const path = '/' + pathParts.slice(0, index + 1).join('/')
                 const isLast = index === pathParts.length - 1
 
                 return (
-                    <span key={index}>
-                        {' / '}
+                    <span key={index} className="text-blue-600">
+                        <span className="text-gray-500">{' / '}</span>
                         {isLast ? (
-                            <span className="font-medium">{decodeURIComponent(part)}</span>
+                            <span className="font-medium">{capitalizeFirstLetter(decodeURIComponent(part))}</span>
                         ) : (
                             <Link href={path} className="hover:underline">
-                                {decodeURIComponent(part)}
+                                {capitalizeFirstLetter(decodeURIComponent(part))}
                             </Link>
                         )}
                     </span>
@@ -34,3 +39,4 @@ const Breadcrumb = () => {
 }
 
 export default Breadcrumb
+>
