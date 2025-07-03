@@ -1,11 +1,11 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import LabelDefault from '../FormElements/label/LabelDefault'
-import InputDefault from '../FormElements/Input/InputDefault'
 import { useRegisterUser } from '@/src/hooks/useRegisterUser'
-import AlertDefault from '../Alert/AlertDefault'
 import { useRouter } from 'next/navigation'
+import AlertDefault from '../../Alert/AlertDefault'
+import InputDefault from '../../FormElements/Input/InputDefault'
+import LabelDefault from '../../FormElements/label/LabelDefault'
 
 const RegisterForm = () => {
     const [form, setForm] = useState({
@@ -14,6 +14,7 @@ const RegisterForm = () => {
         phone: '',
         address: '',
         password: '',
+        type: 0
     })
     const router = useRouter()
 
@@ -95,6 +96,18 @@ const RegisterForm = () => {
                     name="password"
                     type="password"
                     value={form.password}
+                    onChange={handleChange}
+                    customClasses='bg-white rounded border-1 border-light-green'
+                    required={true}
+                />
+            </div>
+
+            <div className='hidden'>
+                <LabelDefault label="Turi:" htmlFor="type" />
+                <InputDefault
+                    name="type"
+                    type="number"
+                    value={String(form.type)}
                     onChange={handleChange}
                     customClasses='bg-white rounded border-1 border-light-green'
                     required={true}

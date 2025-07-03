@@ -15,8 +15,9 @@ const ReusableModal: React.FC<ReusableModalProps> = ({ open, onClose, title, chi
         <Modal
             open={open}
             onCancel={onClose}
+            closable={true}
             footer={null}
-            destroyOnHidden
+            destroyOnClose
             title={title}
         >
             {children}
