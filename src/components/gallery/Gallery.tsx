@@ -67,7 +67,7 @@ const Gallery: React.FC<GalleryProps> = ({ postId, mainImg }) => {
                 )}
             </div>
 
-            <div className="flex gap-4 overflow-x-auto py-2 w-full px-4">
+            <div className="flex justify-center gap-4 overflow-x-auto py-2 w-full px-4">
                 {allImages.filter(img => img.img).map((image) => (
                     <div
                         key={image.id}

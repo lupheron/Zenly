@@ -8,6 +8,7 @@ import ButtonDefault from '@/src/components/Button/ButtonDefault'
 import Features from '@/src/components/Features/Features'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { usePostById } from '@/src/hooks/posts/usePostsById'
+import ProfileCart from '@/src/components/Cart/Profile/ProfileCart'
 
 const PostInfo = () => {
     const params = useParams()
@@ -44,7 +45,8 @@ const PostInfo = () => {
             </div>
             <div className='rounded-xl px-10 py-10 bg-light-gray'>
                 <div className="flex gap-10 mx-auto bg-white rounded-xl shadow-xl p-6">
-                    <div className='w-150'>
+                    <div className='w-150 flex flex-col gap-y-5'>
+                        <ProfileCart user_id={post.user_id} />
                         <Gallery postId={post.id} mainImg={post.img} />
                     </div>
                     <div className="mt-5">

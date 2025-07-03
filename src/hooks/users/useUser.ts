@@ -52,3 +52,12 @@ export const useUser = () => {
 
     return { ...query, updateUser: mutation }
 }
+
+export const useUserById = (user_id: number) => {
+    return useQuery({
+        queryKey: ['user', user_id],
+        queryFn: () => fetchUserById(user_id),
+        enabled: !!user_id,
+        retry: false,
+    })
+}
