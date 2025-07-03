@@ -32,6 +32,7 @@ const PostsContainer: React.FC<PostsContainerProps> = ({ posts }) => {
                         rating={post.id}
                         price_daily={post.price_daily}
                         onClick={() => router.push(`/posts/${post.id}`)}
+                        postId={post.id}
                         customClasses=''
                     />
                 ))

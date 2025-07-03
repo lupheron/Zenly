@@ -4,14 +4,15 @@ import ButtonDefault from '../Button/ButtonDefault'
 import Rating from '../Rating/Rating'
 
 interface PostsCartProps {
-    src: string,
-    title: string,
-    small_description: string,
-    location: string,
-    rating: number,
-    price_daily: number,
-    onClick: () => void,
+    src: string
+    title: string
+    small_description: string
+    location: string
+    rating: number
+    price_daily: number
+    onClick: () => void
     customClasses?: string
+    postId?: number
 }
 
 const PostsCart: React.FC<PostsCartProps> = ({
@@ -22,16 +23,31 @@ const PostsCart: React.FC<PostsCartProps> = ({
     rating,
     price_daily,
     onClick,
-    customClasses = ''
+    customClasses = '',
+    postId,
 }) => {
     const formatImageUrl = (imgPath: string | null | undefined): string => {
-        if (!imgPath) return '/no-image.jpg';
-        if (imgPath.startsWith('http')) return imgPath;
-        const cleanPath = imgPath.startsWith('/') ? imgPath.slice(1) : imgPath;
-        return `http://zenlyserver.test/${cleanPath}`;
-    };
+        if (!imgPath) return '/no-image.jpg'
+        if (imgPath.startsWith('http')) return imgPath
+        const cleanPath = imgPath.startsWith('/') ? imgPath.slice(1) : imgPath
+        return `http://zenlyserver.test/${cleanPath}`
+    }
 
-    const formattedSrc = formatImageUrl(src);
+    const formattedSrc = formatImageUrl(src)
+
+    const handleReadMoreClick = () => {
+        const loggedInUserId = localStorage.getItem('user_id')
+
+        if (!loggedInUserId && postId) {
+            fetch(`http://zenlyserver.test/api/posts/${postId}/increase-interest`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ increaseClicked: true }),
+            })
+        }
+
+        onClick()
+    }
 
     return (
         <div className={`w-100 bg-white rounded-xl shadow p-4 ${customClasses}`}>
@@ -62,7 +78,7 @@ const PostsCart: React.FC<PostsCartProps> = ({
                 <div className='mt-3'>
                     <ButtonDefault
                         label="Batafsil"
-                        onClick={onClick}
+                        onClick={handleReadMoreClick}
                         customClasses='w-full tracking-[2px]'
                     />
                 </div>
