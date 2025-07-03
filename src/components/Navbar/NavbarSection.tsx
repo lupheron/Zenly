@@ -6,15 +6,25 @@ import React, { useEffect, useState } from 'react';
 import ButtonDefault from '../Button/ButtonDefault';
 import { useUser } from '@/src/hooks/users/useUser';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { useRouter } from 'next/navigation';
 
 const NavbarSection = () => {
     const [hasToken, setHasToken] = useState(false);
     const { data } = useUser()
+    const router = useRouter()
 
     useEffect(() => {
         const token = localStorage.getItem("token");
         setHasToken(!!token);
     }, []);
+
+    const TypeChecking = () => {
+        if (data.type !== 0) {
+            router.push("client")
+        } else {
+            router.push("/user")
+        }
+    }
 
     const navLinks = [
         { label: "Biz haqimizda", link: "about-us" },
@@ -51,7 +61,11 @@ const NavbarSection = () => {
                 <div className="flex items-center space-x-4">
                     {hasToken ? (
                         <>
-                            <Link href="/user">
+
+                            <div
+                                onClick={TypeChecking}
+                                className='cursor-pointer'
+                            >
                                 <Image
                                     src={data?.img}
                                     alt="Profile"
@@ -59,7 +73,7 @@ const NavbarSection = () => {
                                     height={60}
                                     className="rounded-full object-cover"
                                 />
-                            </Link>
+                            </div>
                             <button
                                 onClick={() => {
                                     localStorage.removeItem("token");
@@ -69,7 +83,7 @@ const NavbarSection = () => {
                                 className="ml-4 text-white hover:text-light-green transition duration-300"
                                 aria-label="Logout"
                             >
-                                <LogoutIcon fontSize="large" className='cursor-pointer'/>
+                                <LogoutIcon fontSize="large" className='cursor-pointer' />
                             </button>
                         </>
                     ) : (
