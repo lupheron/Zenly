@@ -30,9 +30,8 @@ const LoginForm = () => {
                 if (data.remember_token && data.id) {
                     localStorage.setItem('token', data.remember_token)
                     localStorage.setItem('user_id', data.id.toString())
-
                     AlertDefault.success(data.message || "Tizimga muvaffaqiyatli kirdingiz!")
-                    router.push('/user')
+                    router.push("/")
                 } else {
                     AlertDefault.error("Serverdan noto'g'ri javob qaytdi.")
                 }
