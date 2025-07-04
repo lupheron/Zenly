@@ -107,6 +107,7 @@ const UserPostInfo = () => {
                 open={deleteModalOpen}
                 onConfirm={handleDelete}
                 onCancel={() => setDeleteModalOpen(false)}
+                text={"Haqiqatan ham ushbu postni o'chirmoqchimisiz?"}
             />
         </>
     )

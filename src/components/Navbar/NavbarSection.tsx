@@ -7,9 +7,14 @@ import ButtonDefault from '../Button/ButtonDefault';
 import { useUser } from '@/src/hooks/users/useUser';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useRouter } from 'next/navigation';
+import ReusableModal from '../Modal/ReusableModal';
+import ClientData from '../Containers/ClientData';
+import EditClientForm from '../Forms/EditClient/EditClientForm';
 
 const NavbarSection = () => {
     const [hasToken, setHasToken] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [showEditForm, setShowEditForm] = useState(false);
     const { data } = useUser()
     const router = useRouter()
 
@@ -20,7 +25,7 @@ const NavbarSection = () => {
 
     const TypeChecking = () => {
         if (data.type !== 0) {
-            router.push("client")
+            setShowModal(true);
         } else {
             router.push("/user")
         }
@@ -61,7 +66,6 @@ const NavbarSection = () => {
                 <div className="flex items-center space-x-4">
                     {hasToken ? (
                         <>
-
                             <div
                                 onClick={TypeChecking}
                                 className='cursor-pointer'
@@ -96,10 +100,28 @@ const NavbarSection = () => {
                             </Link>
                         </>
                     )}
-
                 </div>
             </div>
             <div className='w-[80%] h-[0.1px] bg-black-muted mx-auto'></div>
+
+            {showModal && (
+                <ReusableModal
+                    open={showModal}
+                    onClose={() => {
+                        setShowModal(false);
+                        setShowEditForm(false);
+                    }}
+                    title={showEditForm ? "Profilni Tahrirlash" : "Profil Ma'lumotlari"}
+                    width={"35%"}
+                >
+                    {showEditForm ? (
+                        <EditClientForm closeEditForm={() => setShowEditForm(false)} />
+                    ) : (
+                        <ClientData openEditForm={() => setShowEditForm(true)} />
+                    )}
+                </ReusableModal>
+
+            )}
         </nav>
     );
 };

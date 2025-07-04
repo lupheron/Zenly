@@ -38,6 +38,24 @@ const editUser = async (data: any) => {
     return res.json()
 }
 
+const deleteUser = async () => {
+    const id = Number(localStorage.getItem('user_id'))
+    const res = await fetch(`http://zenlyserver.test/api/users/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+
+    if (!res.ok) {
+        AlertDefault.error("Foydalanuvchini o'chirishda xatolik yuz berdi.")
+        throw new Error('Failed to delete user')
+    }
+
+    return res.json()
+}
+
+
 export const useUser = () => {
     const id = typeof window !== 'undefined' ? Number(localStorage.getItem('user_id')) : null
 
@@ -49,8 +67,9 @@ export const useUser = () => {
     })
 
     const mutation = useMutation({ mutationFn: editUser })
+    const deleteMutation = useMutation({ mutationFn: deleteUser })
 
-    return { ...query, updateUser: mutation }
+    return { ...query, updateUser: mutation, deleteUser: deleteMutation }
 }
 
 export const useUserById = (user_id: number) => {
