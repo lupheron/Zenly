@@ -18,7 +18,7 @@ const Services = () => {
     ];
 
     return (
-        <div className="w-[75%] mx-auto grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10 px-4 md:px-8" data-aos="fade-up">
+        <div className="w-[75%] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10 px-4 md:px-8" data-aos="fade-up">
             {services.map((service, index) => (
                 <ServicesCart
                     key={index}

@@ -52,7 +52,6 @@ const NavbarSection = () => {
                     />
                 </Link>
 
-                {/* Desktop Menu hidden for screens below lg */}
                 <ul className="hidden lg:flex space-x-6 items-center justify-between">
                     {navLinks.map(({ label, link }) => (
                         <li key={link}>
@@ -66,7 +65,6 @@ const NavbarSection = () => {
                     ))}
                 </ul>
 
-                {/* Desktop Auth hidden for screens below lg */}
                 <div className="hidden lg:flex items-center space-x-4">
                     {hasToken ? (
                         <>
@@ -106,7 +104,6 @@ const NavbarSection = () => {
                     )}
                 </div>
 
-                {/* Mobile Menu Icon for screens below lg */}
                 <div className="lg:hidden">
                     <MenuIcon
                         fontSize="large"
@@ -118,7 +115,6 @@ const NavbarSection = () => {
 
             <div className="w-[90%] h-[0.1px] bg-black-muted mx-auto"></div>
 
-            {/* Right Side Sliding Menu for screens below lg */}
             <div
                 className={`fixed top-0 right-0 h-full w-[70%] sm:w-[60%] bg-dark-green z-50 transform transition-transform duration-300 ${menuOpen ? 'translate-x-0' : 'translate-x-full'
                     }`}
@@ -180,10 +176,10 @@ const NavbarSection = () => {
                     ) : (
                         <>
                             <Link href="/register" onClick={() => setMenuOpen(false)}>
-                                <ButtonDefault label="Ro'yxatdan O'tish" onClick={() => console.log()} />
+                                <ButtonDefault label="Ro'yxatdan O'tish" customClasses='w-full' onClick={() => console.log()} />
                             </Link>
                             <Link href="/login" onClick={() => setMenuOpen(false)}>
-                                <ButtonDefault customClasses="w-45" label="Kirish" onClick={() => console.log()} />
+                                <ButtonDefault customClasses="w-full mt-5" label="Kirish" onClick={() => console.log()} />
                             </Link>
                         </>
                     )}
