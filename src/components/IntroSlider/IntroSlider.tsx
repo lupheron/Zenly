@@ -1,63 +1,56 @@
-import React from 'react'
-import ButtonDefault from '../Button/ButtonDefault'
-import Image from 'next/image'
+import React from 'react';
+import Image from 'next/image';
 import { motion } from "framer-motion";
-
 
 interface IntroProps {
     title: string;
     text: string;
-    customClasses?: string;
     src: string;
     alt: string;
 }
 
-
 const IntroSlider: React.FC<IntroProps> = ({ title, text, src, alt }) => {
     return (
-        <div className='text-white'>
-            <div className='flex flex-wrap justify-between items-center gap-20'>
-                <div className='w-[650px]'>
-                    <motion.h1
-                        initial={{ y: -20, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ duration: 0.5 }}
-                        className='text-6xl w-[500px] font-black mb-10'
-                    >
-                        {title}
-                    </motion.h1>
-                    <div className='flex flex-wrap justify-between items-center'>
-                        <motion.p
-                            initial={{ x: -20, opacity: 0 }}
-                            animate={{ x: 0, opacity: 1 }}
-                            transition={{ duration: 0.5, delay: 0.2 }}
-                        >
-                            {text}
-                        </motion.p>
-                        <motion.div
-                            initial={{ x: 20, opacity: 0 }}
-                            animate={{ x: 0, opacity: 1 }}
-                            transition={{ duration: 0.5, delay: 0.4 }}
-                        >
-                        </motion.div>
-                    </div>
-                </div>
-                <motion.div
-                    initial={{ x: 20, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ duration: 0.5, delay: 0.6 }}
+        <div className="text-white w-full flex flex-col lg:flex-row justify-between items-center gap-8 px-10">
+
+            {/* Text Block */}
+            <div className="w-full lg:w-[50%] text-center lg:text-left px-4">
+                <motion.h1
+                    initial={{ y: -20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.5 }}
+                    className="text-4xl sm:text-5xl md:text-6xl font-black mb-6"
                 >
-                    <Image
-                        src={src}
-                        alt={alt}
-                        width={850}
-                        height={850}
-                        className='rounded-[3%]'
-                    />
-                </motion.div>
+                    {title}
+                </motion.h1>
+
+                <motion.p
+                    initial={{ x: -20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    className="text-base sm:text-lg leading-relaxed"
+                >
+                    {text}
+                </motion.p>
             </div>
+
+            {/* Image Block */}
+            <motion.div
+                initial={{ x: 20, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+                className="w-full lg:w-[50%] flex justify-center"
+            >
+                <Image
+                    src={src}
+                    alt={alt}
+                    width={600}
+                    height={600}
+                    className="rounded-[3%] w-auto h-auto max-w-full"
+                />
+            </motion.div>
         </div>
     );
 };
 
-export default IntroSlider
+export default IntroSlider;
