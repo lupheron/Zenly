@@ -11,9 +11,8 @@ interface IntroProps {
 
 const IntroSlider: React.FC<IntroProps> = ({ title, text, src, alt }) => {
     return (
-        <div className="text-white w-full flex flex-col lg:flex-row justify-between items-center gap-8 px-10">
+        <div className="text-white w-full flex flex-col lg:flex-row justify-between items-center gap-8 px-4 md:px-10">
 
-            {/* Text Block */}
             <div className="w-full lg:w-[50%] text-center lg:text-left px-4">
                 <motion.h1
                     initial={{ y: -20, opacity: 0 }}
@@ -28,13 +27,12 @@ const IntroSlider: React.FC<IntroProps> = ({ title, text, src, alt }) => {
                     initial={{ x: -20, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
-                    className="text-base sm:text-lg leading-relaxed"
+                    className="text-base sm:text-lg leading-relaxed w-[60%]"
                 >
                     {text}
                 </motion.p>
             </div>
 
-            {/* Image Block */}
             <motion.div
                 initial={{ x: 20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
@@ -44,9 +42,9 @@ const IntroSlider: React.FC<IntroProps> = ({ title, text, src, alt }) => {
                 <Image
                     src={src}
                     alt={alt}
-                    width={600}
-                    height={600}
-                    className="rounded-[3%] w-auto h-auto max-w-full"
+                    width={800}
+                    height={800}
+                    className="rounded-[3%] w-full sm:w-[400px] md:w-[500px] lg:w-[700px] xl:w-[800px] h-auto"
                 />
             </motion.div>
         </div>

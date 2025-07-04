@@ -39,7 +39,6 @@ const IntroSection = () => {
     return (
         <div className="min-h-[700px] h-auto w-full bg-dark-green flex flex-col lg:flex-row flex-wrap px-6 md:px-20 justify-between items-center gap-8 py-10 relative">
 
-            {/* Desktop buttons */}
             <button
                 onClick={prevSlide}
                 className="hidden lg:flex items-center justify-center w-[55px] h-[55px] text-black-muted border border-solid rounded-full hover:bg-light-green transition absolute left-10 top-1/2 -translate-y-1/2 z-10"
@@ -66,7 +65,6 @@ const IntroSection = () => {
                 </svg>
             </button>
 
-            {/* Mobile & Tablet buttons below image */}
             <div className="flex lg:hidden justify-center gap-6 mt-6">
                 <button
                     onClick={prevSlide}

@@ -43,7 +43,7 @@ const Comments = () => {
             </div>
 
             <div className="flex flex-col lg:flex-row items-center justify-center gap-10 px-4 md:px-10" data-aos="fade-right">
-                <div className="w-full lg:w-1/2 max-w-[600px]">
+                <div className="w-full lg:w-1/2 max-w-[800px]">
                     <Image
                         width={600}
                         height={450}
@@ -53,7 +53,7 @@ const Comments = () => {
                     />
                 </div>
 
-                <div className="w-full lg:w-1/2 p-6 md:p-10 max-w-[600px]" data-aos="fade-left">
+                <div className="w-full lg:w-1/2 p-6 md:p-10 max-w-[800px]" data-aos="fade-left">
                     <SwiperDefault
                         slidesPerView={1}
                         spaceBetween={30}

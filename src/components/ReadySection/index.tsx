@@ -4,7 +4,7 @@ import ButtonDefault from '../Button/ButtonDefault';
 
 const ReadySection = () => {
     return (
-        <div className="w-full h-[300px] sm:h-[300px] md:h-[300px] lg:h-[400px] relative mt-30 z-1">
+        <div className="w-full h-[300px] sm:h-[300px] md:h-[300px] lg:h-[450px] relative mt-30 z-1">
             <div className="absolute inset-0 w-full h-full">
                 <Image
                     src="/ready/ready.jpg"
