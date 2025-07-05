@@ -13,6 +13,7 @@ import ReusableModal from '../Modal/ReusableModal'
 import CreateFeatureForm from './CreateFeatureForm'
 import AddIcon from '@mui/icons-material/Add'
 import { useFeatures } from '@/src/hooks/features/useFeatures'
+import SelectDefault from '../FormElements/Select/SelectDefault'
 
 interface GalleryFile {
     uid: string
@@ -34,6 +35,23 @@ const banners = [
     { id: 2, title: 'Wellness maskanlari' },
     { id: 3, title: 'Kabina zonalari' },
     { id: 4, title: 'Eko sayohatlar' },
+]
+
+const uzbekistanProvinces = [
+    { label: 'Andijon', value: 'Andijon' },
+    { label: 'Buxoro', value: 'Buxoro' },
+    { label: 'Fargʻona', value: 'Fargʻona' },
+    { label: 'Jizzax', value: 'Jizzax' },
+    { label: 'Xorazm', value: 'Xorazm' },
+    { label: 'Namangan', value: 'Namangan' },
+    { label: 'Navoiy', value: 'Navoiy' },
+    { label: 'Qashqadaryo', value: 'Qashqadaryo' },
+    { label: 'Qoraqalpogʻiston', value: 'Qoraqalpogʻiston' },
+    { label: 'Samarqand', value: 'Samarqand' },
+    { label: 'Sirdaryo', value: 'Sirdaryo' },
+    { label: 'Surxondaryo', value: 'Surxondaryo' },
+    { label: 'Toshkent viloyati', value: 'Toshkent viloyati' },
+    { label: 'Toshkent shahri', value: 'Toshkent shahri' }
 ]
 
 const staticFeatures = [
@@ -100,8 +118,7 @@ const CreatePostForm = () => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target
         if (name === 'small_description') {
-            const wordCount = value.trim().split(/\s+/).filter(Boolean).length
-            if (wordCount > 20) return
+            if (value.length > 65) return
         }
         setForm(prev => ({ ...prev, [name]: value }))
     }
@@ -271,7 +288,7 @@ const CreatePostForm = () => {
                                 customClasses="w-full border border-gray-300 rounded px-3 py-2"
                             />
 
-                            <LabelDefault label="Qisqa tavsif (20 ta so'zgacha):" htmlFor="small_description" />
+                            <LabelDefault label="Qisqa tavsif:" htmlFor="small_description" />
                             <textarea
                                 name="small_description"
                                 value={form.small_description}
@@ -301,14 +318,14 @@ const CreatePostForm = () => {
                                 customClasses="w-full border border-gray-300 rounded px-3 py-2"
                             />
 
-                            <LabelDefault label="Manzil:" htmlFor="location" />
-                            <InputDefault
+                            <SelectDefault
+                                label="Viloyatni tanlang:"
+                                htmlFor="location"
                                 name="location"
-                                type="text"
                                 value={form.location}
                                 onChange={handleChange}
-                                required
-                                customClasses="w-full border border-gray-300 rounded px-3 py-2"
+                                options={uzbekistanProvinces}
+                                customClassesSelect="w-full h-15 border border-gray-300 rounded px-3 py-2"
                             />
 
                             <LabelDefault label="Odam soni:" htmlFor="members" />

@@ -30,7 +30,7 @@ const SelectDefault: React.FC<SelectDefaultProps> = ({
     onChange
 }) => {
     return (
-        <div className="w-45">
+        <div className="w-full">
             <LabelDefault label={label} htmlFor={htmlFor} customClasses={customClassesLabel} />
             <select
                 name={name}

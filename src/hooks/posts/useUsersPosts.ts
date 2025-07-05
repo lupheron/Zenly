@@ -13,7 +13,6 @@ const fetchUsersPosts = async (user_id: number): Promise<any[]> => {
         const json = JSON.parse(text)
 
         if (res.status === 404) {
-            // No posts found, not an error
             return []
         }
 
@@ -28,7 +27,6 @@ const fetchUsersPosts = async (user_id: number): Promise<any[]> => {
         throw new Error("Unexpected server response.")
     }
 }
-
 
 const createPost = async (data: any): Promise<any> => {
     const res = await fetch(`${API_BASE_URL}/posts`, {
@@ -54,14 +52,37 @@ const createPost = async (data: any): Promise<any> => {
     }
 }
 
-// fetchOnMount = true by default for backward compatibility
+const updatePost = async ({ postId, data }: { postId: number, data: any }): Promise<any> => {
+    const res = await fetch(`${API_BASE_URL}/posts/${postId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+
+    const text = await res.text()
+
+    try {
+        const json = JSON.parse(text)
+        if (!res.ok) {
+            AlertDefault.error(json.message || "Postni yangilashda xatolik yuz berdi.")
+            throw new Error(json.message || "Failed to update post.")
+        }
+        return json
+    } catch {
+        AlertDefault.error("Serverdan noto'g'ri ma'lumot keldi.")
+        throw new Error("Unexpected server response.")
+    }
+}
+
 export const useUsersPosts = (user_id: number, fetchOnMount: boolean = true) => {
     const queryClient = useQueryClient()
 
     const query = useQuery({
         queryKey: ['user-posts', user_id],
         queryFn: () => fetchUsersPosts(user_id),
-        enabled: !!user_id && fetchOnMount, // Only fetch if fetchOnMount is true
+        enabled: !!user_id && fetchOnMount,
         retry: false,
     })
 
@@ -76,8 +97,20 @@ export const useUsersPosts = (user_id: number, fetchOnMount: boolean = true) => 
         }
     })
 
+    const updateMutation = useMutation({
+        mutationFn: updatePost,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['user-posts', user_id] })
+            AlertDefault.success("Post yangilandi.")
+        },
+        onError: () => {
+            AlertDefault.error("Postni yangilashda xatolik yuz berdi.")
+        }
+    })
+
     return {
         ...query,
         createPost: createMutation,
+        editPost: updateMutation,
     }
 }
