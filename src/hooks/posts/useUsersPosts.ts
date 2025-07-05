@@ -8,18 +8,27 @@ const API_BASE_URL = 'http://zenlyserver.test/api'
 const fetchUsersPosts = async (user_id: number): Promise<any[]> => {
     const res = await fetch(`${API_BASE_URL}/posts/user/${user_id}`)
     const text = await res.text()
+
     try {
         const json = JSON.parse(text)
+
+        if (res.status === 404) {
+            // No posts found, not an error
+            return []
+        }
+
         if (!res.ok) {
             AlertDefault.error(json.message || "Foydalanuvchi postlarini olishda xatolik yuz berdi.")
             throw new Error(json.message || "Failed to fetch user's posts.")
         }
+
         return json.data
     } catch {
         AlertDefault.error("Serverdan noto'g'ri ma'lumot keldi.")
         throw new Error("Unexpected server response.")
     }
 }
+
 
 const createPost = async (data: any): Promise<any> => {
     const res = await fetch(`${API_BASE_URL}/posts`, {

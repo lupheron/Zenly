@@ -24,8 +24,7 @@ const Profile = () => {
                 AlertDefault.success("Foydalanuvchi muvaffaqiyatli o'chirildi!");
                 localStorage.removeItem("token");
                 localStorage.removeItem("user_id");
-                router.push('/');
-                window.location.reload();
+                router.push('/login');
             },
             onError: () => {
                 AlertDefault.error("Foydalanuvchini o'chirishda xatolik yuz berdi.");
