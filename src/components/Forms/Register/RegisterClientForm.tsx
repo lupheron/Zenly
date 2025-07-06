@@ -7,17 +7,8 @@ import InputDefault from '../../FormElements/Input/InputDefault'
 import LabelDefault from '../../FormElements/label/LabelDefault'
 import { useRegisterUser } from '@/src/hooks/useRegisterUser'
 
-interface FormState {
-    fullname: string;
-    username: string;
-    phone: string;
-    address: string;
-    password: string;
-    type: number;
-}
-
 const RegisterClientForm = () => {
-    const [form, setForm] = useState<FormState>({
+    const [form, setForm] = useState({
         fullname: '',
         username: '',
         phone: '',
@@ -27,7 +18,7 @@ const RegisterClientForm = () => {
     })
 
     const router = useRouter()
-    const { mutate, isPending, isSuccess, isError } = useRegisterUser()
+    const { mutate, isPending, isSuccess, isError, error } = useRegisterUser()
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
@@ -48,10 +39,14 @@ const RegisterClientForm = () => {
             AlertDefault.success("Ro‘yxatdan o‘tish muvaffaqiyatli yakunlandi!")
             router.push('/login')
         }
-        if (isError) {
-            AlertDefault.error("Ro‘yxatdan o‘tishda xatolik yuz berdi!")
+        if (isError && error) {
+            if (error.message === "USERNAME_CONFLICT") {
+                AlertDefault.error("Bu username allaqachon ishlatilgan!")
+            } else {
+                AlertDefault.error("Ro‘yxatdan o‘tishda xatolik yuz berdi!")
+            }
         }
-    }, [isSuccess, isError, router])
+    }, [isSuccess, isError, error, router])
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">

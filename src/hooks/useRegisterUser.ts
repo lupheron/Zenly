@@ -11,6 +11,15 @@ interface RegisterData {
     type: number;
 }
 
+export class ApiError extends Error {
+    status: number
+
+    constructor(message: string, status: number) {
+        super(message)
+        this.status = status
+    }
+}
+
 const registerUser = async (data: RegisterData) => {
     const res = await fetch('http://zenlyserver.test/api/register', {
         method: 'POST',
@@ -20,8 +29,12 @@ const registerUser = async (data: RegisterData) => {
         body: JSON.stringify(data),
     })
 
+    if (res.status === 409) {
+        throw new ApiError("USERNAME_CONFLICT", 409)
+    }
+
     if (!res.ok) {
-        throw new Error('Failed to register user')
+        throw new ApiError("GENERAL_ERROR", res.status)
     }
 
     return res.json()

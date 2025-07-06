@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { useRegisterUser } from '@/src/hooks/useRegisterUser'
+import { useRegisterUser, ApiError } from '@/src/hooks/useRegisterUser'
 import { useRouter } from 'next/navigation'
 import AlertDefault from '../../Alert/AlertDefault'
 import InputDefault from '../../FormElements/Input/InputDefault'
@@ -18,7 +18,7 @@ const RegisterForm = () => {
     })
     const router = useRouter()
 
-    const { mutate, isPending, isSuccess, isError } = useRegisterUser()
+    const { mutate, isPending, isSuccess, isError, error } = useRegisterUser()
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
@@ -32,13 +32,20 @@ const RegisterForm = () => {
 
     useEffect(() => {
         if (isSuccess) {
-            AlertDefault.success("Ro‘yxatdan o‘tish muvaffaqiyatli yakunlandi!")
+            AlertDefault.success("Ro'yxatdan o'tish muvaffaqiyatli yakunlandi!")
             router.push('/login')
         }
-        if (isError) {
-            AlertDefault.error("Ro‘yxatdan o‘tishda xatolik yuz berdi!")
+    }, [isSuccess, router])
+
+    useEffect(() => {
+        if (isError && error instanceof ApiError) {
+            if (error.status === 409) {
+                AlertDefault.error("Bu username allaqachon ishlatilgan!")
+            } else {
+                AlertDefault.error("Ro'yxatdan o'tishda xatolik yuz berdi!")
+            }
         }
-    }, [isSuccess, isError])
+    }, [isError, error])
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
