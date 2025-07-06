@@ -147,6 +147,7 @@ const ProfileImageUpload = ({ value, onChange }: { value: string; onChange: (img
                         afterOpenChange: (visible) => !visible && setPreviewImage(''),
                     }}
                     src={previewImage}
+                    alt='profile img'
                 />
             )}
         </div>

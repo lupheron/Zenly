@@ -1,6 +1,4 @@
-'use client'
-
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
 import SearchPosts from '../search/SearchPosts';
 import Filter from '../../filters/page';
@@ -27,7 +25,7 @@ const PostsSection = () => {
     const searchParams = useSearchParams()
     const areaId = searchParams.get('area_id')
 
-    const fetchPosts = async () => {
+    const fetchPosts = useCallback(async () => {
         let url = ''
 
         const amenitiesParam = selectedAmenities.map(a => `amenities[]=${encodeURIComponent(a)}`).join('&')
@@ -41,20 +39,18 @@ const PostsSection = () => {
 
         const paramString = searchParamParts.join('&')
 
-        if (paramString) {
-            url = `http://zenlyserver.test/api/posts/filter?${paramString}`
-        } else {
-            url = `http://zenlyserver.test/api/posts`
-        }
+        url = paramString
+            ? `http://zenlyserver.test/api/posts/filter?${paramString}`
+            : `http://zenlyserver.test/api/posts`
 
         const res = await fetch(url)
         const data = await res.json()
         setPosts(data.data)
-    }
+    }, [selectedAmenities, areaId, searchFilters])
 
     useEffect(() => {
         fetchPosts()
-    }, [selectedAmenities, areaId, searchFilters])
+    }, [fetchPosts])
 
     return (
         <div>

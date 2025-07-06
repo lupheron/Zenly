@@ -7,8 +7,17 @@ import InputDefault from '../../FormElements/Input/InputDefault'
 import LabelDefault from '../../FormElements/label/LabelDefault'
 import { useRegisterUser } from '@/src/hooks/useRegisterUser'
 
+interface FormState {
+    fullname: string;
+    username: string;
+    phone: string;
+    address: string;
+    password: string;
+    type: number;
+}
+
 const RegisterClientForm = () => {
-    const [form, setForm] = useState({
+    const [form, setForm] = useState<FormState>({
         fullname: '',
         username: '',
         phone: '',
@@ -16,13 +25,17 @@ const RegisterClientForm = () => {
         password: '',
         type: 1
     })
-    const router = useRouter()
 
+    const router = useRouter()
     const { mutate, isPending, isSuccess, isError } = useRegisterUser()
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
-        setForm((prev) => ({ ...prev, [name]: value }))
+
+        setForm((prev) => ({
+            ...prev,
+            [name]: name === 'type' ? Number(value) : value
+        }))
     }
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -38,79 +51,39 @@ const RegisterClientForm = () => {
         if (isError) {
             AlertDefault.error("Ro‘yxatdan o‘tishda xatolik yuz berdi!")
         }
-    }, [isSuccess, isError])
+    }, [isSuccess, isError, router])
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-                <LabelDefault label="F.I.SH:" htmlFor="fullname" />
-                <InputDefault
-                    name="fullname"
-                    type="text"
-                    value={form.fullname}
-                    onChange={handleChange}
-                    customClasses='bg-white rounded border-1 border-light-green'
-                    required={true}
-                />
-            </div>
+            {([
+                { label: "F.I.SH:", name: "fullname", type: "text" },
+                { label: "Username:", name: "username", type: "text" },
+                { label: "Telefon Raqamingiz:", name: "phone", type: "text" },
+                { label: "Manzilingiz:", name: "address", type: "text" },
+                { label: "Parol:", name: "password", type: "password" },
+            ] as const).map(({ label, name, type }) => (
+                <div key={name}>
+                    <LabelDefault label={label} htmlFor={name} />
+                    <InputDefault
+                        name={name}
+                        type={type}
+                        value={form[name]}
+                        onChange={handleChange}
+                        customClasses="bg-white rounded border-1 border-light-green"
+                        required
+                    />
+                </div>
+            ))}
 
-            <div>
-                <LabelDefault label="Username:" htmlFor="username" />
-                <InputDefault
-                    name="username"
-                    type="text"
-                    value={form.username}
-                    onChange={handleChange}
-                    customClasses='bg-white rounded border-1 border-light-green'
-                    required={true}
-                />
-            </div>
-
-            <div>
-                <LabelDefault label="Telefon Raqamingiz:" htmlFor="phone" />
-                <InputDefault
-                    name="phone"
-                    type="text"
-                    value={form.phone}
-                    onChange={handleChange}
-                    customClasses='bg-white rounded border-1 border-light-green'
-                    required={true}
-                />
-            </div>
-
-            <div>
-                <LabelDefault label="Manzilingiz:" htmlFor="address" />
-                <InputDefault
-                    name="address"
-                    type="text"
-                    value={form.address}
-                    onChange={handleChange}
-                    customClasses='bg-white rounded border-1 border-light-green'
-                    required={true}
-                />
-            </div>
-
-            <div>
-                <LabelDefault label="Parol:" htmlFor="password" />
-                <InputDefault
-                    name="password"
-                    type="password"
-                    value={form.password}
-                    onChange={handleChange}
-                    customClasses='bg-white rounded border-1 border-light-green'
-                    required={true}
-                />
-            </div>
-
-            <div className='hidden'>
+            <div className="hidden">
                 <LabelDefault label="Turi:" htmlFor="type" />
                 <InputDefault
                     name="type"
                     type="number"
                     value={String(form.type)}
                     onChange={handleChange}
-                    customClasses='bg-white rounded border-1 border-light-green'
-                    required={true}
+                    customClasses="bg-white rounded border-1 border-light-green"
+                    required
                 />
             </div>
 
@@ -119,7 +92,7 @@ const RegisterClientForm = () => {
                 disabled={isPending}
                 className="bg-light-green text-white px-6 py-2 rounded-md cursor-pointer hover:bg-opacity-90"
             >
-                {isPending ? 'Yuborilmoqda...' : 'Ro‘yxatdan o‘tish'}
+                {isPending ? "Yuborilmoqda..." : "Ro‘yxatdan o‘tish"}
             </button>
         </form>
     )

@@ -72,9 +72,10 @@ const CreatePostForm = () => {
     const [galleryFileList, setGalleryFileList] = useState<GalleryFile[]>([])
     const [createdPostId, setCreatedPostId] = useState<number | null>(null)
     const [createModalOpen, setCreateModalOpen] = useState(false)
-    const { data: features = [], createFeature, deleteFeature } = useFeatures(createdPostId)
+    const { data: features = [], createFeature, deleteFeature } = useFeatures(createdPostId ?? undefined)
 
-    const { createPost } = useUsersPosts(userId, false)
+
+    const { createPost } = useUsersPosts(userId ?? 0, false)
 
     const [form, setForm] = useState({
         title: '',
@@ -160,8 +161,8 @@ const CreatePostForm = () => {
                     })
                 )
             )
-
         } catch (error) {
+            console.log(error)
             message.error('Post yaratishda xatolik yuz berdi.')
         } finally {
             setIsSubmitting(false)
@@ -221,12 +222,12 @@ const CreatePostForm = () => {
 
                     {createdPostId && (
                         <div className="mt-6">
-                            <LabelDefault label="Galereya rasmlari:" />
+                            <LabelDefault label="Galereya rasmlari:" htmlFor='gallery' />
                             <CreateGalleryForm
                                 postId={createdPostId}
                                 galleryFileList={galleryFileList}
                                 setGalleryFileList={setGalleryFileList}
-                                userId={userId}
+                                userId={Number(userId)}
                             />
 
                             <div className='mt-10'>
@@ -359,7 +360,7 @@ const CreatePostForm = () => {
                                     label={isSubmitting ? "Yaratilmoqda..." : "Post yaratish"}
                                     type="submit"
                                     customClasses="w-full"
-                                    disabled={isSubmitting}
+                                    isDisabled={isSubmitting}
                                 />
                                 <ButtonDefault
                                     label="Bekor qilish"
@@ -373,7 +374,7 @@ const CreatePostForm = () => {
                         <div className="bg-blue-50 p-4 rounded-lg">
                             <h3 className="text-lg font-medium text-blue-800">Post muvaffaqiyatli yaratildi!</h3>
                             <p className="text-blue-600 mt-2">
-                                Endi galereya rasmlarni qo'shishingiz mumkin. Tugatish uchun "Tugatish" tugmasini bosing.
+                                Endi galereya rasmlarni qo&apos;shishingiz mumkin. Tugatish uchun (Tugatish) tugmasini bosing.
                             </p>
                         </div>
                     )}

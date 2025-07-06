@@ -35,7 +35,6 @@ const UsersPosts: React.FC<UsersPostsProps> = ({
         onClick();
     };
 
-
     return (
         <div className={`w-100 flex flex-col justify-between bg-white rounded-xl shadow p-4 ${customClasses}`}>
             <Image

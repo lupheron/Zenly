@@ -2,7 +2,16 @@
 
 import { useMutation } from '@tanstack/react-query'
 
-const registerUser = async (data: any) => {
+interface RegisterData {
+    fullname: string;
+    username: string;
+    phone: string;
+    address: string;
+    password: string;
+    type: number;
+}
+
+const registerUser = async (data: RegisterData) => {
     const res = await fetch('http://zenlyserver.test/api/register', {
         method: 'POST',
         headers: {
@@ -18,28 +27,6 @@ const registerUser = async (data: any) => {
     return res.json()
 }
 
-
-
-// const registerClient = async (data: any) => {
-//     const res = await fetch(`${API}/register`, {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify(data),
-//     })
-
-//     if (!res.ok) {
-//         throw new Error('Failed to register client')
-//     }
-
-//     return res.json()
-// }
-
 export const useRegisterUser = () => {
     return useMutation({ mutationFn: registerUser })
 }
-
-// export const useRegisterClient = () => {
-//     return useMutation({ mutationFn: registerClient })
-// }

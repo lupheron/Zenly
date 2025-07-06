@@ -4,10 +4,18 @@ import React, { useRef, useState } from 'react'
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons'
 import AlertDefault from '@/src/components/Alert/AlertDefault'
 
+export interface GalleryFile {
+    uid: string
+    name: string
+    status: string
+    url: string
+    id: number
+}
+
 interface CreateGalleryFormProps {
     postId: number
-    galleryFileList: any[]
-    setGalleryFileList: React.Dispatch<React.SetStateAction<any[]>>
+    galleryFileList: GalleryFile[]
+    setGalleryFileList: React.Dispatch<React.SetStateAction<GalleryFile[]>>
     userId: number
 }
 
@@ -46,7 +54,7 @@ const CreateGalleryForm: React.FC<CreateGalleryFormProps> = ({
                     ...prev,
                     {
                         uid: `gallery-${result.data.id}`,
-                        name: `gallery-${result.data.id}.png`,
+                        name: file.name,
                         status: 'done',
                         url: result.data.img.startsWith('http') ? result.data.img : `http://zenlyserver.test/${result.data.img}`,
                         id: result.data.id
@@ -56,6 +64,7 @@ const CreateGalleryForm: React.FC<CreateGalleryFormProps> = ({
             AlertDefault.success('Rasm(lar) muvaffaqiyatli yuklandi!')
         } catch (error) {
             AlertDefault.error('Yuklashda xatolik yuz berdi')
+            console.log(error)
         } finally {
             setUploading(false)
             if (galleryFileInputRef.current) {
@@ -73,6 +82,7 @@ const CreateGalleryForm: React.FC<CreateGalleryFormProps> = ({
             AlertDefault.success('Rasm o‘chirildi.')
             setGalleryFileList(prev => prev.filter(file => file.id !== fileId))
         } catch (err) {
+            console.log(err)
             AlertDefault.error("O'chirishda xatolik yuz berdi.")
         }
     }
@@ -82,7 +92,7 @@ const CreateGalleryForm: React.FC<CreateGalleryFormProps> = ({
     }
 
     return (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2">
             <input
                 type="file"
                 ref={galleryFileInputRef}
