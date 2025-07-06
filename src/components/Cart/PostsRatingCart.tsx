@@ -23,7 +23,7 @@ const PostsRatingCart = () => {
     const totalPages = Math.ceil(userPosts.length / postsPerPage)
 
     return (
-        <div className='bg-white p-6 rounded-xl shadow-xl w-150 h-75'>
+        <div className='bg-white p-6 rounded-xl shadow-xl w-150 h-full'>
             <h1 className="text-xl font-semibold mb-4">Postlaringizning reytinglari</h1>
 
             {currentPosts.length === 0 ? (
