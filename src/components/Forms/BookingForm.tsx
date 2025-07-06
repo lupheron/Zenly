@@ -28,9 +28,20 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSearch }) => {
     ];
 
     const locations = [
-        { value: 'Toshkent', label: 'Toshkent' },
-        { value: 'Samarqand', label: 'Samarqand' },
-        { value: 'Buxoro', label: 'Buxoro' }
+        { label: 'Andijon', value: 'Andijon' },
+        { label: 'Buxoro', value: 'Buxoro' },
+        { label: 'Fargʻona', value: 'Fargʻona' },
+        { label: 'Jizzax', value: 'Jizzax' },
+        { label: 'Xorazm', value: 'Xorazm' },
+        { label: 'Namangan', value: 'Namangan' },
+        { label: 'Navoiy', value: 'Navoiy' },
+        { label: 'Qashqadaryo', value: 'Qashqadaryo' },
+        { label: 'Qoraqalpogʻiston', value: 'Qoraqalpogʻiston' },
+        { label: 'Samarqand', value: 'Samarqand' },
+        { label: 'Sirdaryo', value: 'Sirdaryo' },
+        { label: 'Surxondaryo', value: 'Surxondaryo' },
+        { label: 'Toshkent viloyati', value: 'Toshkent viloyati' },
+        { label: 'Toshkent shahri', value: 'Toshkent shahri' }
     ];
 
     const handleSearch = () => {
@@ -50,7 +61,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSearch }) => {
                 }}
                 className="flex h-30 items-center justify-between px-10 bg-white rounded-lg shadow-sm"
             >
-                <div className="px-5 border-r-gray-300 border-r">
+                <div className="px-5 w-60">
                     <SelectDefault
                         label="Shahar"
                         htmlFor="region"
@@ -64,7 +75,9 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSearch }) => {
                     />
                 </div>
 
-                <div className="px-5">
+                <div className="border-r-gray-300 border-r w-[1px] h-16"></div>
+
+                <div className="px-5 w-60">
                     <SelectDefault
                         label="Saralash"
                         htmlFor="sort"
