@@ -20,7 +20,7 @@ interface PostsContainerProps {
 const PostsContainer: React.FC<PostsContainerProps> = ({ posts }) => {
     const router = useRouter()
     return (
-        <div className="w-full sm:px-6 max-w-[90%] sm:max-w-[85%] md:max-w-[100%] lg:max-w-[75%] xl:max-w-[100%] mx-auto">
+        <div className="w-full sm:px-6 max-w-[90%] sm:max-w-[85%] md:max-w-[100%] lg:max-w-[75%] xl:max-w-[70%] mx-auto">
             <div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 lg:grid-cols-2 gap-4 md:gap-6 w-full max-w-screen-2xl mx-auto'>
                 {posts.length > 0 ? (
                     posts.map((post) => (

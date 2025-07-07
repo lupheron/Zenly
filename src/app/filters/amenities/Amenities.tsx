@@ -29,12 +29,12 @@ const Amenities: React.FC<AmenitiesProps> = ({ selectedAmenities, onChange }) =>
 
     return (
         <div>
-            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-1 gap-3 md:gap-4 mb-4 md:mb-6'>
+            <div className="flex flex-col gap-3 md:gap-4 mb-4 md:mb-6">
                 {amenities.map((item) => (
-                    <div key={item.label} className='flex items-center gap-2'>
+                    <div key={item.label} className="flex items-center gap-2 whitespace-nowrap">
                         <InputDefault
-                            type='checkbox'
-                            name='amenity'
+                            type="checkbox"
+                            name="amenity"
                             id={item.label}
                             checked={selectedAmenities.includes(item.label)}
                             onChange={() => handleChange(item.label)}
@@ -49,6 +49,7 @@ const Amenities: React.FC<AmenitiesProps> = ({ selectedAmenities, onChange }) =>
             </div>
         </div>
     )
+
 
 };
 

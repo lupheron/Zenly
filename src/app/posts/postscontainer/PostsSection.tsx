@@ -3,6 +3,8 @@ import { useSearchParams } from 'next/navigation'
 import SearchPosts from '../search/SearchPosts';
 import Filter from '../../filters/page';
 import PostsContainer from './page';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import Drawer from '@mui/material/Drawer';
 
 interface Post {
     id: number;
@@ -16,6 +18,7 @@ interface Post {
 const PostsSection = () => {
     const [selectedAmenities, setSelectedAmenities] = useState<string[]>([])
     const [posts, setPosts] = useState<Post[]>([])
+    const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
     const [searchFilters, setSearchFilters] = useState<{ location: string; sort: string; guests: string }>({
         location: '',
         sort: '',
@@ -52,17 +55,56 @@ const PostsSection = () => {
         fetchPosts()
     }, [fetchPosts])
 
+    const toggleMobileFilter = () => {
+        setMobileFilterOpen(!mobileFilterOpen);
+    };
+
     return (
         <div>
             <SearchPosts onSearch={(params) => setSearchFilters(params)} />
+
             <div className="flex flex-col lg:flex-row justify-between items-start gap-6 lg:gap-10 p-4 lg:p-5 mt-6 lg:mt-10 bg-light-gray">
+
+                {/* Filter visible only on laptops and desktops */}
                 <Filter
                     selectedAmenities={selectedAmenities}
                     onAmenitiesChange={setSelectedAmenities}
+                    customClasses="hidden lg:block"
                 />
+
+                {/* Button and Drawer visible only on mobile and tablet */}
+                <div className="block lg:hidden mx-auto w-[90%] mb-4">
+                    <button
+                        onClick={toggleMobileFilter}
+                        className="w-full h-15 flex items-center justify-center gap-3 bg-white p-2 rounded-lg shadow-md hover:shadow-lg transition-all cursor-pointer"
+                    >
+                        <AutoAwesomeIcon className="text-blue-600" />
+                        <span className="text-md font-medium">Imkoniyatlar</span>
+                    </button>
+
+                    <Drawer
+                        anchor="right"
+                        open={mobileFilterOpen}
+                        onClose={toggleMobileFilter}
+                        PaperProps={{
+                            sx: {
+                                width: '80%',
+                                maxWidth: 320,
+                                padding: '20px'
+                            }
+                        }}
+                    >
+                        <Filter
+                            selectedAmenities={selectedAmenities}
+                            onAmenitiesChange={setSelectedAmenities}
+                        />
+                    </Drawer>
+                </div>
+
                 <PostsContainer posts={posts} />
             </div>
         </div>
+
     )
 }
 
