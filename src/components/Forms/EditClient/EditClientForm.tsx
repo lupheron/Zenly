@@ -22,7 +22,7 @@ const EditClientForm = ({ closeEditForm }: EditClientFormProps) => {
     })
 
     const { data, isLoading, updateUser } = useUser()
-    const { mutate, isPending, isSuccess, isError } = updateUser
+    const { mutate, isPending, isSuccess, isError, error } = updateUser
 
     useEffect(() => {
         if (data) {
@@ -62,8 +62,12 @@ const EditClientForm = ({ closeEditForm }: EditClientFormProps) => {
             AlertDefault.success("Ma'lumotlar muvaffaqiyatli yangilandi!");
             closeEditForm();
         }
-        if (isError) {
-            AlertDefault.error("Tahrirlashda xatolik yuz berdi!");
+        if (isError && error) {
+            if (error.message === "USERNAME_CONFLICT") {
+                AlertDefault.error("Bu username allaqachon ishlatilgan!")
+            } else {
+                AlertDefault.error("Taxrirlashda xatolik yuz berdi!")
+            }
         }
     }, [isSuccess, isError, closeEditForm]);
 

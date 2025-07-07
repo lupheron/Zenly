@@ -3,7 +3,25 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import AlertDefault from '@/src/components/Alert/AlertDefault'
 
-const fetchUserById = async (user_id: number): Promise<any> => {
+export interface User {
+    id: number
+    fullname: string
+    username: string
+    phone: string
+    address: string
+    img: string
+}
+
+export class ApiError extends Error {
+    status: number
+
+    constructor(message: string, status: number) {
+        super(message)
+        this.status = status
+    }
+}
+
+const fetchUserById = async (user_id: number): Promise<User> => {
     const res = await fetch(`http://zenlyserver.test/api/user/${user_id}`, {
         method: 'GET',
         headers: {
@@ -18,10 +36,10 @@ const fetchUserById = async (user_id: number): Promise<any> => {
         throw new Error('Failed to fetch user')
     }
 
-    return responseData
+    return responseData as User
 }
 
-const editUser = async (data: any) => {
+const editUser = async (data: Partial<User>) => {
     const id = Number(localStorage.getItem('user_id'))
     const res = await fetch(`http://zenlyserver.test/api/users/${id}`, {
         method: 'PUT',
@@ -31,11 +49,15 @@ const editUser = async (data: any) => {
         body: JSON.stringify(data),
     })
 
-    if (!res.ok) {
-        throw new Error('Failed to edit user')
+    if (res.status === 409) {
+        throw new ApiError("USERNAME_CONFLICT", 409)
     }
 
-    return res.json()
+    if (!res.ok) {
+        throw new ApiError("GENERAL_ERROR", res.status)
+    }
+
+    return res.json() as Promise<User>
 }
 
 const deleteUser = async () => {
