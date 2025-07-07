@@ -55,7 +55,7 @@ const PostsSection = () => {
     return (
         <div>
             <SearchPosts onSearch={(params) => setSearchFilters(params)} />
-            <div className="flex justify-between items-start gap-10 p-5 mt-10 bg-light-gray">
+            <div className="flex flex-col lg:flex-row justify-between items-start gap-6 lg:gap-10 p-4 lg:p-5 mt-6 lg:mt-10 bg-light-gray">
                 <Filter
                     selectedAmenities={selectedAmenities}
                     onAmenitiesChange={setSelectedAmenities}

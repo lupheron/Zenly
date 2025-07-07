@@ -50,36 +50,43 @@ const PostsCart: React.FC<PostsCartProps> = ({
     }
 
     return (
-        <div className={`w-100 bg-white rounded-xl shadow p-4 ${customClasses}`}>
-            <Image
-                width={350}
-                height={450}
-                src={formattedSrc}
-                alt='Post Image'
-                className='w-full h-60 rounded-xl object-cover'
-                unoptimized={process.env.NODE_ENV !== 'production'}
-            />
-
-            <div className='flex flex-col gap-2 mt-5 px-4'>
-                <h2 className='text-xl font-bold'>{title}</h2>
-                <p className='text-sm text-gray-700'>{small_description}</p>
-                <p className='text-sm text-gray-600'>{location}</p>
-                <div className='flex items-center gap-2'>
-                    <Rating postId={rating} />
-                    <span className='text-sm text-gray-600'>Ratings:</span>
-                </div>
+        <div className={`w-full bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 ${customClasses}`}>
+            <div className="relative w-full aspect-[4/3]">
+                <Image
+                    src={formattedSrc}
+                    alt='Post Image'
+                    fill
+                    className='rounded-t-xl object-cover'
+                    unoptimized={process.env.NODE_ENV !== 'production'}
+                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                />
             </div>
 
-            <div className='flex flex-col gap-10 bg-blue-50 rounded-lg px-4 py-3 mt-5'>
-                <div>
-                    <p className='text-sm text-gray-500'>From</p>
-                    <h2 className='text-2xl font-bold text-blue-800'>${price_daily}</h2>
+            <div className='p-4 sm:p-5'>
+                <div className='flex flex-col gap-2'>
+                    <h2 className='text-lg sm:text-xl font-bold line-clamp-2'>{title}</h2>
+                    <p className='text-xs sm:text-sm text-gray-600 line-clamp-2'>{small_description}</p>
+                    <p className='text-xs sm:text-sm text-gray-500 flex items-center gap-1'>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        {location}
+                    </p>
+                    <div className='flex items-center gap-2 mt-1'>
+                        <Rating postId={rating} />
+                    </div>
                 </div>
-                <div className='mt-3'>
+
+                <div className='flex flex-col gap-4 bg-blue-50 rounded-lg px-4 py-3 mt-4'>
+                    <div>
+                        <p className='text-xs sm:text-sm text-gray-500'>From</p>
+                        <h2 className='text-xl sm:text-2xl font-bold text-blue-800'>${price_daily}</h2>
+                    </div>
                     <ButtonDefault
                         label="Batafsil"
                         onClick={handleReadMoreClick}
-                        customClasses='w-full tracking-[2px]'
+                        customClasses='w-full tracking-[1px] text-sm sm:text-base py-2 sm:py-2.5'
                     />
                 </div>
             </div>

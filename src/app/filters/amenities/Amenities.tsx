@@ -29,7 +29,7 @@ const Amenities: React.FC<AmenitiesProps> = ({ selectedAmenities, onChange }) =>
 
     return (
         <div>
-            <div className='flex flex-wrap gap-4 mb-6'>
+            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-1 gap-3 md:gap-4 mb-4 md:mb-6'>
                 {amenities.map((item) => (
                     <div key={item.label} className='flex items-center gap-2'>
                         <InputDefault
@@ -39,12 +39,17 @@ const Amenities: React.FC<AmenitiesProps> = ({ selectedAmenities, onChange }) =>
                             checked={selectedAmenities.includes(item.label)}
                             onChange={() => handleChange(item.label)}
                         />
-                        <LabelDefault label={item.label} htmlFor={item.label} />
+                        <LabelDefault
+                            label={item.label}
+                            htmlFor={item.label}
+                            customClasses="text-sm md:text-base"
+                        />
                     </div>
                 ))}
             </div>
         </div>
-    );
+    )
+
 };
 
-export default Amenities
+export default Amenities;
