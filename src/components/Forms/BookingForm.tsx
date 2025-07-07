@@ -53,15 +53,15 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSearch }) => {
     };
 
     return (
-        <div className="w-[55%] mx-auto">
+        <div className="w-full lg:w-[90%] xl:w-[55%] mx-auto px-4 sm:px-6">
             <form
                 onSubmit={(e) => {
                     e.preventDefault();
                     handleSearch();
                 }}
-                className="flex h-30 items-center justify-between px-10 bg-white rounded-lg shadow-sm"
+                className="flex flex-col md:flex-row h-auto md:h-30 items-center justify-between p-4 md:px-6 lg:px-10 bg-white rounded-lg shadow-sm gap-4 md:gap-0"
             >
-                <div className="px-5 w-60">
+                <div className="w-full md:w-auto md:px-4 lg:px-5 md:w-60">
                     <SelectDefault
                         label="Shahar"
                         htmlFor="region"
@@ -75,9 +75,9 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSearch }) => {
                     />
                 </div>
 
-                <div className="border-r-gray-300 border-r w-[1px] h-16"></div>
+                <div className="hidden md:block border-r-gray-300 border-r w-[1px] h-16"></div>
 
-                <div className="px-5 w-60">
+                <div className="w-full md:w-auto md:px-4 lg:px-5 md:w-60">
                     <SelectDefault
                         label="Saralash"
                         htmlFor="sort"
@@ -86,14 +86,14 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSearch }) => {
                         value={sort}
                         onChange={(e) => setSort(e.target.value)}
                         customClassesLabel="block text-sm font-medium text-gray-700 mb-1"
-                        customClassesSelect="w-full border border-gray-300 rounded-lg p-2 text-gray-800 cursor-pointer focus:outline-none "
+                        customClassesSelect="w-full border border-gray-300 rounded-lg p-2 text-gray-800 cursor-pointer focus:outline-none"
                         customClassesOptions="cursor-pointer"
                     />
                 </div>
 
-                <div className="border-r-gray-300 border-r w-[1px] h-16"></div>
+                <div className="hidden md:block border-r-gray-300 border-r w-[1px] h-16"></div>
 
-                <div className="px-5">
+                <div className="w-full md:w-auto md:px-4 lg:px-5">
                     <LabelDefault htmlFor="guests" label="Odam Soni" />
                     <InputDefault
                         type="number"
@@ -101,13 +101,14 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSearch }) => {
                         value={guests}
                         onChange={(e) => setGuests(e.target.value)}
                         placeholder="Odam Soni"
+                        customClasses="w-full"
                     />
                 </div>
 
                 <ButtonDefault
                     label={<SearchIcon fontSize="large" />}
                     type="submit"
-                    customClasses="rounded-[50%] w-15 h-15 flex items-center justify-center"
+                    customClasses=" rounded-lg md:rounded-[50%] w-[100%] h-15 md:w-15 md:h-15 flex items-center justify-center mt-4 md:mt-0"
                 />
             </form>
         </div>
