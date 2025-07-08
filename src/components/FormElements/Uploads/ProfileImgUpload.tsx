@@ -103,8 +103,8 @@ const ProfileImageUpload = ({ value, onChange }: { value: string; onChange: (img
                     .ant-upload-list-picture-circle .ant-upload-list-item,
                     .ant-upload-list-picture-circle .ant-upload-list-item-thumbnail,
                     .ant-upload-list-picture-circle .ant-upload-list-item-thumbnail img {
-                        width: 280px !important;
-                        height: 280px !important;
+                        width: 230px !important;
+                        height: 230px !important;
                         object-fit: cover;
                         border-radius: 50%;
                     }

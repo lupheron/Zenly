@@ -67,8 +67,14 @@ const ClientData = ({ openEditForm }) => {
                     customClasses='w-full cursor-pointer !bg-red-700'
                 />
             </div>
-        </div>
 
+            <DeleteModal
+                open={deleteModalOpen}
+                onConfirm={handleDelete}
+                onCancel={() => setDeleteModalOpen(false)}
+                text="Siz aniq ushbu foydalanuvchini o'chirmoqchimis?"
+            />
+        </div>
     );
 };
 

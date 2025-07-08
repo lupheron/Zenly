@@ -65,14 +65,12 @@ const PostsSection = () => {
 
             <div className="flex flex-col lg:flex-row justify-between items-start gap-6 lg:gap-10 p-4 lg:p-5 mt-6 lg:mt-10 bg-light-gray">
 
-                {/* Filter visible only on laptops and desktops */}
                 <Filter
                     selectedAmenities={selectedAmenities}
                     onAmenitiesChange={setSelectedAmenities}
                     customClasses="hidden lg:block"
                 />
 
-                {/* Button and Drawer visible only on mobile and tablet */}
                 <div className="block lg:hidden mx-auto w-[90%] mb-4">
                     <button
                         onClick={toggleMobileFilter}

@@ -72,7 +72,6 @@ const PostsCart: React.FC<PostsCartProps> = ({
         }
     }
 
-
     return (
         <div className={`w-full bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 ${customClasses}`}>
             <div className="relative w-full aspect-[4/3]">

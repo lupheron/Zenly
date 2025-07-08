@@ -194,7 +194,6 @@ const NavbarSection = () => {
                         setShowEditForm(false);
                     }}
                     title={showEditForm ? "Profilni Tahrirlash" : "Profil Ma'lumotlari"}
-                    width={"35%"}
                 >
                     {showEditForm ? (
                         <EditClientForm closeEditForm={() => setShowEditForm(false)} />

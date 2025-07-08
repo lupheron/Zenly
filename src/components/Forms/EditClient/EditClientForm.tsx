@@ -74,10 +74,10 @@ const EditClientForm = ({ closeEditForm }: EditClientFormProps) => {
     if (isLoading) return <p>Yuklanmoqda...</p>
 
     return (
-        <form onSubmit={handleSubmit} className="flex gap-10 items-start">
+        <form onSubmit={handleSubmit} className="w-full flex flex-col md:flex-row items-center md:items-start">
             <ProfileImageUpload value={form.img} onChange={handleImageChange} />
 
-            <div className="space-y-4 flex-1">
+            <div className="space-y-4 flex-1 w-full">
                 <div>
                     <LabelDefault label="F.I.SH:" htmlFor="fullname" />
                     <InputDefault
