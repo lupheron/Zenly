@@ -7,10 +7,19 @@ import { useGalleryByPostId } from '@/src/hooks/gallery/useGalleryByPostId'
 
 interface EditGalleryFormProps {
     postId: number
-    galleryFileList: any[]
-    setGalleryFileList: React.Dispatch<React.SetStateAction<any[]>>
-    userId: number
+    galleryFileList: GalleryFile[]
+    setGalleryFileList: React.Dispatch<React.SetStateAction<GalleryFile[]>>
+    userId: number | null
 }
+
+interface GalleryFile {
+    uid: string
+    name: string
+    status: string
+    url: string
+    id: number
+}
+
 
 const EditGalleryForm: React.FC<EditGalleryFormProps> = ({
     postId,
@@ -24,7 +33,7 @@ const EditGalleryForm: React.FC<EditGalleryFormProps> = ({
 
     useEffect(() => {
         if (galleryImages) {
-            const galleryList = galleryImages.map((img) => ({
+            const galleryList: GalleryFile[] = galleryImages.map((img) => ({
                 uid: `gallery-${img.id}`,
                 name: `gallery-${img.id}.png`,
                 status: 'done',
@@ -40,17 +49,22 @@ const EditGalleryForm: React.FC<EditGalleryFormProps> = ({
             const res = await fetch(`http://zenlyserver.test/api/gallery/${fileId}`, {
                 method: 'DELETE'
             })
-            if (!res.ok) throw new Error()
+            if (!res.ok) throw new Error("Serverdan muvaffaqiyatsiz javob.")
             AlertDefault.success('Rasm o‘chirildi.')
             refetch()
-        } catch (err) {
+        } catch (error: unknown) {
             AlertDefault.error("O'chirishda xatolik yuz berdi.")
+            console.error("Delete error:", error)
         }
     }
 
+
     const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files
-        if (!files || files.length === 0) return
+        if (!files || files.length === 0 || userId === null) {
+            AlertDefault.error("Foydalanuvchi aniqlanmadi yoki fayl tanlanmadi.")
+            return
+        }
 
         setUploading(true)
         const formData = new FormData()
@@ -58,7 +72,7 @@ const EditGalleryForm: React.FC<EditGalleryFormProps> = ({
         const file = files[0]
         formData.append('img', file)
         formData.append('post_id', postId.toString())
-        formData.append('user_id', userId.toString())
+        formData.append('user_id', userId.toString()) 
 
         try {
             const res = await fetch('http://zenlyserver.test/api/gallery', {
@@ -70,8 +84,9 @@ const EditGalleryForm: React.FC<EditGalleryFormProps> = ({
 
             AlertDefault.success('Rasm muvaffaqiyatli yuklandi!')
             refetch()
-        } catch (error) {
+        } catch (error: unknown) {
             AlertDefault.error('Yuklashda xatolik yuz berdi')
+            console.error("Yuklashda xatolik yuz berdi:", error)
         } finally {
             setUploading(false)
             if (galleryFileInputRef.current) {
@@ -79,6 +94,7 @@ const EditGalleryForm: React.FC<EditGalleryFormProps> = ({
             }
         }
     }
+
 
     const triggerGalleryFileInput = () => {
         galleryFileInputRef.current?.click()

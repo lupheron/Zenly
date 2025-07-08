@@ -13,7 +13,7 @@ const fetchGalleryByPostId = async (postId: number): Promise<GalleryImage[]> => 
     const responseData = await res.json()
 
     if (!res.ok) {
-        throw new Error("Failed to fetch gallery.")
+        throw new Error("Galereyani olishda xatolik yuz berdi.")
     }
 
     return responseData.data.map((img: GalleryImage) => ({
@@ -27,7 +27,7 @@ export const useGalleryByPostId = (postId: number) => {
         queryKey: ['gallery', postId],
         queryFn: () => fetchGalleryByPostId(postId),
         enabled: !!postId,
-        staleTime: 60 * 1000, 
+        staleTime: 60 * 1000,
         retry: false,
     })
 }

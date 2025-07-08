@@ -11,6 +11,7 @@ export interface User {
     address: string
     img: string
     type: number
+    vip_status: string
 }
 
 export class ApiError extends Error {

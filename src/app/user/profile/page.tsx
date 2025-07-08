@@ -32,6 +32,10 @@ const Profile = () => {
         })
     }
 
+    if (!data) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <div className='flex flex-row items-center gap-20 h-full'>
             <div className='p-10 w-fit h-fit mx-auto bg-white shadow-xl rounded-2xl'>
@@ -50,7 +54,7 @@ const Profile = () => {
                     <div className='flex items-center gap-15 text-xl mt-15 justify-center'>
                         <h2><InsertEmoticonIcon className='text-black text-xl' /> {data?.username}</h2>
                         <p><LocalPhoneIcon className='text-black text-xl' /> {data?.phone || "Telefon mavjud emas"}</p>
-                        <p><VerifiedIcon className='text-black text-xl' /> Status: {data?.vip_status || "Standart"}</p>
+                        <p><VerifiedIcon className='text-black text-xl' />{data.vip_status || "Noma'lum"}</p>
                     </div>
                 </div>
 

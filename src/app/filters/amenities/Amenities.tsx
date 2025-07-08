@@ -16,7 +16,7 @@ const amenities = [
 
 interface AmenitiesProps {
     selectedAmenities: string[];
-    onChange: (selected: string[]) => void;
+    onChange: (selected: string[]) => void; 
 }
 
 const Amenities: React.FC<AmenitiesProps> = ({ selectedAmenities, onChange }) => {

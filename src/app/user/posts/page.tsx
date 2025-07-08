@@ -62,7 +62,6 @@ const UserPosts = () => {
                 rating={post.id}
                 price={post.price_daily}
                 onClick={() => router.push(`/user/posts/${post.id}`)}
-                postOwnerId={post.user_id}
                 postId={post.id}
               />
             ))}

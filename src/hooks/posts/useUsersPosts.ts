@@ -2,10 +2,11 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import AlertDefault from '@/src/components/Alert/AlertDefault'
+import { CreatePostPayload, CreatePostResponse, Post, UpdatePostPayload } from '@/src/utils/UsersPosts'
 
 const API_BASE_URL = 'http://zenlyserver.test/api'
 
-const fetchUsersPosts = async (user_id: number): Promise<any[]> => {
+const fetchUsersPosts = async (user_id: number): Promise<Post[]> => {
     const res = await fetch(`${API_BASE_URL}/posts/user/${user_id}`)
     const text = await res.text()
 
@@ -28,7 +29,7 @@ const fetchUsersPosts = async (user_id: number): Promise<any[]> => {
     }
 }
 
-const createPost = async (data: any): Promise<any> => {
+const createPost = async (data: CreatePostPayload): Promise<CreatePostResponse> => {
     const res = await fetch(`${API_BASE_URL}/posts`, {
         method: 'POST',
         headers: {
@@ -45,14 +46,15 @@ const createPost = async (data: any): Promise<any> => {
             AlertDefault.error(json.message || "Post yaratishda xatolik yuz berdi.")
             throw new Error(json.message || "Failed to create post.")
         }
-        return json
+
+        return json as CreatePostResponse
     } catch {
         AlertDefault.error("Serverdan noto'g'ri ma'lumot keldi.")
         throw new Error("Unexpected server response.")
     }
 }
 
-const updatePost = async ({ postId, data }: { postId: number, data: any }): Promise<any> => {
+const updatePost = async ({ postId, data }: { postId: number, data: UpdatePostPayload }): Promise<Post> => {
     const res = await fetch(`${API_BASE_URL}/posts/${postId}`, {
         method: 'PUT',
         headers: {

@@ -15,6 +15,8 @@ import EditGalleryForm from './EditGalleryForm'
 import AddIcon from '@mui/icons-material/Add'
 import { useUsersPosts } from '@/src/hooks/posts/useUsersPosts'
 import SelectDefault from '../FormElements/Select/SelectDefault'
+import { UpdatePostPayload } from '@/src/utils/UsersPosts'
+import { GalleryFile, GalleryImage, MainFile } from '@/src/utils/Gallery'
 
 const uzbekistanProvinces = [
     { label: 'Andijon', value: 'Andijon' },
@@ -47,18 +49,21 @@ const EditPostForm = () => {
     const [userId, setUserId] = useState<number | null>(null)
     const [createModalOpen, setCreateModalOpen] = useState(false)
 
-    const { data: posts, isLoading: isPostsLoading, error: postsError } = useUsersPosts(userId ?? 0)
+    const { data: posts, isLoading: isPostsLoading } = useUsersPosts(userId ?? 0)
     const { data: featuresList = [], deleteFeature } = useFeatures(postId)
-    const { data: galleryImages = [] } = useGalleryByPostId(postId)
+    const { data: galleryImages = [] } = useGalleryByPostId(postId) as {
+        data: GalleryImage[]
+    }
     const { editPost } = useUsersPosts(userId ?? 0)
 
-    const post = posts?.find((p: any) => p.id === postId)
+    const post = posts?.find((p) => p.id === postId)
 
-    const [mainFileList, setMainFileList] = useState<any[]>([])
-    const [galleryFileList, setGalleryFileList] = useState<any[]>([])
+    const [mainFileList, setMainFileList] = useState<MainFile[]>([])
+    const [galleryFileList, setGalleryFileList] = useState<GalleryFile[]>([])
+
     const [isInitialized, setIsInitialized] = useState(false)
 
-    const [form, setForm] = useState({
+    const [form, setForm] = useState<Omit<UpdatePostPayload, 'user_id' | 'img'>>({
         title: '',
         small_description: '',
         description: '',
@@ -92,7 +97,7 @@ const EditPostForm = () => {
                 url: post.img
             }] : [])
 
-            const galleryList = galleryImages.map((img: any) => ({
+            const galleryList = galleryImages.map((img) => ({
                 uid: `gallery-${img.id}`,
                 name: `gallery-${img.id}.png`,
                 status: 'done',
@@ -139,7 +144,8 @@ const EditPostForm = () => {
         try {
             await deleteFeature.mutateAsync(featureId)
             message.success('Sharoit o\'chirildi')
-        } catch (error) {
+        } catch (error: unknown) {
+            console.error("Sharoitni o\'chirishda xatolik:", error)
             message.error('Sharoitni o\'chirishda xatolik')
         }
     }
@@ -152,16 +158,17 @@ const EditPostForm = () => {
                 ? mainFileList[0].url.split(',')[1]
                 : mainFileList[0]?.url
 
-            const payload = {
+            const payload: UpdatePostPayload = {
                 ...form,
-                user_id: userId,
+                user_id: userId!,
                 img: imgBase64 || null
             }
 
             await editPost.mutateAsync({ postId, data: payload })
             message.success('Post yangilandi')
             router.back()
-        } catch (error) {
+        } catch (error: unknown) {
+            console.error("Postni yangilashda xatolik:", error)
             message.error('Postni yangilashda xatolik')
         }
     }
@@ -218,7 +225,7 @@ const EditPostForm = () => {
                     </div>
 
                     <div className="mt-6">
-                        <LabelDefault label="Galereya rasmlari:" htmlFor='gallery'/>
+                        <LabelDefault label="Galereya rasmlari:" htmlFor='gallery' />
                         <EditGalleryForm
                             postId={postId}
                             galleryFileList={galleryFileList}

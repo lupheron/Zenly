@@ -12,7 +12,6 @@ interface UsersPostsProps {
     price: number;
     onClick: () => void;
     customClasses?: string;
-    postOwnerId?: string;
     postId?: number;
 }
 
