@@ -48,7 +48,7 @@ const Gallery: React.FC<GalleryProps> = ({ postId, mainImg }) => {
 
     return (
         <div className="flex flex-col gap-4 items-center">
-            <div className="w-full h-64 md:h-96 relative rounded-xl overflow-hidden bg-gray-100">
+            <div className="w-full h-64 md:h-76 xl:h-96 relative rounded-xl overflow-hidden bg-gray-100">
                 {displayedImage && !imageError ? (
                     <Image
                         src={displayedImage}

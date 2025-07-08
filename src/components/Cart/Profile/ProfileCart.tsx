@@ -22,7 +22,7 @@ const ProfileCart: React.FC<ProfileCartProps> = ({ user_id }) => {
                 className='rounded-[50%]'
             />
 
-            <div className='grid grid-cols-2 gap-y-3 gap-x-7'>
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-y-3 gap-x-7'>
                 <div>
                     <h2 className='text-lg font-bold tracking-[1px]'>{data.fullname}</h2>
                     <p className='text-gray-500'>{data.username}</p>

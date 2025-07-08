@@ -34,7 +34,7 @@ const PostInfo = () => {
     const areaTitle = banners.find(b => b.id === post.area_id)?.title ?? 'Nomaʼlum tur'
 
     return (
-        <div className='w-[80%] mx-auto mt-45'>
+        <div className='w-[90%] xl:w-[80%] mx-auto mt-45'>
             <div className='cursor-pointer flex items-center' onClick={handleBack}>
                 <ArrowBackIcon />
                 <ButtonDefault
@@ -43,43 +43,43 @@ const PostInfo = () => {
                     customClasses='bg-transparent !text-black tracking-[1px] text-xl mb-5 hover:bg-transparent !px-0 !py-0 ml-2 mt-5'
                 />
             </div>
-            <div className='rounded-xl px-10 py-10 bg-light-gray'>
-                <div className="flex gap-10 mx-auto bg-white rounded-xl shadow-xl p-6">
-                    <div className='w-150 flex flex-col gap-y-5'>
+            <div className='rounded-xl px-2 xl:px-10 py-10 bg-light-gray'>
+                <div className="flex flex-col xl:flex-row gap-10 mx-auto bg-white rounded-xl shadow-xl p-6">
+                    <div className='xl:w-150 flex flex-col gap-y-5'>
                         <ProfileCart user_id={post.user_id} />
                         <Gallery postId={post.id} mainImg={post.img} />
                     </div>
                     <div className="mt-5">
                         <h1 className="text-4xl text-dark-green font-bold mt-5">{post.title}</h1>
                         <p className="text-gray-700 text-sm mt-3">{post.small_description}</p>
-                        <p className='text-gray-700 text-lg font-bold tracking-[1px] mt-5'>{post.description}</p>
+                        <p className='text-gray-700 text-md xl:text-lg font-bold tracking-[1px] mt-5'>{post.description}</p>
                         <div className='mt-5'>
                             <h1 className='text-xl text-light-green font-bold tracking-[1px] mb-2'>Mavjud Bo&apos;lgan Imkoniyatlar:</h1>
                             <Features postId={post.id} />
                         </div>
-                        <div className='grid grid-cols-2 gap-x-20 gap-y-3 mt-10 text-xl'>
-                            <div className="flex gap-3 items-center">
-                                <span className=" font-medium">Reyting:</span>
+                        <div className='grid grid-cols-2 gap-x-20 gap-y-3 mt-10 text-md xl:text-xl'>
+                            <div className="flex flex-col xl:flex-row lg:flex-row xl:items-center lg:items-center gap-3">
+                                <span className="font-medium">Reyting:</span>
                                 <Rating postId={post.id} />
                             </div>
-                            <div className='flex gap-3 items-center'>
-                                <span>Narxi:</span>
+                            <div className='flex flex-col xl:flex-row lg:flex-row xl:items-center lg:items-center gap-3'>
+                                <span className='text-bold tracking-[1px]'>Narxi:</span>
                                 <h2 className="text-gray-500 mt-1">${post.price_daily}</h2>
                             </div>
-                            <div className='flex gap-3 items-center'>
-                                <span>Manzil:</span>
+                            <div className='flex flex-col xl:flex-row lg:flex-row xl:items-center lg:items-center gap-3'>
+                                <span className='text-bold tracking-[1px]'>Manzil:</span>
                                 <h2 className="text-gray-500 mt-1">{post.location}</h2>
                             </div>
-                            <div className='flex gap-3 items-center'>
-                                <span>Odam Soni:</span>
+                            <div className='flex flex-col xl:flex-row lg:flex-row xl:items-center lg:items-center gap-3'>
+                                <span className='text-bold tracking-[1px]'>Odam Soni:</span>
                                 <h2 className="text-gray-500 mt-1">{post.members}</h2>
                             </div>
-                            <div className='flex gap-3 items-center'>
-                                <span>Maskan turi:</span>
+                            <div className='flex flex-col xl:flex-row lg:flex-row xl:items-center lg:items-center gap-3'>
+                                <span className='text-bold tracking-[1px]'>Maskan turi:</span>
                                 <h2 className="text-gray-500 mt-1">{areaTitle}</h2>
                             </div>
-                            <div className='flex gap-3 items-center'>
-                                <span>Ko&apos;rilgan Soni:</span>
+                            <div className='flex flex-col xl:flex-row lg:flex-row xl:items-center lg:items-center gap-3'>
+                                <span className='text-bold tracking-[1px]'>Ko&apos;rilgan Soni:</span>
                                 <h2 className="text-gray-500 mt-1">{post.clicked}</h2>
                             </div>
                         </div>

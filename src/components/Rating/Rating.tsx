@@ -11,12 +11,12 @@ const Rating = ({ postId }: { postId: number }) => {
     if (error || data === undefined) return <p className="text-sm text-red-500">Reyting yo'q</p>
 
     return (
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col xl:flex-row xl:items-center gap-2">
             <StarRatings
                 rating={data}
                 starRatedColor="gold"
                 numberOfStars={5}
-                starDimension="20px"
+                starDimension="17px"
                 starSpacing="2px"
                 name={`rating-${postId}`}
             />

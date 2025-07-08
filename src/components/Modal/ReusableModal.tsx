@@ -26,12 +26,10 @@ const ReusableModal: React.FC<ReusableModalProps> = ({
             onCancel={onClose}
             closable={true}
             footer={null}
-            destroyOnClose
             title={title}
             className={`!p-4 sm:!p-6 md:!p-8 !top-4 sm:!top-10 ${customeClasses}`}
             width={typeof width === 'number' ? width : '90%'} 
             style={{ maxWidth: '750px', margin: '0 auto' }} 
-            bodyStyle={{ padding: '1rem' }}
         >
             {children}
         </Modal>

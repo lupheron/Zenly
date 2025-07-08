@@ -26,7 +26,7 @@ const Features: React.FC<FeatureProps> = ({ postId }) => {
 
     return (
         <div>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-2">
                 {firstSix.map((feature, index) => (
                     <div key={index} className="flex gap-3 p-2 border rounded">
                         <CheckCircleIcon className='text-green-600' />
@@ -36,7 +36,7 @@ const Features: React.FC<FeatureProps> = ({ postId }) => {
             </div>
 
             {showAll && remaining.length > 0 && (
-                <div className="grid grid-cols-2 gap-2 mt-2">
+                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-2 mt-2">
                     {remaining.map((feature, index) => (
                         <div key={index + 6} className="flex gap-3 p-2 border rounded">
                             <CheckCircleIcon className='text-green-600' />
