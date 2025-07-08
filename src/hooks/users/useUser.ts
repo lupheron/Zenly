@@ -10,6 +10,7 @@ export interface User {
     phone: string
     address: string
     img: string
+    type?: number
 }
 
 export class ApiError extends Error {

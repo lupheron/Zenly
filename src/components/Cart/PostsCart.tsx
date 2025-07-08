@@ -2,6 +2,7 @@ import Image from 'next/image'
 import React from 'react'
 import ButtonDefault from '../Button/ButtonDefault'
 import Rating from '../Rating/Rating'
+import { User } from '@/src/hooks/users/useUser'
 
 interface PostsCartProps {
     src: string
@@ -35,19 +36,42 @@ const PostsCart: React.FC<PostsCartProps> = ({
 
     const formattedSrc = formatImageUrl(src)
 
-    const handleReadMoreClick = () => {
-        const loggedInUserId = localStorage.getItem('user_id')
+    const handleReadMoreClick = async () => {
+        try {
+            const userId = localStorage.getItem('user_id')
 
-        if (!loggedInUserId && postId) {
-            fetch(`http://zenlyserver.test/api/posts/${postId}/increase-interest`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ increaseClicked: true }),
-            })
+            if (!userId && postId) {
+                await fetch(`http://zenlyserver.test/api/posts/${postId}/increase-interest`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ increaseClicked: true }),
+                })
+            }
+
+            if (userId && postId) {
+                const res = await fetch(`http://zenlyserver.test/api/user/${userId}`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                })
+
+                if (res.ok) {
+                    const userData: User = await res.json()
+                    if (userData.type === 1) {
+                        await fetch(`http://zenlyserver.test/api/posts/${postId}/increase-interest`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ increaseClicked: true }),
+                        })
+                    }
+                }
+            }
+
+            onClick()
+        } catch (error) {
+            console.error("Error handling post interest:", error)
         }
-
-        onClick()
     }
+
 
     return (
         <div className={`w-full bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 ${customClasses}`}>
