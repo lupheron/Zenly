@@ -186,7 +186,6 @@ const NavbarSection = () => {
                 </div>
             </div>
 
-            {/* Modal */}
             {showModal && (
                 <ReusableModal
                     open={showModal}
