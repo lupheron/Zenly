@@ -154,14 +154,15 @@ const EditPostForm = () => {
         e.preventDefault()
 
         try {
-            const imgBase64 = mainFileList[0]?.url?.startsWith('data:image')
-                ? mainFileList[0].url.split(',')[1]
-                : mainFileList[0]?.url
+            const imgBase64 =
+                mainFileList[0]?.url?.startsWith('data:image')
+                    ? mainFileList[0].url.split(',')[1]
+                    : null 
 
             const payload: UpdatePostPayload = {
                 ...form,
                 user_id: userId!,
-                img: imgBase64 || null
+                img: imgBase64 
             }
 
             await editPost.mutateAsync({ postId, data: payload })
@@ -172,6 +173,7 @@ const EditPostForm = () => {
             message.error('Postni yangilashda xatolik')
         }
     }
+
 
     if (isPostsLoading || !isInitialized) {
         return (
