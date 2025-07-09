@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 export interface Post {
     id: number
     title: string
+    user_id: number
 }
 
 const fetchPosts = async (): Promise<Post[]> => {
