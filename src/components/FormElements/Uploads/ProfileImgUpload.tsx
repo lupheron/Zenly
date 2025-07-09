@@ -5,7 +5,7 @@ import type { GetProp, UploadFile, UploadProps } from 'antd';
 import Cropper from 'react-easy-crop';
 import ButtonDefault from '../../Button/ButtonDefault';
 import { cropImage } from '@/src/utils/cropImage';
-import { Area } from 'react-easy-crop'
+import { Area } from 'react-easy-crop';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 

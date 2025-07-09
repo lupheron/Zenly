@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import AlertDefault from '@/src/components/Alert/AlertDefault'
+import { ApiError } from '@/src/utils/ApiError'
 
 export interface Feature {
     id: number
@@ -19,8 +20,10 @@ const fetchFeatures = async (post_id: number): Promise<Feature[]> => {
     const responseData = await res.json()
 
     if (!res.ok) {
-        AlertDefault.error("Imkoniyatlarni olishda xatolik yuz berdi.")
-        throw new Error(responseData.message || "Failed to fetch features.")
+        throw new ApiError(
+            responseData.message || "Imkoniyatlarni olishda xatolik yuz berdi.",
+            res.status
+        )
     }
 
     return responseData.data
@@ -34,8 +37,7 @@ const createFeature = async (data: FeaturePayload): Promise<Feature> => {
     })
 
     if (!res.ok) {
-        AlertDefault.error("Imkoniyat yaratishda xatolik yuz berdi.")
-        throw new Error('Failed to create feature')
+        throw new ApiError("Imkoniyat yaratishda xatolik yuz berdi.", res.status)
     }
 
     return res.json()
@@ -47,8 +49,7 @@ const deleteFeature = async (featureId: number) => {
     })
 
     if (!res.ok) {
-        AlertDefault.error("Imkoniyatni o'chirishda xatolik yuz berdi.")
-        throw new Error('Failed to delete feature')
+        throw new ApiError("Imkoniyatni o'chirishda xatolik yuz berdi.", res.status)
     }
 
     return res.json()

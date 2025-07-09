@@ -34,6 +34,8 @@ const CreateFeatureForm: React.FC<CreateFeatureFormProps> = ({ postId, onClose }
     return (
         <div>
             <InputDefault
+                type="text"
+                name="featureName"
                 placeholder="Imkoniyat nomi"
                 value={name}
                 onChange={(e) => setName(e.target.value)}

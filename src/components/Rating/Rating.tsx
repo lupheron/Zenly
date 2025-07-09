@@ -8,7 +8,7 @@ const Rating = ({ postId }: { postId: number }) => {
     const { data, isLoading, error } = usePostRating(postId)
 
     if (isLoading) return <p className="text-sm text-gray-400">Yuklanmoqda...</p>
-    if (error || data === undefined) return <p className="text-sm text-red-500">Reyting yo'q</p>
+    if (error || data === undefined) return <p className="text-sm text-red-500">Reyting yo&apos;q</p>
 
     return (
         <div className="flex flex-col xl:flex-row xl:items-center gap-2">

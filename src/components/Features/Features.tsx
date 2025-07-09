@@ -2,7 +2,8 @@
 
 import { useFeatures } from '@/src/hooks/features/useFeatures'
 import React, { useState } from 'react'
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import { ApiError } from '@/src/utils/ApiError'
 
 interface FeatureProps {
     postId: number
@@ -13,15 +14,15 @@ const Features: React.FC<FeatureProps> = ({ postId }) => {
     const [showAll, setShowAll] = useState(false)
 
     if (isLoading) return <div>Loading...</div>
-    if (error) {
-        if (error.status === 404) {
-            return <div>{error.message}</div>;
-        }
-        return <div>Error loading features.</div>;
+
+    if (error instanceof ApiError && error.status === 404) {
+        return <div>{error.message}</div>
     }
+
+    if (error) return <div>Error loading features.</div>
     if (!features || features.length === 0) return <div>No features available.</div>
 
-    const firstSix = features.slice(0, 6)
+    const firstSix = features.slice(0, 6)   
     const remaining = features.slice(6)
 
     return (
@@ -29,7 +30,7 @@ const Features: React.FC<FeatureProps> = ({ postId }) => {
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-2">
                 {firstSix.map((feature, index) => (
                     <div key={index} className="flex gap-3 p-2 border rounded">
-                        <CheckCircleIcon className='text-green-600' />
+                        <CheckCircleIcon className="text-green-600" />
                         {feature.name}
                     </div>
                 ))}
@@ -39,7 +40,7 @@ const Features: React.FC<FeatureProps> = ({ postId }) => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-2 mt-2">
                     {remaining.map((feature, index) => (
                         <div key={index + 6} className="flex gap-3 p-2 border rounded">
-                            <CheckCircleIcon className='text-green-600' />
+                            <CheckCircleIcon className="text-green-600" />
                             {feature.name}
                         </div>
                     ))}
