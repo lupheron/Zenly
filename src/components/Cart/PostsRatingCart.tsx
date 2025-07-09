@@ -33,7 +33,7 @@ const PostsRatingCart = () => {
                     <div key={post.id} className="border p-4 rounded mb-3">
                         <div className="flex items-center justify-between">
                             <h2 className="text-lg font-medium">{post.title}</h2>
-                            <Rating postId={post.id} userId={user_id} />
+                            <Rating postId={post.id} />
                         </div>
                     </div>
                 ))
