@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
 import SearchPosts from '../search/SearchPosts';
-import PostsContainer from './page';
+import PostsContainer from './PostsContainer';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import Drawer from '@mui/material/Drawer';
 import Filter from '../../filters/Filter';
