@@ -61,7 +61,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSearch }) => {
                 }}
                 className="flex flex-col md:flex-row h-auto md:h-30 items-center justify-between p-4 md:px-6 lg:px-10 bg-white rounded-lg shadow-sm gap-4 md:gap-0"
             >
-                <div className="w-full md:w-auto md:px-4 lg:px-5 md:w-60">
+                <div className="w-full md:px-4 lg:px-5 md:w-60">
                     <SelectDefault
                         label="Shahar"
                         htmlFor="region"
