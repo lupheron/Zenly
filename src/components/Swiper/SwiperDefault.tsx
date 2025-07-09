@@ -1,6 +1,8 @@
 import React, { ReactNode } from 'react';
 import { Swiper, SwiperSlide, SwiperProps } from 'swiper/react';
 import { FreeMode, Pagination, Autoplay } from 'swiper/modules';
+import type { SwiperOptions } from 'swiper/types';
+
 import 'swiper/css';
 import 'swiper/css/free-mode';
 import 'swiper/css/pagination';
@@ -12,7 +14,7 @@ interface CustomSwiperProps extends Omit<SwiperProps, 'children'> {
     spaceBetween?: number;
     freeMode?: boolean;
     pagination?: boolean | { clickable?: boolean };
-    modules?: any[];
+    modules?: SwiperOptions['modules'];
     className?: string;
 }
 
@@ -41,7 +43,7 @@ const SwiperDefault: React.FC<CustomSwiperProps> = ({
             {...props}
         >
             {React.Children.map(children, (child, index) => (
-                <SwiperSlide key={index} className='px-5'>{child}</SwiperSlide>
+                <SwiperSlide key={index} className="px-5">{child}</SwiperSlide>
             ))}
         </Swiper>
     );

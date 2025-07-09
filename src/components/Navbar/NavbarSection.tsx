@@ -27,6 +27,8 @@ const NavbarSection = () => {
     }, []);
 
     const TypeChecking = () => {
+        if (!data) return;
+
         if (data.type !== 0) {
             setShowModal(true);
         } else {
@@ -73,7 +75,7 @@ const NavbarSection = () => {
                                 className="cursor-pointer"
                             >
                                 <Image
-                                    src={data?.img}
+                                    src={data?.img ?? ""}
                                     alt="Profile"
                                     width={60}
                                     height={60}
@@ -153,7 +155,7 @@ const NavbarSection = () => {
                                 className="flex items-center space-x-3 cursor-pointer"
                             >
                                 <Image
-                                    src={data?.img}
+                                    src={data?.img ?? ""}
                                     alt="Profile"
                                     width={50}
                                     height={50}

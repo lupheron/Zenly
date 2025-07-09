@@ -55,7 +55,7 @@ const PageFooter = () => {
                             alt="Zenly Logo"
                         />
                         <p className="text-lg sm:text-xl md:text-lg mt-4 max-w-[400px]">
-                            Zenly — tabiat qo'ynida hordiq chiqarish joylari va hashamatli maskanlar toping.
+                            Zenly — tabiat qo&apos;ynida hordiq chiqarish joylari va hashamatli maskanlar toping.
                         </p>
                         <div className="flex gap-3 mt-6">
                             {smData.map((item, index) => (
