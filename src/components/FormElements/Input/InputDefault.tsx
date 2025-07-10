@@ -10,6 +10,7 @@ interface InputProps {
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     value?: string | number; 
     checked?: boolean;
+    maxLength?: number;
 }
 
 const InputDefault: React.FC<InputProps> = ({
@@ -21,7 +22,8 @@ const InputDefault: React.FC<InputProps> = ({
     type,
     placeholder = "",
     value,
-    checked
+    checked,
+    maxLength
 }) => {
     return (
         <div className={`${customClasses} flex items-center justify-center`}>
@@ -34,6 +36,7 @@ const InputDefault: React.FC<InputProps> = ({
                 checked={checked}
                 placeholder={placeholder}
                 required={required}
+                maxLength={maxLength}
                 className={`bg-light-gray px-5 py-5 border-none rounded text-black w-full h-[45px] focus:outline-none ${customClasses}`}
             />
         </div>

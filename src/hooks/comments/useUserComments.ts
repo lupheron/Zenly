@@ -10,7 +10,7 @@ interface Comment {
 }
 
 const fetchUserComments = async (user_id: string): Promise<Comment[]> => {
-    const res = await fetch(`http://zenlyserver.test/api/comments/${user_id}`, {
+    const res = await fetch(`http://zenlyserver.test/api/post-comments/${user_id}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
