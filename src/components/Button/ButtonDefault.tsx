@@ -20,7 +20,7 @@ const ButtonDefault: React.FC<ButtonProps> = ({
     const defaultClasses =
         "px-4 py-2 rounded-4xl text-white font-mulish font-semibold transition duration-300 outline-none";
     const disabledClasses = "bg-gray cursor-not-allowed";
-    const enabledClasses = "bg-light-green hover:bg-orange px-8";
+    const enabledClasses = "bg-light-green px-8";
 
     return (
         <button

@@ -9,6 +9,7 @@ import Features from '@/src/components/Features/Features'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { usePostById } from '@/src/hooks/posts/usePostsById'
 import ProfileCart from '@/src/components/Cart/Profile/ProfileCart'
+import LargeContainer from '@/src/components/Containers/LargeContainer'
 
 const PostInfo = () => {
     const params = useParams()
@@ -44,12 +45,12 @@ const PostInfo = () => {
                 />
             </div>
             <div className='rounded-xl px-2 xl:px-10 py-10 bg-light-gray'>
-                <div className="flex flex-col xl:flex-row gap-10 mx-auto bg-white rounded-xl shadow-xl p-6">
+                <LargeContainer className="flex items-center flex-col xl:flex-row gap-10 mx-auto">
                     <div className='xl:w-150 flex flex-col gap-y-5'>
                         <ProfileCart user_id={post.user_id} />
                         <Gallery postId={post.id} mainImg={post.img} />
                     </div>
-                    <div className="mt-5">
+                    <div className="mt-5 w-200">
                         <h1 className="text-4xl text-dark-green font-bold mt-5">{post.title}</h1>
                         <p className="text-gray-700 text-sm mt-3">{post.small_description}</p>
                         <p className='text-gray-700 text-md xl:text-lg font-bold tracking-[1px] mt-5'>{post.description}</p>
@@ -83,14 +84,20 @@ const PostInfo = () => {
                                 <h2 className="text-gray-500 mt-1">{post.clicked}</h2>
                             </div>
                         </div>
-                        <ButtonDefault
-                            label="Komentlarni ko'rish"
-                            customClasses='!bg-orange-500 !rounded-lg !cursor-auto !text-sm mt-5 w-full'
-                        />
+                        <div className='flex items-center gap-5'>
+                            <ButtonDefault
+                                label="Bron qilish"
+                                customClasses='!rounded-lg !cursor-pointer !text-sm mt-5 w-full'
+                            />
+                            <ButtonDefault
+                                label="Komentlarni ko'rish"
+                                customClasses='!bg-orange-500 !rounded-lg !cursor-pointer !text-sm mt-5 w-full'
+                            />
+                        </div>
                     </div>
-                </div>
+                </LargeContainer>
             </div>
-        </div>
+        </div >
     )
 }
 
