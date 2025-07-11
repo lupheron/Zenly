@@ -6,7 +6,7 @@ import InputDefault from '../../FormElements/Input/InputDefault'
 import ButtonDefault from '../../Button/ButtonDefault'
 import AlertDefault from '../../Alert/AlertDefault'
 import { useRouter } from 'next/navigation'
-import { useWebComment } from '@/src/hooks/comments/useWebComments'
+import { useWebComments } from '@/src/hooks/comments/useWebComments'
 
 interface FormData {
     user_id: number
@@ -21,7 +21,7 @@ interface WebCommentProps {
 
 const WebComment = ({ onSuccess }: WebCommentProps) => {
     const router = useRouter()
-    const { submitComment } = useWebComment()
+    const { submitComment } = useWebComments()
 
     const [formData, setFormData] = useState<FormData>({
         user_id: 0,
@@ -62,7 +62,7 @@ const WebComment = ({ onSuccess }: WebCommentProps) => {
         setLoading(true)
 
         try {
-            await submitComment(formData)
+            await submitComment (formData)
 
             AlertDefault.success("Sizning fikringiz muvaffaqiyatli yuborildi!")
 
