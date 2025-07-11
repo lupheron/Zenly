@@ -73,7 +73,7 @@ const WebComment = ({ onSuccess }: WebCommentProps) => {
                 comment: '',
             })
 
-            onSuccess() // ✅ Close the modal
+            onSuccess() 
         } catch (error: unknown) {
             if (typeof error === 'object' && error !== null && 'status' in error && 'message' in error) {
                 const { status, message } = error as { status: number; message: string }

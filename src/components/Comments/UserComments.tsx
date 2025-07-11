@@ -39,7 +39,6 @@ const UserComments = () => {
                         data?.map((comment, index) => (
                             <CommentCart
                                 key={index}
-                                comTitle={comment.postTitle}
                                 comment={comment.text}
                                 nameTitle={comment.name}
                             />

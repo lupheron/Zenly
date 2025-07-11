@@ -4,3 +4,10 @@ export interface WebComment {
     fullname: string,
     comment: string
 }
+
+export interface PostComment {
+    user_id: number,
+    post_id: number,
+    name: string,
+    text: string
+}

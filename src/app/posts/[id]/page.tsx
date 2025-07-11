@@ -3,17 +3,20 @@
 import { useParams } from 'next/navigation'
 import Gallery from '@/src/components/gallery/Gallery'
 import Rating from '@/src/components/Rating/Rating'
-import React from 'react'
+import React, { useState } from 'react'
 import ButtonDefault from '@/src/components/Button/ButtonDefault'
 import Features from '@/src/components/Features/Features'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { usePostById } from '@/src/hooks/posts/usePostsById'
 import ProfileCart from '@/src/components/Cart/Profile/ProfileCart'
 import LargeContainer from '@/src/components/Containers/LargeContainer'
+import ReusableModal from '@/src/components/Modal/ReusableModal'
+import PostComments from '@/src/components/Forms/Comments/PostComments'
 
 const PostInfo = () => {
     const params = useParams()
     const postId = Number(params?.id)
+    const [openModal, setOpenModal] = useState(false)
 
     const banners = [
         { id: 1, title: 'Plyajdagi dam olish' },
@@ -87,16 +90,29 @@ const PostInfo = () => {
                         <div className='flex items-center gap-5'>
                             <ButtonDefault
                                 label="Bron qilish"
-                                customClasses='!rounded-lg !cursor-pointer !text-sm mt-5 w-full'
+                                customClasses='h-12 !rounded-lg !cursor-pointer !text-sm mt-5 w-full'
                             />
                             <ButtonDefault
                                 label="Komentlarni ko'rish"
-                                customClasses='!bg-orange-500 !rounded-lg !cursor-pointer !text-sm mt-5 w-full'
+                                customClasses='h-12 !bg-orange-500 !rounded-lg !cursor-pointer !text-sm mt-5 w-full'
                             />
                         </div>
+                        <ButtonDefault
+                            label="Fikr qoldirish"
+                            customClasses='w-full h-12 mt-5 !rounded-lg !cursor-pointer bg-purple-500'
+                            onClick={() => setOpenModal(true)}
+                        />
                     </div>
                 </LargeContainer>
             </div>
+
+            <ReusableModal
+                open={openModal}
+                onClose={() => setOpenModal(false)}
+                title='Manzil haqida fikringiz'
+            >
+                <PostComments post_id={post.id} onClose={() => setOpenModal(false)} />
+            </ReusableModal>
         </div >
     )
 }
