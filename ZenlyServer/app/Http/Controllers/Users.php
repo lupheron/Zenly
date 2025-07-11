@@ -1,0 +1,220 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+
+class Users extends Controller
+{
+    public function index()
+    {
+        $users = DB::table("users")->get();
+        return $users;
+    }
+
+    public function getUsersById($id)
+    {
+        $user = DB::table("users")->where("id", $id)->first();
+        if ($user) {
+            return response()->json($user);
+        } else {
+            return response()->json([
+                "message" => "User not found",
+                "status" => 404
+            ], 404);
+        }
+    }
+
+    public function register(Request $request)
+    {
+        $existingUser = DB::table('users')->where('username', $request['username'])->first();
+
+        if ($existingUser) {
+            return response()->json([
+                "message" => "Username already exists",
+                "status" => 409
+            ], 409);
+        }
+
+        $imgPath = null;
+
+        if ($request->hasFile('img')) {
+            $username = $request['username'];
+            $uploadPath = public_path('uploads/' . $username);
+
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0777, true);
+            }
+
+            $file = $request->file('img');
+            $filename = $username . '_' . time() . '_' . uniqid() . '_user_' . $file->getClientOriginalName();
+            $file->move($uploadPath, $filename);
+            $imgPath = 'uploads/' . $username . '/' . $filename;
+        } else {
+            $imgPath = $request["img"] ?? null;
+        }
+
+        $users = DB::table('users')->insertOrIgnore([
+            "fullname" => $request["fullname"],
+            "username" => $request["username"],
+            "img" => $imgPath,
+            "phone" => $request["phone"],
+            "address" => $request["address"],
+            "vip_status" => $request["vip_status"],
+            "password" => Hash::make($request["password"]),
+            "type" => $request["type"],
+            "created_at" => Carbon::now(),
+        ]);
+
+        if ($users) {
+            return response()->json([
+                "message" => "User registered successfully",
+                "status" => 200
+            ]);
+        } else {
+            return response()->json([
+                "message" => "Registration failed or user already exists",
+                "status" => 500
+            ]);
+        }
+    }
+
+    public function login(Request $request)
+    {
+        $user = DB::table("users")->where("username", $request["username"])->first();
+
+        if (!$user) {
+            return response()->json([
+                "message" => "Bunday foydalanuvchi topilmadi!",
+                "status" => 401
+            ], 401);
+        }
+
+        if ($user->deleted_at !== null) {
+            return response()->json([
+                "message" => "Bu foydalanuvchi o'chirilgan!",
+                "status" => 403
+            ], 403);
+        }
+
+        if (Hash::check($request["password"], $user->password)) {
+            $token = Hash::make($request["username"] . $request["password"]);
+            $updated = DB::table("users")->where("id", $user->id)->update([
+                "remember_token" => $token
+            ]);
+
+            if ($updated) {
+                return response()->json([
+                    "message" => "Muvaffaqiyatli kirish!",
+                    "remember_token" => $token,
+                    "id" => $user->id,
+                    "user" => $user
+                ]);
+            } else {
+                return response()->json([
+                    "message" => "Tokenni yaratishda xatolik!",
+                    "status" => 500
+                ], 500);
+            }
+        } else {
+            return response()->json([
+                "message" => "Noto'g'ri parol!",
+                "status" => 401
+            ], 401);
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        $existingUser = DB::table('users')
+            ->where('username', $request['username'])
+            ->where('id', '!=', $id)
+            ->first();
+
+        if ($existingUser) {
+            return response()->json([
+                "message" => "Username already exists",
+                "status" => 409
+            ], 409);
+        }
+
+        $user = DB::table("users")->where("id", $id)->first();
+        if (!$user) {
+            return response()->json([
+                "message" => "User not found",
+                "status" => 404
+            ], 404);
+        }
+
+        $imgPath = $user->img;
+
+        if ($request->hasFile('img')) {
+            $username = $request["username"] ?? $user->username;
+            $uploadPath = public_path('uploads/' . $username);
+
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0777, true);
+            }
+
+            if ($imgPath && file_exists(public_path($imgPath))) {
+                unlink(public_path($imgPath));
+            }
+
+            $file = $request->file('img');
+            $filename = $username . '_' . time() . '_' . uniqid() . '_user_' . $file->getClientOriginalName();
+            $file->move($uploadPath, $filename);
+            $imgPath = 'uploads/' . $username . '/' . $filename;
+        } else if ($request->filled('img')) {
+            $imgPath = $request["img"];
+        }
+
+        $updated = DB::table("users")->where("id", $id)->update([
+            "fullname" => $request["fullname"],
+            "username" => $request["username"],
+            "img" => $imgPath,
+            "phone" => $request["phone"],
+            "address" => $request["address"],
+            "updated_at" => Carbon::now(),
+        ]);
+
+        if ($updated) {
+            return response()->json([
+                "message" => "User updated successfully",
+                "status" => 200
+            ]);
+        } else {
+            return response()->json([
+                "message" => "Failed to update user",
+                "status" => 500
+            ], 500);
+        }
+    }
+
+    public function delete($id)
+    {
+        DB::table("posts")->where("user_id", $id)->delete();
+        DB::table("rating")->where("user_id", $id)->delete();
+        DB::table("gallery")->where("user_id", $id)->delete();
+        DB::table("features")->where("user_id", $id)->delete();
+        DB::table("post_comments")->where("user_id", $id)->delete();
+
+        $user = DB::table("users")->where("id", $id)->update([
+            'deleted_at' => Carbon::now()
+        ]);
+
+        if ($user) {
+            return response()->json([
+                "message" => "User deleted successfully",
+                "status" => 200
+            ]);
+        } else {
+            return response()->json([
+                "message" => "Failed to delete user",
+                "status" => 500
+            ], 500);
+        }
+    }
+}

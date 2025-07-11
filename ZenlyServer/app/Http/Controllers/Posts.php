@@ -1,0 +1,355 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
+class Posts extends Controller
+{
+    public function index(Request $request)
+    {
+        $query = DB::table("posts")
+            ->select(
+                "posts.*",
+                DB::raw("AVG(rating.rating) as avg_rating"),
+                DB::raw("COUNT(DISTINCT post_comments.id) as comment_count")
+            )
+            ->leftJoin('rating', 'rating.post_id', '=', 'posts.id')
+            ->leftJoin('post_comments', 'post_comments.post_id', '=', 'posts.id')
+            ->groupBy('posts.id');
+
+        if ($request->has('area_id')) {
+            $query->where('area_id', $request->input('area_id'));
+        }
+
+        $posts = $query->get();
+
+        foreach ($posts as $post) {
+            $post->img = $post->img ? asset($post->img) : null;
+
+            $post->features = DB::table('features')->where('post_id', $post->id)->get();
+            $post->gallery = DB::table('gallery')->where('post_id', $post->id)->get()->map(function ($item) {
+                $item->img = asset($item->img);
+                return $item;
+            });
+        }
+
+        return response()->json([
+            "message" => "Posts fetched successfully",
+            "status" => 200,
+            "data" => $posts
+        ]);
+    }
+
+    public function getPostsByUserId($id)
+    {
+        $posts = DB::table("posts")
+            ->select(
+                "posts.*",
+                DB::raw("AVG(rating.rating) as avg_rating"),
+                DB::raw("COUNT(DISTINCT post_comments.id) as comment_count")
+            )
+            ->leftJoin('rating', 'rating.post_id', '=', 'posts.id')
+            ->leftJoin('post_comments', 'post_comments.post_id', '=', 'posts.id')
+            ->where("posts.user_id", $id)
+            ->groupBy('posts.id')
+            ->get();
+
+        if ($posts->isEmpty()) {
+            return response()->json([
+                "message" => "No posts found for this user",
+                "status" => 404
+            ], 404);
+        }
+
+        foreach ($posts as $post) {
+            $post->img = $post->img ? asset($post->img) : null;
+
+            $post->features = DB::table('features')->where('post_id', $post->id)->get();
+            $post->gallery = DB::table('gallery')->where('post_id', $post->id)->get()->map(function ($item) {
+                $item->img = asset($item->img);
+                return $item;
+            });
+        }
+
+        return response()->json([
+            "message" => "Posts fetched successfully",
+            "status" => 200,
+            "data" => $posts
+        ]);
+    }
+
+    public function getPostById($id)
+    {
+        $post = DB::table("posts")
+            ->select(
+                "posts.*",
+                DB::raw("AVG(rating.rating) as avg_rating"),
+                DB::raw("COUNT(DISTINCT post_comments.id) as comment_count")
+            )
+            ->leftJoin('rating', 'rating.post_id', '=', 'posts.id')
+            ->leftJoin('post_comments', 'post_comments.post_id', '=', 'posts.id')
+            ->where("posts.id", $id)
+            ->groupBy('posts.id')
+            ->first();
+
+        if (!$post) {
+            return response()->json([
+                "message" => "Post not found",
+                "status" => 404
+            ], 404);
+        }
+
+        $post->img = $post->img ? asset($post->img) : null;
+
+        $post->features = DB::table('features')->where('post_id', $post->id)->get();
+        $post->gallery = DB::table('gallery')->where('post_id', $post->id)->get()->map(function ($item) {
+            $item->img = asset($item->img);
+            return $item;
+        });
+
+        return response()->json([
+            "message" => "Post fetched successfully",
+            "status" => 200,
+            "data" => $post
+        ]);
+    }
+
+    public function filter(Request $request)
+    {
+        $amenities = $request->input('amenities', []);
+        $location = $request->input('location');
+        $sort = $request->input('sort');
+        $guests = $request->input('guests');
+        $areaId = $request->input('area_id'); // Add this line to get area_id
+
+        $query = DB::table('posts')
+            ->select(
+                'posts.*',
+                DB::raw('AVG(rating.rating) as avg_rating'),
+                DB::raw('COUNT(DISTINCT post_comments.id) as comment_count')
+            )
+            ->leftJoin('rating', 'rating.post_id', '=', 'posts.id')
+            ->leftJoin('post_comments', 'post_comments.post_id', '=', 'posts.id')
+            ->leftJoin('features', 'posts.id', '=', 'features.post_id')
+            ->groupBy('posts.id');
+
+        // Add area_id filter if provided
+        if ($areaId) {
+            $query->where('posts.area_id', $areaId);
+        }
+
+        // Existing filters...
+        if ($location) {
+            $query->where('posts.location', $location);
+        }
+
+        if (!empty($amenities)) {
+            $query->whereIn('features.name', $amenities)
+                ->havingRaw('COUNT(features.id) = ?', [count($amenities)]);
+        }
+
+        if ($guests) {
+            $query->where('posts.members', '>=', $guests);
+        }
+
+        if ($sort) {
+            switch ($sort) {
+                case 'rating':
+                    $query->orderByDesc('avg_rating');
+                    break;
+                case 'price_low':
+                    $query->orderBy('posts.price_daily', 'asc');
+                    break;
+                case 'price_high':
+                    $query->orderBy('posts.price_daily', 'desc');
+                    break;
+                case 'recent':
+                    $query->orderByDesc('posts.created_at');
+                    break;
+            }
+        }
+
+        $posts = $query->get();
+
+        foreach ($posts as $post) {
+            $post->img = $post->img ? asset($post->img) : null;
+            $post->features = DB::table('features')->where('post_id', $post->id)->get();
+            $post->gallery = DB::table('gallery')->where('post_id', $post->id)->get()->map(function ($item) {
+                $item->img = asset($item->img);
+                return $item;
+            });
+        }
+
+        return response()->json([
+            "message" => "Filtered posts fetched successfully",
+            "status" => 200,
+            "data" => $posts
+        ]);
+    }
+
+    public function create(Request $request)
+    {
+        $user = DB::table('users')->where('id', $request->input('user_id'))->first();
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $imgPath = null;
+        if ($request->has('img') && $request->input('img')) {
+            $base64Image = $request->input('img');
+            $username = $user->username;
+            $uploadPath = public_path('uploads/' . $username);
+
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0777, true);
+            }
+
+            $filename = $username . '_' . time() . '_' . uniqid() . '_post.jpg';
+            $filePath = 'uploads/' . $username . '/' . $filename;
+
+            $imageData = base64_decode($base64Image);
+            file_put_contents(public_path($filePath), $imageData);
+            $imgPath = $filePath;
+        }
+
+        $postId = DB::table("posts")->insertGetId([
+            "area_id" => $request["area_id"],
+            "title" => $request->input('title'),
+            "description" => $request->input('description'),
+            "small_description" => $request->input('small_description'),
+            "location" => $request->input('location'),
+            "members" => $request->input('members'),
+            "price_daily" => $request->input('price_daily'),
+            "user_id" => $user->id,
+            "img" => $imgPath,
+            "created_at" => Carbon::now()
+        ]);
+
+        return response()->json([
+            "message" => "Post created successfully",
+            "status" => 201,
+            "post_id" => $postId
+        ]);
+    }
+
+    public function update(Request $request, $post_id)
+    {
+        $post = DB::table('posts')->where('id', $post_id)->first();
+
+        if (!$post) {
+            return response()->json(['message' => 'Post not found'], 404);
+        }
+
+        $user = DB::table('users')->where('id', $post->user_id)->first();
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $imgPath = $post->img;
+
+        if ($request->has('img') && $request->input('img')) {
+            $base64Image = $request->input('img');
+
+            if ($imgPath && file_exists(public_path($imgPath))) {
+                unlink(public_path($imgPath));
+            }
+
+            $username = $user->username;
+            $uploadPath = public_path('uploads/' . $username);
+
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0777, true);
+            }
+
+            $filename = $username . '_' . time() . '_' . uniqid() . '_post.jpg';
+            $filePath = 'uploads/' . $username . '/' . $filename;
+
+            $imageData = base64_decode($base64Image);
+            file_put_contents(public_path($filePath), $imageData);
+            $imgPath = $filePath;
+        }
+
+        $updated = DB::table("posts")
+            ->where("id", $post_id)
+            ->update([
+                "area_id" => $request["area_id"],
+                "title" => $request->input('title'),
+                "description" => $request->input('description'),
+                "small_description" => $request->input('small_description'),
+                "description" => $request->input('description'),
+                "location" => $request->input('location'),
+                "members" => $request->input('members'),
+                "price_daily" => $request->input('price_daily'),
+                "img" => $imgPath,
+                "clicked" => $request["clicked"],
+                "updated_at" => Carbon::now()
+            ]);
+
+        if ($updated) {
+            return response()->json(["message" => "Post updated successfully", "status" => 200]);
+        } else {
+            return response()->json(["message" => "Post update failed or no changes made", "status" => 500]);
+        }
+    }
+
+    public function increaseInterest(Request $request, $post_id)
+    {
+        $post = DB::table('posts')->where('id', $post_id)->first();
+
+        if (!$post) {
+            return response()->json(['message' => 'Post not found'], 404);
+        }
+
+        // Optional: Use token-based auth to get logged-in user
+        $userId = $request->header('user_id'); // Or use $request->user()->id if using auth
+
+        if ($userId == $post->user_id) {
+            return response()->json(['message' => 'Owner view ignored']);
+        }
+
+        DB::table('posts')
+            ->where('id', $post_id)
+            ->update([
+                'clicked' => $post->clicked + 1
+            ]);
+
+        return response()->json(['message' => 'Interest count increased']);
+    }
+
+    public function delete($id)
+    {
+        $post = DB::table("posts")->where("id", $id)->first();
+
+        if (!$post) {
+            return response()->json([
+                "message" => "Post not found",
+                "status" => 404
+            ]);
+        }
+
+        DB::transaction(function () use ($id, $post) {
+
+            // Delete related data based on post_id
+            DB::table("rating")->where("post_id", $id)->delete();
+            DB::table("gallery")->where("post_id", $id)->delete();
+            DB::table("features")->where("post_id", $id)->delete();
+            DB::table("post_comments")->where("post_id", $id)->delete();
+
+            // Delete image if exists
+            if ($post->img && file_exists(public_path($post->img))) {
+                unlink(public_path($post->img));
+            }
+
+            // Delete the post
+            DB::table("posts")->where("id", $id)->delete();
+        });
+
+        return response()->json([
+            "message" => "Post deleted successfully",
+            "status" => 200
+        ]);
+    }
+}
