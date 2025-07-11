@@ -8,8 +8,10 @@ interface GalleryImage {
     img: string
 }
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_APP_BASE_API_URL
+
 const fetchGalleryByPostId = async (postId: number): Promise<GalleryImage[]> => {
-    const res = await fetch(`http://zenlyserver.test/api/gallery/${postId}`)
+    const res = await fetch(`${API_BASE_URL}/gallery/${postId}`)
     const responseData = await res.json()
 
     if (!res.ok) {
@@ -18,7 +20,7 @@ const fetchGalleryByPostId = async (postId: number): Promise<GalleryImage[]> => 
 
     return responseData.data.map((img: GalleryImage) => ({
         ...img,
-        img: img.img.startsWith('http') ? img.img : `http://zenlyserver.test${img.img}`
+        img: img.img.startsWith('http') ? img.img : `${API_BASE_URL}${img.img}`
     }))
 }
 

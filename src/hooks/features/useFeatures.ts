@@ -15,8 +15,10 @@ interface FeaturePayload {
     name: string
 }
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_APP_BASE_API_URL
+
 const fetchFeatures = async (post_id: number): Promise<Feature[]> => {
-    const res = await fetch(`http://zenlyserver.test/api/features/${post_id}`)
+    const res = await fetch(`${API_BASE_URL}/${post_id}`)
     const responseData = await res.json()
 
     if (!res.ok) {
@@ -30,7 +32,7 @@ const fetchFeatures = async (post_id: number): Promise<Feature[]> => {
 }
 
 const createFeature = async (data: FeaturePayload): Promise<Feature> => {
-    const res = await fetch(`http://zenlyserver.test/api/features`, {
+    const res = await fetch(`${API_BASE_URL}/features`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -44,7 +46,7 @@ const createFeature = async (data: FeaturePayload): Promise<Feature> => {
 }
 
 const deleteFeature = async (featureId: number) => {
-    const res = await fetch(`http://zenlyserver.test/api/features/${featureId}`, {
+    const res = await fetch(`${API_BASE_URL}/features/${featureId}`, {
         method: 'DELETE',
     })
 

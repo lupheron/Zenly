@@ -2,8 +2,10 @@
 
 import { useQuery } from '@tanstack/react-query'
 
+const API = process.env.NEXT_PUBLIC_APP_BASE_API_URL
+
 const fetchPostRating = async (post_id: number): Promise<number> => {
-    const res = await fetch(`http://zenlyserver.test/api/rating/${post_id}`, {
+    const res = await fetch(`${API}/rating/${post_id}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

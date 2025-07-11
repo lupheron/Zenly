@@ -16,8 +16,10 @@ interface Post {
     clicked: number;
 }
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_APP_BASE_API_URL
+
 const fetchPostById = async (id: number): Promise<Post> => {
-    const res = await fetch(`http://zenlyserver.test/api/post/${id}`)
+    const res = await fetch(`${API_BASE_URL}/post/${id}`)
     const responseData = await res.json()
 
     if (!res.ok) {
@@ -27,14 +29,14 @@ const fetchPostById = async (id: number): Promise<Post> => {
     if (responseData.data?.img) {
         responseData.data.img = responseData.data.img.startsWith('http')
             ? responseData.data.img
-            : `http://zenlyserver.test/${responseData.data.img.replace(/^\//, '')}`
+            : `${API_BASE_URL}/${responseData.data.img.replace(/^\//, '')}`
     }
 
     return responseData.data
 }
 
 const deletePostById = async (id: number): Promise<void> => {
-    const res = await fetch(`http://zenlyserver.test/api/posts/${id}`, {
+    const res = await fetch(`${API_BASE_URL}/posts/${id}`, {
         method: 'DELETE',
     })
 

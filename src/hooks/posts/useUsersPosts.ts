@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import AlertDefault from '@/src/components/Alert/AlertDefault'
 import { CreatePostPayload, CreatePostResponse, Post, UpdatePostPayload } from '@/src/utils/UsersPosts'
 
-const API_BASE_URL = 'http://zenlyserver.test/api'
+const API_BASE_URL = process.env.NEXT_PUBLIC_APP_BASE_API_URL
 
 const fetchUsersPosts = async (user_id: number): Promise<Post[]> => {
     const res = await fetch(`${API_BASE_URL}/posts/user/${user_id}`)

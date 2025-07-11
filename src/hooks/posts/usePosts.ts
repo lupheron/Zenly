@@ -8,8 +8,11 @@ export interface Post {
     user_id: number
 }
 
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_APP_BASE_API_URL
+
 const fetchPosts = async (): Promise<Post[]> => {
-    const res = await fetch('http://zenlyserver.test/api/posts')
+    const res = await fetch(`${API_BASE_URL}/posts`)
 
     const responseData = await res.json()
 

@@ -9,8 +9,10 @@ interface Comment {
     postTitle: string
 }
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_APP_BASE_API_URL
+
 const fetchUserComments = async (user_id: string): Promise<Comment[]> => {
-    const res = await fetch(`http://zenlyserver.test/api/post-comments/${user_id}`, {
+    const res = await fetch(`${API_BASE_URL}/post-comments/${user_id}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
