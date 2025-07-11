@@ -91,7 +91,7 @@ const PostComments: React.FC<PostCommentsProps> = ({ post_id, onClose }) => {
           />
         </div>
 
-        <div className='flex items-center gap-5 mt-5'>
+        <div className='flex flex-col sm:flex-row items-center gap-5 mt-5'>
           <ButtonDefault
             label={loading ? 'Yuborilmoqda...' : 'Yuborish'}
             type='submit'
