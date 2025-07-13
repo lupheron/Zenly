@@ -8,15 +8,19 @@ import ButtonDefault from '@/src/components/Button/ButtonDefault'
 import Features from '@/src/components/Features/Features'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { usePostById } from '@/src/hooks/posts/usePostsById'
+import { useUserComments } from '@/src/hooks/comments/useUserComments' // Use existing hook
 import ProfileCart from '@/src/components/Cart/Profile/ProfileCart'
 import LargeContainer from '@/src/components/Containers/LargeContainer'
 import ReusableModal from '@/src/components/Modal/ReusableModal'
 import PostComments from '@/src/components/Forms/Comments/PostComments'
+import SwiperDefault from '@/src/components/Swiper/SwiperDefault'
+import CommentCart from '@/src/components/Cart/CommentCart'
 
 const PostInfo = () => {
     const params = useParams()
     const postId = Number(params?.id)
     const [openModal, setOpenModal] = useState(false)
+    const [openCommentModal, setOpenCommentModal] = useState(false)
 
     const banners = [
         { id: 1, title: 'Plyajdagi dam olish' },
@@ -30,6 +34,7 @@ const PostInfo = () => {
     }
 
     const { data: post, isLoading, error } = usePostById(postId)
+    const { data: comments, isLoading: commentsLoading } = useUserComments(postId?.toString()) // Use existing hook
 
     if (!postId) return null
     if (isLoading) return <p className="text-center py-10">Yuklanmoqda...</p>
@@ -49,15 +54,12 @@ const PostInfo = () => {
             </div>
 
             <div className='rounded-lg md:rounded-xl px-4 py-6 md:px-6 lg:px-8 xl:px-10 md:py-8 bg-light-gray'>
-                {/* Changed to flex-col for all screens up to xl */}
-                <LargeContainer className="flex flex-col xl:flex-row gap-6 md:gap-8 lg:gap-10 mx-auto">
-                    {/* Left Column - Profile and Gallery */}
+                <LargeContainer className="flex items-start flex-col xl:items-center xl:flex-row gap-6 md:gap-8 lg:gap-10 mx-auto">
                     <div className='w-full xl:w-[35%] flex flex-col gap-y-4 md:gap-y-6'>
                         <ProfileCart user_id={post.user_id} />
                         <Gallery postId={post.id} mainImg={post.img} />
                     </div>
 
-                    {/* Right Column - Post Details */}
                     <div className="w-full xl:w-[65%] mt-4 md:mt-6 lg:mt-0">
                         <h1 className="text-2xl sm:text-3xl md:text-4xl text-dark-green font-bold">{post.title}</h1>
                         <p className="text-gray-700 text-sm md:text-base mt-2 md:mt-3">{post.small_description}</p>
@@ -68,7 +70,6 @@ const PostInfo = () => {
                             <Features postId={post.id} />
                         </div>
 
-                        {/* Grid for details */}
                         <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mt-6 md:mt-8 lg:mt-10'>
                             <div className="flex flex-col sm:flex-row gap-2 md:gap-3">
                                 <span className="font-medium text-sm md:text-base">Reyting:</span>
@@ -96,7 +97,6 @@ const PostInfo = () => {
                             </div>
                         </div>
 
-                        {/* Buttons */}
                         <div className='flex flex-col sm:flex-row items-center gap-3 md:gap-5 mt-6 md:mt-8'>
                             <ButtonDefault
                                 label="Bron qilish"
@@ -105,6 +105,7 @@ const PostInfo = () => {
                             <ButtonDefault
                                 label="Komentlarni ko'rish"
                                 customClasses='h-10 sm:h-12 !bg-orange-500 !rounded-lg !cursor-pointer !text-xs sm:!text-sm mt-0 w-full'
+                                onClick={() => { setOpenCommentModal(true) }}
                             />
                         </div>
                         <ButtonDefault
@@ -115,6 +116,36 @@ const PostInfo = () => {
                     </div>
                 </LargeContainer>
             </div>
+
+            <ReusableModal
+                open={openCommentModal}
+                onClose={() => setOpenCommentModal(false)}
+                title='Foydalanuvchilar fikri'
+            >
+                {commentsLoading ? (
+                    <p className="text-center text-lg">Yuklanmoqda...</p>
+                ) : (
+                    <SwiperDefault
+                        slidesPerView={1}
+                        spaceBetween={30}
+                        className='w-full mt-10'
+                        autoplay={{}}
+                        pagination={false}
+                    >
+                        {Array.isArray(comments) && comments.length > 0 ? (
+                            comments.map((comment, index) => (
+                                <CommentCart
+                                    key={index}
+                                    comment={comment.text}
+                                    nameTitle={comment.name}
+                                />
+                            ))
+                        ) : (
+                            <p className="text-center text-lg">Hozircha hech qanday fikr mavjud emas.</p>
+                        )}
+                    </SwiperDefault>
+                )}
+            </ReusableModal>
 
             <ReusableModal
                 open={openModal}

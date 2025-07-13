@@ -10,11 +10,7 @@ class PostComments extends Controller
 {
     public function index($id)
     {
-        $comments = DB::table('post_comments')
-            ->where('post_comments.user_id', $id)  
-            ->join('posts', 'post_comments.post_id', '=', 'posts.id')
-            ->select('post_comments.*', 'posts.title as postTitle')
-            ->get();
+        $comments = DB::table('post_comments')->where('post_id', $id)->get();
         return response()->json($comments);
     }
 
