@@ -1,6 +1,7 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
+import api from '@/src/utils/axios'
 
 interface GalleryImage {
     id: number
@@ -11,14 +12,8 @@ interface GalleryImage {
 const API_BASE_URL = process.env.NEXT_PUBLIC_APP_BASE_API_URL
 
 const fetchGalleryByPostId = async (postId: number): Promise<GalleryImage[]> => {
-    const res = await fetch(`${API_BASE_URL}/gallery/${postId}`)
-    const responseData = await res.json()
-
-    if (!res.ok) {
-        throw new Error("Galereyani olishda xatolik yuz berdi.")
-    }
-
-    return responseData.data.map((img: GalleryImage) => ({
+    const res = await api.get(`/gallery/${postId}`)
+    return res.data.data.map((img: GalleryImage) => ({
         ...img,
         img: img.img.startsWith('http') ? img.img : `${API_BASE_URL}${img.img}`
     }))

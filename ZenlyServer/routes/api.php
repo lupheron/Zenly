@@ -9,14 +9,34 @@ use App\Http\Controllers\Rating;
 use App\Http\Controllers\Uploads;
 use App\Http\Controllers\Users;
 use App\Http\Middleware\Cors;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+// Public routes (no auth required)
 Route::group(['middleware' => [Cors::class]], function () {
+    // Publicly accessible routes
+    Route::post('/register', [Users::class, 'register']);
+    Route::post('/login', [Users::class, 'login']);
+    Route::get('/posts', [Posts::class, 'index']);
+    Route::get('/post/{id}', [Posts::class, 'getPostById']);
+    Route::get('/posts/filter', [Posts::class, 'filter']);
+    Route::get('/rating/{id}', [Rating::class, 'getUserAverageRating']);
+    Route::get('/gallery/{post_id}', [Gallery::class, 'getGalleryByPostId']);
+    Route::get('/comments', [Comments::class, 'index']);
+    Route::get('/post-comments/{id}', [PostComments::class, 'index']);
+    Route::get('/features/{id}', [Features::class, 'getFeaturesByPostId']);
+});
+
+// Protected routes (only for authenticated users with valid token)
+Route::middleware(['auth.custom', Cors::class])->group(function () {
+    // Authenticated user info
+    Route::get('/user', function (Request $request) {
+        return response()->json($request->user());
+    });
+
     // USERS
     Route::get('/users', [Users::class, 'index']);
     Route::get('/user/{id}', [Users::class, 'getUsersById']);
-    Route::post('/register', [Users::class, 'register']);
-    Route::post('/login', [Users::class, 'login']);
     Route::post('/users', [Users::class, 'create']);
     Route::put('/users/{id}', [Users::class, 'update']);
     Route::delete('/users/{id}', [Users::class, 'delete']);
@@ -25,34 +45,26 @@ Route::group(['middleware' => [Cors::class]], function () {
     Route::post('/uploads/main', [Uploads::class, 'uploadMainImage']);
 
     // POSTS
-    Route::get('/posts', [Posts::class, 'index']);
     Route::get('/posts/user/{user_id}', [Posts::class, 'getPostsByUserId']);
-    Route::get('/post/{id}', [Posts::class, 'getPostById']);
-    Route::get('/posts/filter', [Posts::class, 'filter']);
     Route::post('/posts', [Posts::class, 'create']);
     Route::put('/posts/{post_id}', [Posts::class, 'update']);
     Route::put('/posts/{post_id}/increase-interest', [Posts::class, 'increaseInterest']);
     Route::delete('/posts/{id}', [Posts::class, 'delete']);
 
     // COMMENTS
-    Route::get('/comments', [Comments::class, 'index']);
     Route::post('/comments', [Comments::class, 'create']);
 
     // POSTS COMMENTS
-    Route::get('/post-comments/{id}', [PostComments::class, 'index']);
     Route::post('/post-comments', [PostComments::class, 'create']);
 
     // RATING
-    Route::get('/rating/{id}', [Rating::class, 'getUserAverageRating']);
     Route::post('/rating', [Rating::class, 'create']);
 
     // GALLERY
-    Route::get('/gallery/{post_id}', [Gallery::class, 'getGalleryByPostId']);
     Route::post('/gallery', [Gallery::class, 'create']);
     Route::delete('/gallery/{id}', [Gallery::class, 'delete']);
 
     // FEATURES
-    Route::get('/features/{id}', [Features::class, 'getFeaturesByPostId']);
     Route::post('/features', [Features::class, 'create']);
     Route::delete('/features/{id}', [Features::class, 'delete']);
 });

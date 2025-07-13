@@ -1,24 +1,12 @@
 'use client'
 
+import api from '@/src/utils/axios'
 import { useQuery } from '@tanstack/react-query'
 
-const API = process.env.NEXT_PUBLIC_APP_BASE_API_URL
 
 const fetchPostRating = async (post_id: number): Promise<number> => {
-    const res = await fetch(`${API}/rating/${post_id}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    })
-
-    const responseData = await res.json()
-
-    if (!res.ok) {
-        throw new Error(responseData.message || 'Reytingni olishda xatolik yuz berdi.')
-    }
-
-    return responseData.average_rating
+    const res = await api.get(`/rating/${post_id}`)
+    return res.data.average_rating
 }
 
 export const usePostRating = (post_id: number) => {

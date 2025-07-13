@@ -3,111 +3,76 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import AlertDefault from '@/src/components/Alert/AlertDefault'
 import { CreatePostPayload, CreatePostResponse, Post, UpdatePostPayload } from '@/src/utils/UsersPosts'
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_APP_BASE_API_URL
+import { AxiosError } from 'axios'
+import api from '@/src/utils/axios'
 
 const fetchUsersPosts = async (user_id: number): Promise<Post[]> => {
-    const res = await fetch(`${API_BASE_URL}/posts/user/${user_id}`)
-    const text = await res.text()
-
     try {
-        const json = JSON.parse(text)
+        const res = await api.get<{ data: Post[] }>(`/posts/user/${user_id}`)
+        return res.data.data
+    } catch (error) {
+        const axiosError = error as AxiosError<{ message?: string }>
+        if (axiosError.response?.status === 404) return []
 
-        if (res.status === 404) {
-            return []
-        }
-
-        if (!res.ok) {
-            AlertDefault.error(json.message || "Foydalanuvchi postlarini olishda xatolik yuz berdi.")
-            throw new Error(json.message || "Failed to fetch user's posts.")
-        }
-
-        return json.data
-    } catch {
-        AlertDefault.error("Serverdan noto'g'ri ma'lumot keldi.")
-        throw new Error("Unexpected server response.")
+        AlertDefault.error(
+            axiosError.response?.data?.message ?? "Foydalanuvchi postlarini olishda xatolik yuz berdi."
+        )
+        throw new Error(axiosError.response?.data?.message || "Failed to fetch user's posts.")
     }
 }
 
 const createPost = async (data: CreatePostPayload): Promise<CreatePostResponse> => {
-    const res = await fetch(`${API_BASE_URL}/posts`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-    })
-
-    const text = await res.text()
-
     try {
-        const json = JSON.parse(text)
-        if (!res.ok) {
-            AlertDefault.error(json.message || "Post yaratishda xatolik yuz berdi.")
-            throw new Error(json.message || "Failed to create post.")
-        }
-
-        return json as CreatePostResponse
-    } catch {
-        AlertDefault.error("Serverdan noto'g'ri ma'lumot keldi.")
-        throw new Error("Unexpected server response.")
+        const res = await api.post<CreatePostResponse>('/posts', data)
+        return res.data
+    } catch (error) {
+        const axiosError = error as AxiosError<{ message?: string }>
+        AlertDefault.error(axiosError.response?.data?.message || "Post yaratishda xatolik yuz berdi.")
+        throw new Error(axiosError.response?.data?.message || "Failed to create post.")
     }
 }
 
-const updatePost = async ({ postId, data }: { postId: number, data: UpdatePostPayload }): Promise<Post> => {
-    const res = await fetch(`${API_BASE_URL}/posts/${postId}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-    })
-
-    const text = await res.text()
-
+const updatePost = async ({
+    postId,
+    data,
+}: {
+    postId: number
+    data: UpdatePostPayload
+}): Promise<Post> => {
     try {
-        const json = JSON.parse(text)
-        if (!res.ok) {
-            AlertDefault.error(json.message || "Postni yangilashda xatolik yuz berdi.")
-            throw new Error(json.message || "Failed to update post.")
-        }
-        return json
-    } catch {
-        AlertDefault.error("Serverdan noto'g'ri ma'lumot keldi.")
-        throw new Error("Unexpected server response.")
+        const res = await api.put<Post>(`/posts/${postId}`, data)
+        return res.data
+    } catch (error) {
+        const axiosError = error as AxiosError<{ message?: string }>
+        AlertDefault.error(axiosError.response?.data?.message || "Postni yangilashda xatolik yuz berdi.")
+        throw new Error(axiosError.response?.data?.message || "Failed to update post.")
     }
 }
 
 export const useUsersPosts = (user_id: number, fetchOnMount: boolean = true) => {
     const queryClient = useQueryClient()
 
-    const query = useQuery({
+    const query = useQuery<Post[]>({
         queryKey: ['user-posts', user_id],
         queryFn: () => fetchUsersPosts(user_id),
         enabled: !!user_id && fetchOnMount,
         retry: false,
     })
 
-    const createMutation = useMutation({
+    const createMutation = useMutation<CreatePostResponse, Error, CreatePostPayload>({
         mutationFn: createPost,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['user-posts', user_id] })
             AlertDefault.success("Post yaratildi.")
         },
-        onError: () => {
-            AlertDefault.error("Post yaratishda xatolik yuz berdi.")
-        }
     })
 
-    const updateMutation = useMutation({
+    const updateMutation = useMutation<Post, Error, { postId: number; data: UpdatePostPayload }>({
         mutationFn: updatePost,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['user-posts', user_id] })
             AlertDefault.success("Post yangilandi.")
         },
-        onError: () => {
-            AlertDefault.error("Postni yangilashda xatolik yuz berdi.")
-        }
     })
 
     return {

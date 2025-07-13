@@ -1,26 +1,47 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Aside from '@/src/components/Aside/Aside'
 import ButtonDefault from '@/src/components/Button/ButtonDefault'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import { ReactNode, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import AlertDefault from '@/src/components/Alert/AlertDefault'
+import api from '@/src/utils/axios'
 
-export default function UserLayout({ children }: { children: ReactNode }) {
+export default function UserLayout({ children }: { children: React.ReactNode }) {
     const router = useRouter()
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        const user_id = localStorage.getItem("user_id")
-        if (!user_id) {
+        const token = localStorage.getItem("token")
+        if (!token) {
             AlertDefault.error("Avval identifikatsiyadan o'ting!")
             router.push("/login")
+            return
         }
+
+        api.get('/user') // secure backend call using token
+            .then((res) => {
+                const userType = res.data.type
+                if (userType === 1) {
+                    AlertDefault.error("Sizga bu sahifaga kirish taqiqlangan.")
+                    router.push("/")
+                }
+            })
+            .catch(() => {
+                AlertDefault.error("Token noto‘g‘ri yoki sessiya tugagan.")
+                router.push("/login")
+            })
+            .finally(() => {
+                setLoading(false)
+            })
     }, [router])
 
     const handleBack = () => {
         window.history.back()
     }
+
+    if (loading) return null // or a spinner
 
     return (
         <div className="flex min-h-screen">

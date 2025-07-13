@@ -2,7 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import AlertDefault from '@/src/components/Alert/AlertDefault'
-import { ApiError } from '@/src/utils/ApiError'
+import api from '@/src/utils/axios'
 
 export interface Feature {
     id: number
@@ -15,46 +15,19 @@ interface FeaturePayload {
     name: string
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_APP_BASE_API_URL
-
 const fetchFeatures = async (post_id: number): Promise<Feature[]> => {
-    const res = await fetch(`${API_BASE_URL}/${post_id}`)
-    const responseData = await res.json()
-
-    if (!res.ok) {
-        throw new ApiError(
-            responseData.message || "Imkoniyatlarni olishda xatolik yuz berdi.",
-            res.status
-        )
-    }
-
-    return responseData.data
+    const res = await api.get(`/features/${post_id}`)
+    return res.data.data
 }
 
 const createFeature = async (data: FeaturePayload): Promise<Feature> => {
-    const res = await fetch(`${API_BASE_URL}/features`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-    })
-
-    if (!res.ok) {
-        throw new ApiError("Imkoniyat yaratishda xatolik yuz berdi.", res.status)
-    }
-
-    return res.json()
+    const res = await api.post('/features', data)
+    return res.data
 }
 
 const deleteFeature = async (featureId: number) => {
-    const res = await fetch(`${API_BASE_URL}/features/${featureId}`, {
-        method: 'DELETE',
-    })
-
-    if (!res.ok) {
-        throw new ApiError("Imkoniyatni o'chirishda xatolik yuz berdi.", res.status)
-    }
-
-    return res.json()
+    const res = await api.delete(`/features/${featureId}`)
+    return res.data
 }
 
 export const useFeatures = (post_id?: number) => {
@@ -64,7 +37,6 @@ export const useFeatures = (post_id?: number) => {
         queryKey: ['features', post_id],
         queryFn: () => fetchFeatures(post_id!),
         enabled: !!post_id,
-        staleTime: 0,
         retry: false,
     })
 

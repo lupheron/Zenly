@@ -1,7 +1,7 @@
 'use client'
 
+import api from '@/src/utils/axios'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import AlertDefault from '@/src/components/Alert/AlertDefault'
 
 export interface User {
     id: number
@@ -24,61 +24,21 @@ export class ApiError extends Error {
 }
 
 const fetchUserById = async (user_id: number): Promise<User> => {
-    const res = await fetch(`http://zenlyserver.test/api/user/${user_id}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    })
-
-    const responseData = await res.json()
-
-    if (!res.ok) {
-        AlertDefault.error("Foydalanuvchini olishda xatolik yuz berdi.")
-        throw new Error('Failed to fetch user')
-    }
-
-    return responseData as User
+    const res = await api.get(`/user/${user_id}`)
+    return res.data as User
 }
 
 const editUser = async (data: Partial<User>) => {
     const id = Number(localStorage.getItem('user_id'))
-    const res = await fetch(`http://zenlyserver.test/api/users/${id}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-    })
-
-    if (res.status === 409) {
-        throw new ApiError("USERNAME_CONFLICT", 409)
-    }
-
-    if (!res.ok) {
-        throw new ApiError("GENERAL_ERROR", res.status)
-    }
-
-    return res.json() as Promise<User>
+    const res = await api.put(`/users/${id}`, data)
+    return res.data as User
 }
 
 const deleteUser = async () => {
     const id = Number(localStorage.getItem('user_id'))
-    const res = await fetch(`http://zenlyserver.test/api/users/${id}`, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    })
-
-    if (!res.ok) {
-        AlertDefault.error("Foydalanuvchini o'chirishda xatolik yuz berdi.")
-        throw new Error('Failed to delete user')
-    }
-
-    return res.json()
+    const res = await api.delete(`/users/${id}`)
+    return res.data
 }
-
 
 export const useUser = () => {
     const id = typeof window !== 'undefined' ? Number(localStorage.getItem('user_id')) : null
