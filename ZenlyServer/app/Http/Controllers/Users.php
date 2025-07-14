@@ -9,14 +9,32 @@ use Illuminate\Support\Facades\Hash;
 
 class Users extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $authUser = $request->user();
+
+        if (!$authUser || $authUser->type !== 'admin') {
+            return response()->json([
+                "message" => "Only admins can access this",
+                "status" => 403
+            ], 403);
+        }
+
         $users = DB::table("users")->get();
         return $users;
     }
 
-    public function getUsersById($id)
+    public function getUsersById(Request $request, $id)
     {
+        $authUser = $request->user();
+
+        if (!$authUser || $authUser->id != $id) {
+            return response()->json([
+                "message" => "You are not allowed to access this user",
+                "status" => 403
+            ], 403);
+        }
+
         $user = DB::table("users")->where("id", $id)->first();
         if ($user) {
             return response()->json($user);
@@ -129,6 +147,15 @@ class Users extends Controller
 
     public function update(Request $request, $id)
     {
+        $authUser = $request->user();
+
+        if (!$authUser || $authUser->id != $id) {
+            return response()->json([
+                "message" => "You are not allowed to update this user",
+                "status" => 403
+            ], 403);
+        }
+
         $existingUser = DB::table('users')
             ->where('username', $request['username'])
             ->where('id', '!=', $id)
@@ -193,8 +220,17 @@ class Users extends Controller
         }
     }
 
-    public function delete($id)
+    public function delete(Request $request, $id)
     {
+        $authUser = $request->user();
+
+        if (!$authUser || $authUser->id != $id) {
+            return response()->json([
+                "message" => "You are not allowed to delete this user",
+                "status" => 403
+            ], 403);
+        }
+
         DB::table("posts")->where("user_id", $id)->delete();
         DB::table("rating")->where("user_id", $id)->delete();
         DB::table("gallery")->where("user_id", $id)->delete();

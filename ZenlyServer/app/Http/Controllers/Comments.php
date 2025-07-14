@@ -19,7 +19,13 @@ class Comments extends Controller
 
     public function create(Request $request)
     {
-        $existing = DB::table("comments")->where("user_id", $request["user_id"])->exists();
+        $authUser = $request->user();
+
+        if (!$authUser) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $existing = DB::table("comments")->where("user_id", $authUser->id)->exists();
 
         if ($existing) {
             return response()->json([
@@ -28,7 +34,7 @@ class Comments extends Controller
         }
 
         $comment = DB::table("comments")->insertGetId([
-            "user_id" => $request["user_id"],
+            "user_id" => $authUser->id,
             "title" => $request["title"],
             "fullname" => $request["fullname"],
             "comment" => $request["comment"]

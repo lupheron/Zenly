@@ -28,6 +28,23 @@ class Features extends Controller
     }
     public function create(Request $request)
     {
+        $authUser = $request->user();
+
+        if (!$authUser || $authUser->id != $request['user_id']) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        // Make sure the post belongs to this user
+        $post = DB::table('posts')->where('id', $request['post_id'])->first();
+
+        if (!$post) {
+            return response()->json(['message' => 'Post not found'], 404);
+        }
+
+        if ($post->user_id != $authUser->id) {
+            return response()->json(['message' => 'You do not own this post'], 403);
+        }
+
         $features = DB::table('features')->insertGetId([
             'user_id' => $request['user_id'],
             'post_id' => $request['post_id'],
@@ -41,14 +58,21 @@ class Features extends Controller
         }
     }
 
-    public function delete($id)
+    public function delete(Request $request, $id)
     {
-        $feature = DB::table('features')
-            ->where('id', $id)
-            ->first();
+        $authUser = $request->user();
+
+        $feature = DB::table('features')->where('id', $id)->first();
 
         if (!$feature) {
             return response()->json(['message' => 'Feature not found'], 404);
+        }
+
+        // Check if the user owns the post this feature belongs to
+        $post = DB::table('posts')->where('id', $feature->post_id)->first();
+
+        if (!$authUser || !$post || $post->user_id != $authUser->id) {
+            return response()->json(['message' => 'Unauthorized to delete this feature'], 403);
         }
 
         $deleted = DB::table('features')

@@ -16,6 +16,15 @@ class PostComments extends Controller
 
     public function create(Request $request)
     {
+        $authUser = $request->user();
+
+        if (!$authUser || $authUser->id != $request->user_id) {
+            return response()->json([
+                'message' => 'You are not allowed to comment as this user',
+                'status' => 403
+            ], 403);
+        }
+
         $existing = DB::table('post_comments')
             ->where('post_id', $request->post_id)
             ->where('user_id', $request->user_id)

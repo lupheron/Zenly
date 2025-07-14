@@ -30,6 +30,11 @@ class Gallery extends Controller
     // In Gallery.php controller
     public function create(Request $request)
     {
+        $authUser = $request->user();
+        if (!$authUser || $authUser->id != $request['user_id']) {
+            return response()->json(['message' => 'Unauthorized user'], 403);
+        }
+
         $request->validate([
             'post_id' => 'required|exists:posts,id',
             'user_id' => 'required|exists:users,id',
@@ -81,6 +86,11 @@ class Gallery extends Controller
             return response()->json(['message' => 'Gallery item not found'], 404);
         }
 
+        $authUser = $request->user();
+        if (!$authUser || $authUser->id != $existing->user_id) {
+            return response()->json(['message' => 'You are not allowed to update this gallery item'], 403);
+        }
+
         $user = DB::table('users')->where('id', $request['user_id'])->first();
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
@@ -122,9 +132,14 @@ class Gallery extends Controller
         }
     }
 
-    public function delete($id)
+    public function delete(Request $request, $id)
     {
         $gallery = DB::table('gallery')->where('id', $id)->first();
+
+        $authUser = $request->user();
+        if (!$authUser || $authUser->id != $gallery->user_id) {
+            return response()->json(['message' => 'You are not allowed to delete this gallery item'], 403);
+        }
 
         if ($gallery) {
             if ($gallery->img && file_exists(public_path($gallery->img))) {

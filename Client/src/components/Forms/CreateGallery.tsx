@@ -27,6 +27,7 @@ const CreateGalleryForm: React.FC<CreateGalleryFormProps> = ({
 }) => {
     const [uploading, setUploading] = useState(false)
     const galleryFileInputRef = useRef<HTMLInputElement>(null)
+    const token = localStorage.getItem('token')
 
     const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files
@@ -45,6 +46,9 @@ const CreateGalleryForm: React.FC<CreateGalleryFormProps> = ({
                 const res = await fetch('http://zenlyserver.test/api/gallery', {
                     method: 'POST',
                     body: formData,
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
                 })
 
                 if (!res.ok) throw new Error('Upload failed')
@@ -76,7 +80,10 @@ const CreateGalleryForm: React.FC<CreateGalleryFormProps> = ({
     const handleDelete = async (fileId: number) => {
         try {
             const res = await fetch(`http://zenlyserver.test/api/gallery/${fileId}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
             })
             if (!res.ok) throw new Error()
             AlertDefault.success('Rasm o‘chirildi.')

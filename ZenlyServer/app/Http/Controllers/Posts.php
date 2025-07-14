@@ -43,8 +43,16 @@ class Posts extends Controller
         ]);
     }
 
-    public function getPostsByUserId($id)
+    public function getPostsByUserId(Request $request, $id)
     {
+        $authUser = $request->user();
+        if (!$authUser || $authUser->id != $id) {
+            return response()->json([
+                "message" => "You are not allowed to access these posts",
+                "status" => 403
+            ], 403);
+        }
+
         $posts = DB::table("posts")
             ->select(
                 "posts.*",
@@ -192,6 +200,14 @@ class Posts extends Controller
 
     public function create(Request $request)
     {
+        $authUser = $request->user();
+        if (!$authUser || $authUser->id != $request->input('user_id')) {
+            return response()->json([
+                'message' => 'You are not allowed to create a post for another user',
+                'status' => 403
+            ], 403);
+        }
+
         $user = DB::table('users')->where('id', $request->input('user_id'))->first();
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
@@ -237,10 +253,19 @@ class Posts extends Controller
 
     public function update(Request $request, $post_id)
     {
+        $authUser = $request->user();
+
         $post = DB::table('posts')->where('id', $post_id)->first();
 
         if (!$post) {
             return response()->json(['message' => 'Post not found'], 404);
+        }
+
+        if (!$authUser || $authUser->id != $post->user_id) {
+            return response()->json([
+                "message" => "You are not allowed to update this post",
+                "status" => 403
+            ], 403);
         }
 
         $user = DB::table('users')->where('id', $post->user_id)->first();
@@ -319,8 +344,10 @@ class Posts extends Controller
         return response()->json(['message' => 'Interest count increased']);
     }
 
-    public function delete($id)
+    public function delete(Request $request, $id)
     {
+        $authUser = $request->user();
+
         $post = DB::table("posts")->where("id", $id)->first();
 
         if (!$post) {
@@ -328,6 +355,13 @@ class Posts extends Controller
                 "message" => "Post not found",
                 "status" => 404
             ]);
+        }
+
+        if (!$authUser || $authUser->id != $post->user_id) {
+            return response()->json([
+                "message" => "You are not allowed to delete this post",
+                "status" => 403
+            ], 403);
         }
 
         DB::transaction(function () use ($id, $post) {
