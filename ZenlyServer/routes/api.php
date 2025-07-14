@@ -5,6 +5,7 @@ use App\Http\Controllers\Features;
 use App\Http\Controllers\Gallery;
 use App\Http\Controllers\PostComments;
 use App\Http\Controllers\Posts;
+use App\Http\Controllers\PostViews;
 use App\Http\Controllers\Rating;
 use App\Http\Controllers\Uploads;
 use App\Http\Controllers\Users;
@@ -48,8 +49,12 @@ Route::middleware(['auth.custom', Cors::class])->group(function () {
     Route::get('/posts/user/{user_id}', [Posts::class, 'getPostsByUserId']);
     Route::post('/posts', [Posts::class, 'create']);
     Route::put('/posts/{post_id}', [Posts::class, 'update']);
-    Route::put('/posts/{post_id}/increase-interest', [Posts::class, 'increaseInterest']);
+    // Route::put('/posts/{post_id}/increase-interest', [Posts::class, 'increaseInterest']);
     Route::delete('/posts/{id}', [Posts::class, 'delete']);
+
+    // POST VIEWS
+    Route::get("/posts/{post_id}/increase-interest", [PostViews::class, "getViews"]);
+    Route::put("/posts/{post_id}/increase-interest", [PostViews::class, "increaseInterest"]);
 
     // COMMENTS
     Route::post('/comments', [Comments::class, 'create']);

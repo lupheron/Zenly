@@ -8,13 +8,14 @@ import ButtonDefault from '@/src/components/Button/ButtonDefault'
 import Features from '@/src/components/Features/Features'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { usePostById } from '@/src/hooks/posts/usePostsById'
-import { useUserComments } from '@/src/hooks/comments/useUserComments' // Use existing hook
+import { useUserComments } from '@/src/hooks/comments/useUserComments'
 import ProfileCart from '@/src/components/Cart/Profile/ProfileCart'
 import LargeContainer from '@/src/components/Containers/LargeContainer'
 import ReusableModal from '@/src/components/Modal/ReusableModal'
 import PostComments from '@/src/components/Forms/Comments/PostComments'
 import SwiperDefault from '@/src/components/Swiper/SwiperDefault'
 import CommentCart from '@/src/components/Cart/CommentCart'
+import { usePostViews } from '@/src/hooks/postViews/usePostViews'
 
 const PostInfo = () => {
     const params = useParams()
@@ -34,7 +35,10 @@ const PostInfo = () => {
     }
 
     const { data: post, isLoading, error } = usePostById(postId)
-    const { data: comments, isLoading: commentsLoading } = useUserComments(postId?.toString()) // Use existing hook
+    const { data: comments, isLoading: commentsLoading } = useUserComments(postId.toString())
+    const resolvedPostId = post?.id
+
+    const { data: totalViews = 0 } = usePostViews(resolvedPostId ?? 0)
 
     if (!postId) return null
     if (isLoading) return <p className="text-center py-10">Yuklanmoqda...</p>
@@ -93,7 +97,7 @@ const PostInfo = () => {
                             </div>
                             <div className='flex flex-col sm:flex-row gap-2 md:gap-3'>
                                 <span className='font-medium text-sm md:text-base'>Ko&apos;rilgan Soni:</span>
-                                <span className="text-gray-500 text-sm md:text-base">{post.clicked}</span>
+                                <span className="text-gray-500 text-sm md:text-base">{totalViews}</span>
                             </div>
                         </div>
 
@@ -105,7 +109,7 @@ const PostInfo = () => {
                             <ButtonDefault
                                 label="Komentlarni ko'rish"
                                 customClasses='h-10 sm:h-12 !bg-orange-500 !rounded-lg !cursor-pointer !text-xs sm:!text-sm mt-0 w-full'
-                                onClick={() => { setOpenCommentModal(true) }}
+                                onClick={() => setOpenCommentModal(true)}
                             />
                         </div>
                         <ButtonDefault

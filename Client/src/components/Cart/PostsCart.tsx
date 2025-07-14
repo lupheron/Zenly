@@ -2,7 +2,7 @@ import Image from 'next/image'
 import React from 'react'
 import ButtonDefault from '../Button/ButtonDefault'
 import Rating from '../Rating/Rating'
-import { User } from '@/src/hooks/users/useUser'
+import api from '@/src/utils/axios'
 
 interface PostsCartProps {
     src: string
@@ -38,37 +38,13 @@ const PostsCart: React.FC<PostsCartProps> = ({
 
     const handleReadMoreClick = async () => {
         try {
-            const userId = localStorage.getItem('user_id')
-
-            if (!userId && postId) {
-                await fetch(`http://zenlyserver.test/api/posts/${postId}/increase-interest`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ increaseClicked: true }),
-                })
+            if (postId) {
+                await api.put(`/posts/${postId}/increase-interest`)
             }
-
-            if (userId && postId) {
-                const res = await fetch(`http://zenlyserver.test/api/user/${userId}`, {
-                    method: 'GET',
-                    headers: { 'Content-Type': 'application/json' },
-                })
-
-                if (res.ok) {
-                    const userData: User = await res.json()
-                    if (userData.type === 1) {
-                        await fetch(`http://zenlyserver.test/api/posts/${postId}/increase-interest`, {
-                            method: 'PUT',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ increaseClicked: true }),
-                        })
-                    }
-                }
-            }
-
-            onClick()
         } catch (error) {
-            console.error("Error handling post interest:", error)
+            console.error("Error increasing post views:", error)
+        } finally {
+            onClick()
         }
     }
 

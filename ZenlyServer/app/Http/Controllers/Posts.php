@@ -14,10 +14,12 @@ class Posts extends Controller
             ->select(
                 "posts.*",
                 DB::raw("AVG(rating.rating) as avg_rating"),
-                DB::raw("COUNT(DISTINCT post_comments.id) as comment_count")
+                DB::raw("COUNT(DISTINCT post_comments.id) as comment_count"),
+                DB::raw("COUNT(DISTINCT post_views.id) as view_count")
             )
             ->leftJoin('rating', 'rating.post_id', '=', 'posts.id')
             ->leftJoin('post_comments', 'post_comments.post_id', '=', 'posts.id')
+            ->leftJoin('post_views', 'post_views.post_id', '=', 'posts.id')
             ->groupBy('posts.id');
 
         if ($request->has('area_id')) {
@@ -57,10 +59,12 @@ class Posts extends Controller
             ->select(
                 "posts.*",
                 DB::raw("AVG(rating.rating) as avg_rating"),
-                DB::raw("COUNT(DISTINCT post_comments.id) as comment_count")
+                DB::raw("COUNT(DISTINCT post_comments.id) as comment_count"),
+                DB::raw("COUNT(DISTINCT post_views.id) as view_count")
             )
             ->leftJoin('rating', 'rating.post_id', '=', 'posts.id')
             ->leftJoin('post_comments', 'post_comments.post_id', '=', 'posts.id')
+            ->leftJoin('post_views', 'post_views.post_id', '=', 'posts.id')
             ->where("posts.user_id", $id)
             ->groupBy('posts.id')
             ->get();
@@ -95,10 +99,12 @@ class Posts extends Controller
             ->select(
                 "posts.*",
                 DB::raw("AVG(rating.rating) as avg_rating"),
-                DB::raw("COUNT(DISTINCT post_comments.id) as comment_count")
+                DB::raw("COUNT(DISTINCT post_comments.id) as comment_count"),
+                DB::raw("COUNT(DISTINCT post_views.id) as view_count")
             )
             ->leftJoin('rating', 'rating.post_id', '=', 'posts.id')
             ->leftJoin('post_comments', 'post_comments.post_id', '=', 'posts.id')
+            ->leftJoin('post_views', 'post_views.post_id', '=', 'posts.id')
             ->where("posts.id", $id)
             ->groupBy('posts.id')
             ->first();
@@ -131,25 +137,25 @@ class Posts extends Controller
         $location = $request->input('location');
         $sort = $request->input('sort');
         $guests = $request->input('guests');
-        $areaId = $request->input('area_id'); // Add this line to get area_id
+        $areaId = $request->input('area_id');
 
         $query = DB::table('posts')
             ->select(
                 'posts.*',
                 DB::raw('AVG(rating.rating) as avg_rating'),
-                DB::raw('COUNT(DISTINCT post_comments.id) as comment_count')
+                DB::raw('COUNT(DISTINCT post_comments.id) as comment_count'),
+                DB::raw('COUNT(DISTINCT post_views.id) as view_count')
             )
             ->leftJoin('rating', 'rating.post_id', '=', 'posts.id')
             ->leftJoin('post_comments', 'post_comments.post_id', '=', 'posts.id')
+            ->leftJoin('post_views', 'post_views.post_id', '=', 'posts.id')
             ->leftJoin('features', 'posts.id', '=', 'features.post_id')
             ->groupBy('posts.id');
 
-        // Add area_id filter if provided
         if ($areaId) {
             $query->where('posts.area_id', $areaId);
         }
 
-        // Existing filters...
         if ($location) {
             $query->where('posts.location', $location);
         }
@@ -176,6 +182,9 @@ class Posts extends Controller
                     break;
                 case 'recent':
                     $query->orderByDesc('posts.created_at');
+                    break;
+                case 'popular':
+                    $query->orderByDesc('view_count');
                     break;
             }
         }
@@ -304,12 +313,10 @@ class Posts extends Controller
                 "title" => $request->input('title'),
                 "description" => $request->input('description'),
                 "small_description" => $request->input('small_description'),
-                "description" => $request->input('description'),
                 "location" => $request->input('location'),
                 "members" => $request->input('members'),
                 "price_daily" => $request->input('price_daily'),
                 "img" => $imgPath,
-                "clicked" => $request["clicked"],
                 "updated_at" => Carbon::now()
             ]);
 
@@ -320,29 +327,50 @@ class Posts extends Controller
         }
     }
 
-    public function increaseInterest(Request $request, $post_id)
-    {
-        $post = DB::table('posts')->where('id', $post_id)->first();
+    // public function increaseInterest(Request $request, $post_id)
+    // {
+    //     $post = DB::table('posts')->where('id', $post_id)->first();
 
-        if (!$post) {
-            return response()->json(['message' => 'Post not found'], 404);
-        }
+    //     if (!$post) {
+    //         return response()->json(['message' => 'Post not found'], 404);
+    //     }
 
-        // Optional: Use token-based auth to get logged-in user
-        $userId = $request->header('user_id'); // Or use $request->user()->id if using auth
+    //     $authUser = $request->user();
+    //     $userId = $authUser ? $authUser->id : null;
 
-        if ($userId == $post->user_id) {
-            return response()->json(['message' => 'Owner view ignored']);
-        }
+    //     if ($userId && $userId == $post->user_id) {
+    //         return response()->json(['message' => 'Owner view ignored']);
+    //     }
 
-        DB::table('posts')
-            ->where('id', $post_id)
-            ->update([
-                'clicked' => $post->clicked + 1
-            ]);
+    //     if ($userId) {
+    //         $existingView = DB::table('post_views')
+    //             ->where('post_id', $post_id)
+    //             ->where('user_id', $userId)
+    //             ->first();
 
-        return response()->json(['message' => 'Interest count increased']);
-    }
+    //         if ($existingView) {
+    //             return response()->json(['message' => 'View already recorded']);
+    //         }
+
+    //         // Record the view for authenticated user
+    //         DB::table('post_views')->insert([
+    //             'post_id' => $post_id,
+    //             'user_id' => $userId,
+    //             'clicked' => 1
+    //         ]);
+    //     } else {
+    //         // For anonymous users, we can't track properly with current schema
+    //         // But we'll still record a view with null user_id
+    //         // Note: This allows multiple views from same anonymous user
+    //         DB::table('post_views')->insert([
+    //             'post_id' => $post_id,
+    //             'user_id' => null,
+    //             'clicked' => 1
+    //         ]);
+    //     }
+
+    //     return response()->json(['message' => 'View recorded successfully']);
+    // }
 
     public function delete(Request $request, $id)
     {
@@ -365,19 +393,16 @@ class Posts extends Controller
         }
 
         DB::transaction(function () use ($id, $post) {
-
-            // Delete related data based on post_id
             DB::table("rating")->where("post_id", $id)->delete();
             DB::table("gallery")->where("post_id", $id)->delete();
             DB::table("features")->where("post_id", $id)->delete();
             DB::table("post_comments")->where("post_id", $id)->delete();
+            DB::table("post_views")->where("post_id", $id)->delete();
 
-            // Delete image if exists
             if ($post->img && file_exists(public_path($post->img))) {
                 unlink(public_path($post->img));
             }
 
-            // Delete the post
             DB::table("posts")->where("id", $id)->delete();
         });
 

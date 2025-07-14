@@ -8,6 +8,7 @@ import ButtonDefault from '@/src/components/Button/ButtonDefault'
 import Features from '@/src/components/Features/Features'
 import DeleteModal from '@/src/components/Modal/DeleteModal'
 import { usePostById } from '@/src/hooks/posts/usePostsById'
+import { usePostViews } from '@/src/hooks/postViews/usePostViews'
 
 const UserPostInfo = () => {
     const params = useParams()
@@ -24,6 +25,9 @@ const UserPostInfo = () => {
     ]
 
     const { data: post, isLoading, error, deleteMutation } = usePostById(postId)
+    const resolvedPostId = post?.id
+
+    const { data: totalViews = 0 } = usePostViews(resolvedPostId ?? 0)
 
     const handleDelete = () => {
         deleteMutation.mutate(undefined, {
@@ -81,7 +85,7 @@ const UserPostInfo = () => {
                         </div>
                         <div className='flex gap-3 items-center'>
                             <span>Ko&apos;rilgan Soni:</span>
-                            <h2 className="text-gray-500 mt-1">{post.clicked}</h2>
+                            <h2 className="text-gray-500 mt-1">{totalViews}</h2>
                         </div>
                     </div>
                     <ButtonDefault
