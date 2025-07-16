@@ -9,6 +9,7 @@ use App\Http\Controllers\PostViews;
 use App\Http\Controllers\Rating;
 use App\Http\Controllers\Uploads;
 use App\Http\Controllers\Users;
+use App\Http\Controllers\AreaTypesController;
 use App\Http\Middleware\Cors;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,10 @@ Route::group(['middleware' => [Cors::class]], function () {
     Route::get('/comments', [Comments::class, 'index']);
     Route::get('/post-comments/{id}', [PostComments::class, 'index']);
     Route::get('/features/{id}', [Features::class, 'getFeaturesByPostId']);
+    Route::get('/area-types', [AreaTypesController::class, 'index']);
+    Route::get('/area-types/{id}', [AreaTypesController::class, 'show']);
+    Route::post('/area-types', [AreaTypesController::class, 'store']);
+    Route::put('/area-types/{id}', [AreaTypesController::class, 'update']);
 });
 
 // Protected routes (only for authenticated users with valid token)

@@ -13,7 +13,7 @@ import ReusableModal from '../Modal/ReusableModal'
 import CreateFeatureForm from './CreateFeatureForm'
 import AddIcon from '@mui/icons-material/Add'
 import { useFeatures } from '@/src/hooks/features/useFeatures'
-import SelectDefault from '../FormElements/Select/SelectDefault'
+import { useAreaTypes } from '@/src/hooks/area_types/useAreaType';
 
 interface GalleryFile {
     uid: string
@@ -30,41 +30,6 @@ interface MainFile {
     url: string
 }
 
-const banners = [
-    { id: 1, title: 'Plyajdagi dam olish' },
-    { id: 2, title: 'Wellness maskanlari' },
-    { id: 3, title: 'Kabina zonalari' },
-    { id: 4, title: 'Eko sayohatlar' },
-]
-
-const uzbekistanProvinces = [
-    { label: 'Andijon', value: 'Andijon' },
-    { label: 'Buxoro', value: 'Buxoro' },
-    { label: 'Fargʻona', value: 'Fargʻona' },
-    { label: 'Jizzax', value: 'Jizzax' },
-    { label: 'Xorazm', value: 'Xorazm' },
-    { label: 'Namangan', value: 'Namangan' },
-    { label: 'Navoiy', value: 'Navoiy' },
-    { label: 'Qashqadaryo', value: 'Qashqadaryo' },
-    { label: 'Qoraqalpogʻiston', value: 'Qoraqalpogʻiston' },
-    { label: 'Samarqand', value: 'Samarqand' },
-    { label: 'Sirdaryo', value: 'Sirdaryo' },
-    { label: 'Surxondaryo', value: 'Surxondaryo' },
-    { label: 'Toshkent viloyati', value: 'Toshkent viloyati' },
-    { label: 'Toshkent shahri', value: 'Toshkent shahri' }
-]
-
-const staticFeatures = [
-    "Wi-Fi",
-    "Tashqi va ichki oshxona",
-    "Shaxsiy hammom",
-    "Isitish / Konditsioner",
-    "Sauna / Issiq vannalar",
-    "Mangal / Kamin",
-    "Avtoturargoh",
-    "Suzish havzasi"
-]
-
 const CreatePostForm = () => {
     const router = useRouter()
     const [userId, setUserId] = useState<number | null>(null)
@@ -73,6 +38,7 @@ const CreatePostForm = () => {
     const [createdPostId, setCreatedPostId] = useState<number | null>(null)
     const [createModalOpen, setCreateModalOpen] = useState(false)
     const { data: features = [], createFeature, deleteFeature } = useFeatures(createdPostId ?? undefined)
+    const { data: areaTypes, isLoading: isAreaTypesLoading } = useAreaTypes();
 
 
     const { createPost } = useUsersPosts(userId ?? 0, false)
@@ -152,8 +118,19 @@ const CreatePostForm = () => {
             message.success('Post muvaffaqiyatli yaratildi! Endi galereya rasmlarni yuklashingiz mumkin.')
             setCreatedPostId(response.post_id)
 
+            const staticFeatures: string[] = [
+                "Wi-Fi",
+                "Tashqi va ichki oshxona",
+                "Shaxsiy hammom",
+                "Isitish / Konditsioner",
+                "Sauna / Issiq vannalar",
+                "Mangal / Kamin",
+                "Avtoturargoh",
+                "Suzish havzasi"
+            ];
+
             await Promise.all(
-                staticFeatures.map(feature =>
+                staticFeatures.map((feature: string) =>
                     createFeature.mutateAsync({
                         post_id: response.post_id,
                         user_id: userId,
@@ -319,15 +296,27 @@ const CreatePostForm = () => {
                                 customClasses="w-full border border-gray-300 rounded px-3 py-2"
                             />
 
-                            <SelectDefault
-                                label="Viloyatni tanlang:"
-                                htmlFor="location"
-                                name="location"
-                                value={form.location}
-                                onChange={handleChange}
-                                options={uzbekistanProvinces}
-                                customClassesSelect="w-full h-15 border border-gray-300 rounded px-3 py-2"
-                            />
+                            <LabelDefault label="Dam olish zonasining turi:" htmlFor="area_id" />
+                            <div className="flex gap-2 items-center">
+                                <select
+                                    name="area_id"
+                                    value={form.area_id}
+                                    onChange={handleChange}
+                                    required
+                                    className="w-full border border-gray-300 rounded px-3 py-2"
+                                >
+                                    <option value="">Tanlang</option>
+                                    {isAreaTypesLoading ? (
+                                        <option disabled>Yuklanmoqda...</option>
+                                    ) : (
+                                        areaTypes?.map((area) => (
+                                            <option key={area.id} value={area.id}>
+                                                {area.name}
+                                            </option>
+                                        ))
+                                    )}
+                                </select>
+                            </div>
 
                             <LabelDefault label="Odam soni:" htmlFor="members" />
                             <InputDefault
@@ -338,22 +327,6 @@ const CreatePostForm = () => {
                                 required
                                 customClasses="w-full border border-gray-300 rounded px-3 py-2"
                             />
-
-                            <LabelDefault label="Dam olish zonasining turi:" htmlFor="area_id" />
-                            <select
-                                name="area_id"
-                                value={form.area_id}
-                                onChange={handleChange}
-                                required
-                                className="w-full border border-gray-300 rounded px-3 py-2"
-                            >
-                                <option value="">Tanlang</option>
-                                {banners.map((banner) => (
-                                    <option key={banner.id} value={banner.id}>
-                                        {banner.title}
-                                    </option>
-                                ))}
-                            </select>
 
                             <div className="flex gap-4 mt-4">
                                 <ButtonDefault

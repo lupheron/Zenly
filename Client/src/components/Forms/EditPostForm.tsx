@@ -17,6 +17,7 @@ import { useUsersPosts } from '@/src/hooks/posts/useUsersPosts'
 import SelectDefault from '../FormElements/Select/SelectDefault'
 import { UpdatePostPayload } from '@/src/utils/UsersPosts'
 import { GalleryFile, GalleryImage, MainFile } from '@/src/utils/Gallery'
+import { useAreaTypes } from '@/src/hooks/area_types/useAreaType';
 
 const uzbekistanProvinces = [
     { label: 'Andijon', value: 'Andijon' },
@@ -35,13 +36,6 @@ const uzbekistanProvinces = [
     { label: 'Toshkent shahri', value: 'Toshkent shahri' }
 ]
 
-const banners = [
-    { id: 1, title: 'Plyajdagi dam olish' },
-    { id: 2, title: 'Wellness maskanlari' },
-    { id: 3, title: 'Kabina zonalari' },
-    { id: 4, title: 'Eko sayohatlar' },
-]
-
 const EditPostForm = () => {
     const params = useParams()
     const router = useRouter()
@@ -55,6 +49,7 @@ const EditPostForm = () => {
         data: GalleryImage[]
     }
     const { editPost } = useUsersPosts(userId ?? 0)
+    const { data: areaTypes, isLoading: isAreaTypesLoading } = useAreaTypes();
 
     const post = posts?.find((p) => p.id === postId)
 
@@ -334,11 +329,15 @@ const EditPostForm = () => {
                         className="w-full border border-gray-300 rounded px-3 py-2"
                     >
                         <option value="">Tanlang</option>
-                        {banners.map((banner) => (
-                            <option key={banner.id} value={banner.id}>
-                                {banner.title}
-                            </option>
-                        ))}
+                        {isAreaTypesLoading ? (
+                            <option disabled>Yuklanmoqda...</option>
+                        ) : (
+                            areaTypes?.map((area) => (
+                                <option key={area.id} value={area.id}>
+                                    {area.name}
+                                </option>
+                            ))
+                        )}
                     </select>
 
                     <div className="flex gap-4 mt-4">
