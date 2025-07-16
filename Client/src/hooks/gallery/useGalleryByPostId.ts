@@ -25,6 +25,6 @@ export const useGalleryByPostId = (postId: number) => {
         queryFn: () => fetchGalleryByPostId(postId),
         enabled: !!postId,
         staleTime: 60 * 1000,
-        retry: false,
+        retry: 3,
     })
 }

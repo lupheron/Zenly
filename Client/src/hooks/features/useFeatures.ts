@@ -37,7 +37,7 @@ export const useFeatures = (post_id?: number) => {
         queryKey: ['features', post_id],
         queryFn: () => fetchFeatures(post_id!),
         enabled: !!post_id,
-        retry: false,
+        retry: 3,
     })
 
     const mutation = useMutation({

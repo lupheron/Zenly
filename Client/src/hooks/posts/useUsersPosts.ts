@@ -56,7 +56,7 @@ export const useUsersPosts = (user_id: number, fetchOnMount: boolean = true) => 
         queryKey: ['user-posts', user_id],
         queryFn: () => fetchUsersPosts(user_id),
         enabled: !!user_id && fetchOnMount,
-        retry: false,
+        retry: 3,
     })
 
     const createMutation = useMutation<CreatePostResponse, Error, CreatePostPayload>({

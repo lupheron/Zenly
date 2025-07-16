@@ -26,6 +26,6 @@ export const useUserComments = (user_id: string | null) => {
         queryKey: ['user-comments', user_id],
         queryFn: () => fetchUserComments(user_id!),
         enabled: !!user_id,
-        retry: false,
+        retry: 3,
     })
 }

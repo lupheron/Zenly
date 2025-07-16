@@ -14,6 +14,6 @@ export const usePostRating = (post_id: number) => {
         queryKey: ['post-rating', post_id],
         queryFn: () => fetchPostRating(post_id),
         enabled: !!post_id,
-        retry: false,
+        retry: 3,
     })
 }

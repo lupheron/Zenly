@@ -68,7 +68,7 @@ class Users extends Controller
             }
 
             $file = $request->file('img');
-            $filename = $username . '_' . time() . '_' . uniqid() . '_user_' . $file->getClientOriginalName();
+            $filename = $username . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
             $file->move($uploadPath, $filename);
             $imgPath = 'uploads/' . $username . '/' . $filename;
         } else {
@@ -191,7 +191,7 @@ class Users extends Controller
             }
 
             $file = $request->file('img');
-            $filename = $username . '_' . time() . '_' . uniqid() . '_user_' . $file->getClientOriginalName();
+            $filename = $username . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
             $file->move($uploadPath, $filename);
             $imgPath = 'uploads/' . $username . '/' . $filename;
         } else if ($request->filled('img')) {

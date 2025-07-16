@@ -18,5 +18,6 @@ export const usePosts = () => {
     return useQuery({
         queryKey: ['posts'],
         queryFn: fetchPosts,
+        retry: 3,
     })
 }

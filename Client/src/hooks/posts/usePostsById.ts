@@ -40,7 +40,7 @@ export const usePostById = (id: number) => {
         queryFn: () => fetchPostById(id),
         enabled: !!id,
         staleTime: 60 * 1000,
-        retry: false,
+        retry: 3,
     })
 
     const deleteMutation = useMutation({

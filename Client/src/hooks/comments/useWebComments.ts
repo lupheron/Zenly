@@ -46,7 +46,7 @@ export const useWebComments = () => {
     const query = useQuery({
         queryKey: ['webComments'],
         queryFn: fetchWebComments,
-        retry: false,
+        retry: 3,
     })
 
     const mutation = useMutation({

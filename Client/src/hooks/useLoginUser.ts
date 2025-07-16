@@ -38,5 +38,6 @@ export const useLoginUser = () => {
         onError: (error: Error) => {
             AlertDefault.error(error.message || 'Login qilishda xatolik yuz berdi.')
         },
+        retry: 3
     })
 }

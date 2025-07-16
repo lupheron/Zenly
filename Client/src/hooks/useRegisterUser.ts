@@ -43,5 +43,6 @@ const registerUser = async (data: RegisterData): Promise<{ message: string }> =>
 export const useRegisterUser = () => {
     return useMutation<{ message: string }, ApiError, RegisterData>({
         mutationFn: registerUser,
+        retry: 3
     })
 }

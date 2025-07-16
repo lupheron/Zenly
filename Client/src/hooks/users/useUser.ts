@@ -61,6 +61,6 @@ export const useUserById = (user_id: number) => {
         queryKey: ['user', user_id],
         queryFn: () => fetchUserById(user_id),
         enabled: !!user_id,
-        retry: false,
+        retry: 3,
     })
 }
