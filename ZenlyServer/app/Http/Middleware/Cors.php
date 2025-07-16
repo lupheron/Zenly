@@ -8,21 +8,26 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Cors
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
+        // Set CORS headers for all requests
+        $headers = [
+            'Access-Control-Allow-Origin' => '*',
+            'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE, OPTIONS',
+            'Access-Control-Allow-Headers' => 'Content-Type, Authorization, X-Requested-With, Accept',
+        ];
+
+        // Handle preflight OPTIONS request
+        if ($request->isMethod('OPTIONS')) {
+            return response('', 200, $headers);
+        }
+
+        // Continue with the request
         $response = $next($request);
 
-        $response->headers->set('Access-Control-Allow-Origin', '*'); // Yoki o'z domeningizni qo'shing
-        $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-        $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
-
-        if ($request->isMethod('OPTIONS')) {
-            return response()->json('OK', 200, $response->headers->all());
+        // Add headers to response
+        foreach ($headers as $key => $value) {
+            $response->headers->set($key, $value);
         }
 
         return $response;

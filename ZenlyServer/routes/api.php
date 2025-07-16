@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\SecurityController;
 use App\Http\Controllers\Comments;
 use App\Http\Controllers\Features;
 use App\Http\Controllers\Gallery;
@@ -34,7 +35,7 @@ Route::group(['middleware' => [Cors::class]], function () {
 });
 
 // Protected routes (only for authenticated users with valid token)
-Route::middleware(['auth.custom', Cors::class])->group(function () {
+Route::middleware(['auth.custom', 'security', Cors::class])->group(function () {
     // Authenticated user info
     Route::get('/user', function (Request $request) {
         return response()->json($request->user());
@@ -54,7 +55,6 @@ Route::middleware(['auth.custom', Cors::class])->group(function () {
     Route::get('/posts/user/{user_id}', [Posts::class, 'getPostsByUserId']);
     Route::post('/posts', [Posts::class, 'create']);
     Route::put('/posts/{post_id}', [Posts::class, 'update']);
-    // Route::put('/posts/{post_id}/increase-interest', [Posts::class, 'increaseInterest']);
     Route::delete('/posts/{id}', [Posts::class, 'delete']);
 
     // POST VIEWS
@@ -78,3 +78,13 @@ Route::middleware(['auth.custom', Cors::class])->group(function () {
     Route::post('/features', [Features::class, 'create']);
     Route::delete('/features/{id}', [Features::class, 'delete']);
 });
+
+// // Admin Security Routes (add role-based middleware later)
+// Route::middleware(['auth.custom', Cors::class])->prefix('admin')->group(function () {
+//     Route::get('/security/dashboard', [SecurityController::class, 'dashboard']);
+//     Route::get('/security/blocked-users', [SecurityController::class, 'getBlockedUsers']);
+//     Route::post('/security/unblock-user/{userId}', [SecurityController::class, 'unblockUser']);
+//     Route::get('/security/suspicious-activities', [SecurityController::class, 'getSuspiciousActivities']);
+//     Route::get('/security/logs', [SecurityController::class, 'getSecurityLogs']);
+//     Route::get('/security/user-report/{userId}', [SecurityController::class, 'getUserActivityReport']);
+// });

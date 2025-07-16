@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\AuthByRememberToken;
 use App\Http\Middleware\Cors;
+use App\Http\Middleware\SecurityMiddleware;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
@@ -29,7 +30,8 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->alias([
-            'auth.custom' => AuthByRememberToken::class, 
+            'auth.custom' => AuthByRememberToken::class,
+            'security' => SecurityMiddleware::class, // Add this line
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

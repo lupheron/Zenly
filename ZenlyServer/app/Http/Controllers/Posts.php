@@ -5,9 +5,17 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Services\SecurityService;
 
 class Posts extends Controller
 {
+    protected $securityService;
+
+    public function __construct(SecurityService $securityService)
+    {
+        $this->securityService = $securityService;
+    }
+
     public function index(Request $request)
     {
         $query = DB::table("posts")
@@ -49,6 +57,13 @@ class Posts extends Controller
     {
         $authUser = $request->user();
         if (!$authUser || $authUser->id != $id) {
+            $this->securityService->logSuspiciousActivity(
+                $authUser->id ?? 0,
+                'Posts',
+                'getPostsByUserId',
+                'unauthorized_user_access',
+                ['requested_user_id' => $id, 'auth_user_id' => $authUser->id ?? null]
+            );
             return response()->json([
                 "message" => "You are not allowed to access these posts",
                 "status" => 403
@@ -211,6 +226,13 @@ class Posts extends Controller
     {
         $authUser = $request->user();
         if (!$authUser || $authUser->id != $request->input('user_id')) {
+            $this->securityService->logSuspiciousActivity(
+                $authUser->id ?? 0,
+                'Posts',
+                'create',
+                'unauthorized_post_create',
+                ['requested_user_id' => $request->input('user_id'), 'auth_user_id' => $authUser->id ?? null]
+            );
             return response()->json([
                 'message' => 'You are not allowed to create a post for another user',
                 'status' => 403
@@ -271,6 +293,13 @@ class Posts extends Controller
         }
 
         if (!$authUser || $authUser->id != $post->user_id) {
+            $this->securityService->logSuspiciousActivity(
+                $authUser->id ?? 0,
+                'Posts',
+                'update',
+                'unauthorized_post_update',
+                ['requested_post_id' => $post_id, 'auth_user_id' => $authUser->id ?? null]
+            );
             return response()->json([
                 "message" => "You are not allowed to update this post",
                 "status" => 403
@@ -327,51 +356,6 @@ class Posts extends Controller
         }
     }
 
-    // public function increaseInterest(Request $request, $post_id)
-    // {
-    //     $post = DB::table('posts')->where('id', $post_id)->first();
-
-    //     if (!$post) {
-    //         return response()->json(['message' => 'Post not found'], 404);
-    //     }
-
-    //     $authUser = $request->user();
-    //     $userId = $authUser ? $authUser->id : null;
-
-    //     if ($userId && $userId == $post->user_id) {
-    //         return response()->json(['message' => 'Owner view ignored']);
-    //     }
-
-    //     if ($userId) {
-    //         $existingView = DB::table('post_views')
-    //             ->where('post_id', $post_id)
-    //             ->where('user_id', $userId)
-    //             ->first();
-
-    //         if ($existingView) {
-    //             return response()->json(['message' => 'View already recorded']);
-    //         }
-
-    //         // Record the view for authenticated user
-    //         DB::table('post_views')->insert([
-    //             'post_id' => $post_id,
-    //             'user_id' => $userId,
-    //             'clicked' => 1
-    //         ]);
-    //     } else {
-    //         // For anonymous users, we can't track properly with current schema
-    //         // But we'll still record a view with null user_id
-    //         // Note: This allows multiple views from same anonymous user
-    //         DB::table('post_views')->insert([
-    //             'post_id' => $post_id,
-    //             'user_id' => null,
-    //             'clicked' => 1
-    //         ]);
-    //     }
-
-    //     return response()->json(['message' => 'View recorded successfully']);
-    // }
-
     public function delete(Request $request, $id)
     {
         $authUser = $request->user();
@@ -386,6 +370,13 @@ class Posts extends Controller
         }
 
         if (!$authUser || $authUser->id != $post->user_id) {
+            $this->securityService->logSuspiciousActivity(
+                $authUser->id ?? 0,
+                'Posts',
+                'delete',
+                'unauthorized_post_delete',
+                ['requested_post_id' => $id, 'auth_user_id' => $authUser->id ?? null]
+            );
             return response()->json([
                 "message" => "You are not allowed to delete this post",
                 "status" => 403
