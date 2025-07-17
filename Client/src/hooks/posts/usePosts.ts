@@ -7,6 +7,8 @@ export interface Post {
     id: number
     title: string
     user_id: number
+    small_description: string
+    img: string
 }
 
 const fetchPosts = async (): Promise<Post[]> => {
@@ -20,4 +22,16 @@ export const usePosts = () => {
         queryFn: fetchPosts,
         retry: 3,
     })
+}
+
+export const useTopRatedPosts = () => {
+    return useQuery({
+        queryKey: ['top-rated-posts'],
+        queryFn: async () => {
+            const res = await api.get('/posts/top-rated');
+            return res.data.data;
+        },
+        staleTime: 2 * 24 * 60 * 60 * 1000, // 2 days
+        retry: 3,
+    });
 }

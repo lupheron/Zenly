@@ -402,4 +402,40 @@ class Posts extends Controller
             "status" => 200
         ]);
     }
+
+    /**
+     * Get top 10 posts by average rating, refreshed every 2 days.
+     */
+    public function topRated()
+    {
+        $posts = DB::table('posts')
+            ->select(
+                'posts.*',
+                DB::raw('AVG(rating.rating) as avg_rating'),
+                DB::raw('COUNT(DISTINCT post_comments.id) as comment_count'),
+                DB::raw('COUNT(DISTINCT post_views.id) as view_count')
+            )
+            ->leftJoin('rating', 'rating.post_id', '=', 'posts.id')
+            ->leftJoin('post_comments', 'post_comments.post_id', '=', 'posts.id')
+            ->leftJoin('post_views', 'post_views.post_id', '=', 'posts.id')
+            ->groupBy('posts.id')
+            ->orderByDesc('avg_rating')
+            ->limit(10)
+            ->get();
+
+        foreach ($posts as $post) {
+            $post->img = $post->img ? asset($post->img) : null;
+            $post->features = DB::table('features')->where('post_id', $post->id)->get();
+            $post->gallery = DB::table('gallery')->where('post_id', $post->id)->get()->map(function ($item) {
+                $item->img = asset($item->img);
+                return $item;
+            });
+        }
+
+        return response()->json([
+            'message' => 'Top rated posts fetched successfully',
+            'status' => 200,
+            'data' => $posts
+        ]);
+    }
 }

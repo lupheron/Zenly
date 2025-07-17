@@ -77,7 +77,7 @@ const PostInfo = () => {
                         <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mt-6 md:mt-8 lg:mt-10'>
                             <div className="flex flex-col sm:flex-row gap-2 md:gap-3">
                                 <span className="font-medium text-sm md:text-base">Reyting:</span>
-                                <Rating postId={post.id} />
+                                <Rating postId={post.id} postUserId={post.user_id} />
                             </div>
                             <div className='flex flex-col sm:flex-row gap-2 md:gap-3'>
                                 <span className='font-medium text-sm md:text-base'>Narxi:</span>

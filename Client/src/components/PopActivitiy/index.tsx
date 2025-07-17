@@ -3,19 +3,10 @@ import SwiperDefault from '../Swiper/SwiperDefault';
 import SerivecesBanner from '../Banners/SerivecesBanner';
 import TitleButtons from '../Button/TitleButtons';
 import Services from './Services';
+import { useTopRatedPosts, Post as TopRatedPost } from '@/src/hooks/posts/usePosts';
 
 const PopularActivity = () => {
-    const banners = [
-        { title: 'Yoga Classes', paragraph: 'Relaxing yoga sessions for all skill levels in peaceful environment.', src: '/ready/relax.jpg' },
-        { title: 'Meditation', paragraph: 'Guided meditation to help you find inner peace and clarity.', src: '/ready/relax.jpg' },
-        { title: 'Spa Retreat', paragraph: 'Luxurious spa treatments to rejuvenate your body and mind.', src: '/ready/relax.jpg' },
-        { title: 'Nature Walks', paragraph: 'Guided walks through beautiful natural landscapes to refresh.', src: '/ready/relax.jpg' },
-        { title: 'Art Therapy', paragraph: 'Creative sessions to express yourself and reduce stress.', src: '/ready/relax.jpg' },
-        { title: 'Sound Healing', paragraph: 'Therapeutic sound baths for deep relaxation and healing.', src: '/ready/relax.jpg' },
-        { title: 'Breathwork', paragraph: 'Learn powerful breathing techniques to reduce anxiety.', src: '/ready/relax.jpg' },
-        { title: 'Tai Chi', paragraph: 'Gentle movements to improve balance and mental focus.', src: '/ready/relax.jpg' },
-        { title: 'Aromatherapy', paragraph: 'Essential oil treatments to enhance mood and wellbeing.', src: '/ready/relax.jpg' }
-    ];
+    const { data: topRatedPosts, isLoading } = useTopRatedPosts();
 
     return (
         <div className="popular-activities mt-20">
@@ -24,31 +15,35 @@ const PopularActivity = () => {
             </div>
 
             <div data-aos="fade-down">
-                <SwiperDefault
-                    pagination={false}
-                    spaceBetween={5}
-                    className="bg-gray-50 w-[75%]"
-                    breakpoints={{
-                        0: {
-                            slidesPerView: 1
-                        },
-                        768: {
-                            slidesPerView: 2
-                        },
-                        1040: {
-                            slidesPerView: 3
-                        }
-                    }}
-                >
-                    {banners.map((banner, index) => (
-                        <SerivecesBanner
-                            key={index}
-                            title={banner.title}
-                            paragraph={banner.paragraph}
-                            src={banner.src}
-                        />
-                    ))}
-                </SwiperDefault>
+                {isLoading ? (
+                    <div className="text-center py-10">Loading top rated posts...</div>
+                ) : (
+                    <SwiperDefault
+                        pagination={false}
+                        spaceBetween={5}
+                        className="bg-gray-50 w-[75%]"
+                        breakpoints={{
+                            0: {
+                                slidesPerView: 1
+                            },
+                            768: {
+                                slidesPerView: 2
+                            },
+                            1040: {
+                                slidesPerView: 3
+                            }
+                        }}
+                    >
+                        {topRatedPosts && topRatedPosts.map((post: TopRatedPost) => (
+                            <SerivecesBanner
+                                key={post.id}
+                                title={post.title}
+                                paragraph={post.small_description}
+                                src={post.img}
+                            />
+                        ))}
+                    </SwiperDefault>
+                )}
             </div>
 
             <Services />

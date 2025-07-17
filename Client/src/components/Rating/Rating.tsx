@@ -7,11 +7,13 @@ import ReusableModal from '../Modal/ReusableModal'
 
 interface RatingProps {
     postId: number
+    postUserId?: number
     allowRating?: boolean
 }
 
 const Rating: React.FC<RatingProps> = ({
     postId,
+    postUserId,
     allowRating = true
 }) => {
     const { data, isLoading, error } = usePostRating(postId)
@@ -21,6 +23,7 @@ const Rating: React.FC<RatingProps> = ({
     const [hasRated, setHasRated] = useState(false)
     const [showModal, setShowModal] = useState(false)
     const [showHoverText, setShowHoverText] = useState(false)
+    const [selfRateError, setSelfRateError] = useState(false)
 
     const handleRatingChange = (newRating: number) => {
         setUserRating(newRating)
@@ -30,7 +33,6 @@ const Rating: React.FC<RatingProps> = ({
         if (userRating === 0 || isSubmitting) return
         setIsSubmitting(true)
         try {
-            // Get userId from localStorage (or context if available)
             const userId = Number(localStorage.getItem('user_id'))
             if (!userId) throw new Error('Foydalanuvchi aniqlanmadi')
             await createRating.mutateAsync({ post_id: postId, user_id: userId, rating: userRating })
@@ -46,11 +48,18 @@ const Rating: React.FC<RatingProps> = ({
     const handleCancelRating = () => {
         setUserRating(0)
         setShowModal(false)
+        setSelfRateError(false)
     }
 
     const handleStarClick = () => {
+        const userId = Number(localStorage.getItem('user_id'))
         if (allowRating && !hasRated) {
-            setShowModal(true)
+            if (postUserId && userId === postUserId) {
+                setSelfRateError(true)
+                setShowModal(true)
+            } else {
+                setShowModal(true)
+            }
         }
     }
 
@@ -95,44 +104,48 @@ const Rating: React.FC<RatingProps> = ({
             {/* Rating Modal */}
             <ReusableModal
                 open={showModal}
-                onClose={() => setShowModal(false)}
+                onClose={handleCancelRating}
                 title="Baho berish"
                 width={400}
             >
-                <div className="space-y-4">
-                    <div className="text-center">
-                        <p className="text-gray-700 mb-4">Bahongizni bering:</p>
-                        <div className="flex justify-center">
-                            <StarRatings
-                                rating={userRating}
-                                starRatedColor="gold"
-                                starHoverColor="gold"
-                                starEmptyColor="lightgray"
-                                changeRating={handleRatingChange}
-                                numberOfStars={5}
-                                starDimension="30px"
-                                starSpacing="5px"
-                                name={`rating-input-${postId}`}
-                            />
+                {selfRateError ? (
+                    <div className="text-center text-red-600 py-6">Siz o&apos;z postlaringizga baho bera olmaysiz!</div>
+                ) : (
+                    <div className="space-y-4">
+                        <div className="text-center">
+                            <p className="text-gray-700 mb-4">Bahongizni bering:</p>
+                            <div className="flex justify-center">
+                                <StarRatings
+                                    rating={userRating}
+                                    starRatedColor="gold"
+                                    starHoverColor="gold"
+                                    starEmptyColor="lightgray"
+                                    changeRating={handleRatingChange}
+                                    numberOfStars={5}
+                                    starDimension="30px"
+                                    starSpacing="5px"
+                                    name={`rating-input-${postId}`}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex gap-3 justify-center">
+                            <button
+                                onClick={handleSubmitRating}
+                                disabled={userRating === 0 || isSubmitting}
+                                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200"
+                            >
+                                {isSubmitting ? 'Yuborilmoqda...' : 'Yuborish'}
+                            </button>
+                            <button
+                                onClick={handleCancelRating}
+                                className="px-6 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors duration-200"
+                            >
+                                Bekor qilish
+                            </button>
                         </div>
                     </div>
-
-                    <div className="flex gap-3 justify-center">
-                        <button
-                            onClick={handleSubmitRating}
-                            disabled={userRating === 0 || isSubmitting}
-                            className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200"
-                        >
-                            {isSubmitting ? 'Yuborilmoqda...' : 'Yuborish'}
-                        </button>
-                        <button
-                            onClick={handleCancelRating}
-                            className="px-6 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors duration-200"
-                        >
-                            Bekor qilish
-                        </button>
-                    </div>
-                </div>
+                )}
             </ReusableModal>
         </>
     )

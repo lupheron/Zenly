@@ -32,6 +32,7 @@ Route::group(['middleware' => [Cors::class]], function () {
     Route::get('/area-types/{id}', [AreaTypesController::class, 'show']);
     Route::post('/area-types', [AreaTypesController::class, 'store']);
     Route::put('/area-types/{id}', [AreaTypesController::class, 'update']);
+    Route::get('/posts/top-rated', [Posts::class, 'topRated']);
 });
 
 // Protected routes (only for authenticated users with valid token)
