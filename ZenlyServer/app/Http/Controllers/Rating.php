@@ -22,6 +22,7 @@ class Rating extends Controller
     {
         $rating = DB::table("rating")->insertGetId([
             "post_id" => $request["post_id"],
+            "user_id" => $request["user_id"],
             "rating" => $request["rating"],
         ]);
         return response()->json(['message' => 'Rating created successfully'], 201);
