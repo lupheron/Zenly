@@ -4,7 +4,7 @@ import NotesIcon from '@mui/icons-material/Notes';
 interface CommentCartProps {
     comment: string,
     nameTitle: string,
-    commentor: string
+    commentor?: string
 }
 
 const CommentCart: React.FC<CommentCartProps> = ({ comment, nameTitle, commentor }) => {
@@ -20,7 +20,7 @@ const CommentCart: React.FC<CommentCartProps> = ({ comment, nameTitle, commentor
             </div>
 
             <div className='mt-6 md:mt-10 float-right'>
-                <h2 className='text-lg sm:text-xl md:text-2xl font-semibold'>{commentor}</h2>
+                <h2 className='text-lg sm:text-xl md:text-2xl font-semibold'>{commentor ?? ''}</h2>
             </div>
         </div>
     )
