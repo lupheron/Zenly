@@ -4,9 +4,11 @@ import SerivecesBanner from '../Banners/SerivecesBanner';
 import TitleButtons from '../Button/TitleButtons';
 import Services from './Services';
 import { useTopRatedPosts, Post as TopRatedPost } from '@/src/hooks/posts/usePosts';
+import { useRouter } from 'next/navigation';
 
 const PopularActivity = () => {
     const { data: topRatedPosts, isLoading } = useTopRatedPosts();
+    const router = useRouter();
 
     return (
         <div className="popular-activities mt-20">
@@ -21,7 +23,7 @@ const PopularActivity = () => {
                     <SwiperDefault
                         pagination={false}
                         spaceBetween={5}
-                        className="bg-gray-50 w-[75%]"
+                        className="bg-gray-50 rounded w-[75%] py-10"
                         breakpoints={{
                             0: {
                                 slidesPerView: 1
@@ -35,12 +37,14 @@ const PopularActivity = () => {
                         }}
                     >
                         {topRatedPosts && topRatedPosts.map((post: TopRatedPost) => (
-                            <SerivecesBanner
-                                key={post.id}
-                                title={post.title}
-                                paragraph={post.small_description}
-                                src={post.img}
-                            />
+                            <div key={post.id} className="py-4">
+                                <SerivecesBanner
+                                    title={post.title}
+                                    paragraph={post.small_description}
+                                    src={post.img}
+                                    onClick={() => router.push(`/posts/${post.id}`)}
+                                />
+                            </div>
                         ))}
                     </SwiperDefault>
                 )}
