@@ -42,7 +42,8 @@ const Comments = () => {
                                 <CommentCart
                                     key={index}
                                     comment={comment.comment}
-                                    nameTitle={comment.fullname}
+                                    nameTitle={comment.title}
+                                    commentor={comment.fullname}
                                 />
                             ))
                         ) : (
