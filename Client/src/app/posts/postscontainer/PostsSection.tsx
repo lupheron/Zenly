@@ -13,6 +13,7 @@ interface Post {
     small_description: string;
     location: string;
     price_daily: number;
+    members: number;
 }
 
 const PostsSection = () => {
@@ -24,6 +25,7 @@ const PostsSection = () => {
         sort: '',
         guests: ''
     });
+    const [isSearchActive, setIsSearchActive] = useState(false);
 
     const searchParams = useSearchParams()
     const areaId = searchParams.get('area_id')
@@ -31,29 +33,60 @@ const PostsSection = () => {
     const fetchPosts = useCallback(async () => {
         let url = ''
 
-        const amenitiesParam = selectedAmenities.map(a => `amenities[]=${encodeURIComponent(a)}`).join('&')
-        const searchParamParts = []
+        // Check if search is active (all required fields filled)
+        const isValidSearch = searchFilters.location && searchFilters.sort && searchFilters.guests;
 
-        if (searchFilters.location) searchParamParts.push(`location=${searchFilters.location}`)
-        if (searchFilters.sort) searchParamParts.push(`sort=${searchFilters.sort}`)
-        if (searchFilters.guests) searchParamParts.push(`guests=${searchFilters.guests}`)
-        if (areaId) searchParamParts.push(`area_id=${areaId}`)
-        if (amenitiesParam) searchParamParts.push(amenitiesParam)
+        if (isValidSearch) {
+            // Use filter endpoint when search is active
+            const amenitiesParam = selectedAmenities.map(a => `amenities[]=${encodeURIComponent(a)}`).join('&')
+            const searchParamParts = []
 
-        const paramString = searchParamParts.join('&')
+            searchParamParts.push(`location=${encodeURIComponent(searchFilters.location)}`)
+            searchParamParts.push(`sort=${encodeURIComponent(searchFilters.sort)}`)
+            searchParamParts.push(`guests=${encodeURIComponent(searchFilters.guests)}`)
 
-        url = paramString
-            ? `http://zenlyserver.test/api/posts/filter?${paramString}`
-            : `http://zenlyserver.test/api/posts`
+            if (areaId) searchParamParts.push(`area_id=${areaId}`)
+            if (amenitiesParam) searchParamParts.push(amenitiesParam)
 
-        const res = await fetch(url)
-        const data = await res.json()
-        setPosts(data.data)
+            const paramString = searchParamParts.join('&')
+            url = `http://zenlyserver.test/api/posts/filter?${paramString}`
+        } else {
+            // Use regular posts endpoint when no search or incomplete search
+            const searchParamParts = []
+            const amenitiesParam = selectedAmenities.map(a => `amenities[]=${encodeURIComponent(a)}`).join('&')
+
+            if (areaId) searchParamParts.push(`area_id=${areaId}`)
+            if (amenitiesParam && selectedAmenities.length > 0) searchParamParts.push(amenitiesParam)
+
+            const paramString = searchParamParts.join('&')
+            url = paramString
+                ? `http://zenlyserver.test/api/posts/filter?${paramString}`
+                : `http://zenlyserver.test/api/posts`
+        }
+
+        try {
+            const res = await fetch(url)
+            const data = await res.json()
+            setPosts(data.data || [])
+        } catch (error) {
+            console.error('Error fetching posts:', error)
+            setPosts([])
+        }
     }, [selectedAmenities, areaId, searchFilters])
 
     useEffect(() => {
         fetchPosts()
     }, [fetchPosts])
+
+    useEffect(() => {
+        // Update search active status
+        const isValidSearch = Boolean(searchFilters.location && searchFilters.sort && searchFilters.guests);
+        setIsSearchActive(isValidSearch);
+    }, [searchFilters])
+
+    const handleSearch = (params: { location: string; sort: string; guests: string }) => {
+        setSearchFilters(params);
+    }
 
     const toggleMobileFilter = () => {
         setMobileFilterOpen(!mobileFilterOpen);
@@ -61,7 +94,16 @@ const PostsSection = () => {
 
     return (
         <div>
-            <SearchPosts onSearch={(params) => setSearchFilters(params)} />
+            <SearchPosts onSearch={handleSearch} />
+
+            {/* Search Status Indicator */}
+            {isSearchActive && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mx-4 mt-4">
+                    <p className="text-blue-700 text-sm">
+                        Qidiruv faol: {searchFilters.location} - {searchFilters.sort} - {searchFilters.guests} kishi
+                    </p>
+                </div>
+            )}
 
             <div className="flex flex-col lg:flex-row justify-between items-start gap-6 lg:gap-10 p-4 lg:p-5 mt-6 lg:mt-10 bg-light-gray">
 
@@ -102,7 +144,6 @@ const PostsSection = () => {
                 <PostsContainer posts={posts} />
             </div>
         </div>
-
     )
 }
 

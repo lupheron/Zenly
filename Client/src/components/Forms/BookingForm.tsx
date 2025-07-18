@@ -1,118 +1,162 @@
-'use client'
-
-import React, { useState } from 'react'
-import SelectDefault from '../FormElements/Select/SelectDefault'
-import InputDefault from '../FormElements/Input/InputDefault'
-import ButtonDefault from '../Button/ButtonDefault'
-import LabelDefault from '../FormElements/label/LabelDefault'
-import SearchIcon from '@mui/icons-material/Search';
+import React, { useState, useEffect, useCallback } from 'react';
 
 interface BookingFormProps {
-    onSearch: (params: {
-        location: string;
-        sort: string;
-        guests: string;
-    }) => void;
+    onSearch: (params: { location: string; sort: string; guests: string }) => void;
 }
 
 const BookingForm: React.FC<BookingFormProps> = ({ onSearch }) => {
-    const [location, setLocation] = useState<string>('');
-    const [sort, setSort] = useState<string>('');
-    const [guests, setGuests] = useState<string>('');
+    const [formData, setFormData] = useState({
+        location: '',
+        sort: '',
+        guests: ''
+    });
 
-    const sortOptions = [
-        { value: 'rating', label: 'Reyting' },
-        { value: 'price_low', label: 'Narxi (Eng arzon)' },
-        { value: 'price_high', label: 'Narxi (Eng qimmat)' },
-        { value: 'recent', label: 'Oxirgi joylanganlar' }
-    ];
+    const [locationError, setLocationError] = useState('');
+    const [searchDebounceTimer, setSearchDebounceTimer] = useState<NodeJS.Timeout | null>(null);
 
-    const locations = [
-        { label: 'Andijon', value: 'Andijon' },
-        { label: 'Buxoro', value: 'Buxoro' },
-        { label: 'Fargʻona', value: 'Fargʻona' },
-        { label: 'Jizzax', value: 'Jizzax' },
-        { label: 'Xorazm', value: 'Xorazm' },
-        { label: 'Namangan', value: 'Namangan' },
-        { label: 'Navoiy', value: 'Navoiy' },
-        { label: 'Qashqadaryo', value: 'Qashqadaryo' },
-        { label: 'Qoraqalpogʻiston', value: 'Qoraqalpogʻiston' },
-        { label: 'Samarqand', value: 'Samarqand' },
-        { label: 'Sirdaryo', value: 'Sirdaryo' },
-        { label: 'Surxondaryo', value: 'Surxondaryo' },
-        { label: 'Toshkent viloyati', value: 'Toshkent viloyati' },
-        { label: 'Toshkent shahri', value: 'Toshkent shahri' }
-    ];
+    // Debounced search function
+    const debouncedSearch = useCallback((searchParams: { location: string; sort: string; guests: string }) => {
+        // Clear previous timer
+        if (searchDebounceTimer) {
+            clearTimeout(searchDebounceTimer);
+        }
 
-    const handleSearch = () => {
-        onSearch({
-            location,
-            sort,
-            guests
-        });
+        // Set new timer
+        const timer = setTimeout(() => {
+            onSearch(searchParams);
+        }, 500); // 500ms delay
+
+        setSearchDebounceTimer(timer);
+    }, [onSearch, searchDebounceTimer]);
+
+    const handleLocationChange = (value: string) => {
+        setFormData(prev => ({ ...prev, location: value }));
+
+        // Clear error when user starts typing
+        if (locationError) {
+            setLocationError('');
+        }
+
+        // Check if location meets minimum length requirement
+        if (value.length > 0 && value.length < 3) {
+            setLocationError('Kamida 3 ta harf kiriting');
+            // Clear search since location is invalid
+            onSearch({ location: '', sort: '', guests: '' });
+            return;
+        }
+
+        // Auto-trigger search if all fields are filled and location is valid
+        const updatedData = { ...formData, location: value };
+        if (updatedData.location.length >= 3 && updatedData.sort && updatedData.guests) {
+            // Use debounced search to avoid too many requests
+            debouncedSearch(updatedData);
+        } else if (value.length === 0) {
+            // Clear search immediately if location is completely empty
+            onSearch({ location: '', sort: '', guests: '' });
+        }
     };
 
+    const handleInputChange = (field: string, value: string) => {
+        if (field === 'location') {
+            handleLocationChange(value);
+            return;
+        }
+
+        const updatedData = { ...formData, [field]: value };
+        setFormData(updatedData);
+
+        // Only trigger search if ALL fields are filled and location is valid (>=3 chars)
+        if (updatedData.location.length >= 3 && updatedData.sort && updatedData.guests) {
+            // Immediate search for select fields (no debounce needed)
+            onSearch(updatedData);
+        } else {
+            // Clear search if any field becomes empty or invalid
+            onSearch({ location: '', sort: '', guests: '' });
+        }
+    };
+
+    // Cleanup timer on unmount
+    useEffect(() => {
+        return () => {
+            if (searchDebounceTimer) {
+                clearTimeout(searchDebounceTimer);
+            }
+        };
+    }, [searchDebounceTimer]);
+
+    const isValidForm = formData.location.length >= 3 && formData.sort && formData.guests;
+
     return (
-        <div className="w-full lg:w-[90%] xl:w-[55%] mx-auto px-4 sm:px-6">
-            <form
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    handleSearch();
-                }}
-                className="flex flex-col md:flex-row h-auto md:h-30 items-center justify-between p-4 md:px-6 lg:px-10 bg-white rounded-lg shadow-sm gap-4 md:gap-0"
-            >
-                <div className="w-full md:px-4 lg:px-5 md:w-60">
-                    <SelectDefault
-                        label="Shahar"
-                        htmlFor="region"
-                        name="region"
-                        options={locations}
-                        value={location}
-                        onChange={(e) => setLocation(e.target.value)}
-                        customClassesLabel="block text-sm font-medium text-gray-700 mb-1"
-                        customClassesSelect="w-full border border-gray-300 rounded-lg p-2 text-gray-800 cursor-pointer focus:outline-none"
-                        customClassesOptions="cursor-pointer"
+        <div className="max-w-4xl mx-auto bg-white p-4 md:p-6 rounded-lg shadow-md">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div>
+                    <label className="block text-sm font-medium mb-2">
+                        Joylashuv
+                        <span className="text-gray-500 text-xs ml-1">(kamida 3 harf)</span>
+                    </label>
+                    <input
+                        type="text"
+                        value={formData.location}
+                        onChange={(e) => handleLocationChange(e.target.value)}
+                        placeholder="Masalan: Toshkent, Samarqand..."
+                        className={`w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${locationError ? 'border-red-500' : 'border-gray-300'
+                            }`}
                     />
+                    {locationError && (
+                        <p className="text-red-500 text-xs mt-1">{locationError}</p>
+                    )}
+                    {formData.location.length > 0 && (
+                        <p className="text-gray-500 text-xs mt-1">
+                            {formData.location.length}/3 harf kiritildi
+                            {formData.location.length >= 3 && ' - qidiruv 0.5 soniyadan keyin boshlanadi'}
+                        </p>
+                    )}
                 </div>
 
-                <div className="hidden md:block border-r-gray-300 border-r w-[1px] h-16"></div>
-
-                <div className="w-full md:w-auto md:px-4 lg:px-5 md:w-60">
-                    <SelectDefault
-                        label="Saralash"
-                        htmlFor="sort"
-                        name="sort"
-                        options={sortOptions}
-                        value={sort}
-                        onChange={(e) => setSort(e.target.value)}
-                        customClassesLabel="block text-sm font-medium text-gray-700 mb-1"
-                        customClassesSelect="w-full border border-gray-300 rounded-lg p-2 text-gray-800 cursor-pointer focus:outline-none"
-                        customClassesOptions="cursor-pointer"
-                    />
+                <div>
+                    <label className="block text-sm font-medium mb-2">Saralash</label>
+                    <select
+                        value={formData.sort}
+                        onChange={(e) => handleInputChange('sort', e.target.value)}
+                        className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                        <option value="">Tanlang</option>
+                        <option value="recent">Eng yangi</option>
+                        <option value="rating">Eng yuqori reyting</option>
+                        <option value="price_low">Arzon narx</option>
+                        <option value="price_high">Qimmat narx</option>
+                        <option value="popular">Mashhur</option>
+                    </select>
                 </div>
 
-                <div className="hidden md:block border-r-gray-300 border-r w-[1px] h-16"></div>
-
-                <div className="w-full md:w-auto md:px-4 lg:px-5">
-                    <LabelDefault htmlFor="guests" label="Odam Soni" />
-                    <InputDefault
+                <div>
+                    <label className="block text-sm font-medium mb-2">Mehmonlar soni</label>
+                    <input
                         type="number"
-                        name="guests"
-                        value={guests}
-                        onChange={(e) => setGuests(e.target.value)}
-                        placeholder="Odam Soni"
-                        customClasses="w-full"
+                        min="1"
+                        value={formData.guests}
+                        onChange={(e) => handleInputChange('guests', e.target.value)}
+                        placeholder="Necha kishi?"
+                        className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                 </div>
+            </div>
 
-                <ButtonDefault
-                    label={<SearchIcon fontSize="large" />}
-                    type="submit"
-                    customClasses=" rounded-lg md:rounded-[50%] w-[100%] h-15 md:w-15 md:h-15 flex items-center justify-center mt-4 md:mt-0"
-                />
-            </form>
+            <div className="mt-4 text-sm text-gray-600 text-center">
+                {isValidForm ? (
+                    <span className="text-green-600 font-medium">
+                        ✓ Qidiruv faol: {formData.location} - {formData.guests} va undan ko&apos;p kishi uchun joylar
+                    </span>
+                ) : formData.location.length > 0 && formData.location.length < 3 ? (
+                    <span className="text-orange-600">
+                        Qidiruv uchun yana {3 - formData.location.length} ta harf kerak
+                    </span>
+                ) : (
+                    <span>Qidirishni boshlash uchun barcha maydonlarni to&apos;ldiring</span>
+                )}
+            </div>
         </div>
-    )
-}
+    );
+};
 
-export default BookingForm
+export default BookingForm;

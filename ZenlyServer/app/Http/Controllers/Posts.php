@@ -172,7 +172,7 @@ class Posts extends Controller
         }
 
         if ($location) {
-            $query->where('posts.location', $location);
+            $query->where('posts.location', 'LIKE', '%' . $location . '%');
         }
 
         if (!empty($amenities)) {
@@ -180,8 +180,9 @@ class Posts extends Controller
                 ->havingRaw('COUNT(features.id) = ?', [count($amenities)]);
         }
 
-        if ($guests) {
-            $query->where('posts.members', '>=', $guests);
+        // Fixed member filtering: show posts with members >= requested guests
+        if ($guests && is_numeric($guests)) {
+            $query->where('posts.members', '>=', (int)$guests);
         }
 
         if ($sort) {
@@ -200,6 +201,9 @@ class Posts extends Controller
                     break;
                 case 'popular':
                     $query->orderByDesc('view_count');
+                    break;
+                default:
+                    $query->orderByDesc('posts.created_at');
                     break;
             }
         }

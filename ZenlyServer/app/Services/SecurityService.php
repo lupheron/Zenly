@@ -126,16 +126,35 @@ class SecurityService
 
     private function getActivityCount($userId, $table, $since)
     {
+        // Fix: Use correct column name based on table
+        $userColumn = $this->getUserColumnName($table);
+
         return DB::table($table)
-            ->where('user_id', $userId)
+            ->where($userColumn, $userId)
             ->where('created_at', '>=', $since)
             ->count();
     }
 
+    /**
+     * Get the correct user column name for different tables
+     */
+    private function getUserColumnName($table)
+    {
+        // The 'users' table uses 'id' as the primary key, not 'user_id'
+        if ($table === 'users') {
+            return 'id';
+        }
+
+        // All other tables use 'user_id' to reference users
+        return 'user_id';
+    }
+
     private function checkDuplicateContent($userId, $table, $requestData)
     {
+        $userColumn = $this->getUserColumnName($table);
+
         $query = DB::table($table)
-            ->where('user_id', $userId)
+            ->where($userColumn, $userId)
             ->where('created_at', '>=', Carbon::now()->subMinutes(5));
 
         if ($table === 'posts' && isset($requestData['title'])) {
