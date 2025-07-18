@@ -45,7 +45,7 @@ const Comment = () => {
                 title="Sayt haqida o'z fikringizni qoldiring!"
                 width={600}
             >
-                <WebComment onSuccess={() => setOpenModal(false)} />
+                <WebComment onSuccess={() => setOpenModal(false)} closeModal={() => setOpenModal(false)} />
             </ReusableModal>
         </>
     )

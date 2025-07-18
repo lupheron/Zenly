@@ -87,7 +87,7 @@ const PostComments: React.FC<PostCommentsProps> = ({ post_id, onClose }) => {
             value={text}
             onChange={handleChange}
             required
-            className='bg-gray-300 w-full h-50 rounded-lg p-5'
+            className='bg-gray-100 outline-none w-full h-50 rounded-lg p-5'
           />
         </div>
 
@@ -102,7 +102,7 @@ const PostComments: React.FC<PostCommentsProps> = ({ post_id, onClose }) => {
             label="Bekor qilish"
             type="button"
             onClick={onClose}
-            customClasses='w-full !bg-gray-500'
+            customClasses='w-full !bg-gray-400'
           />
         </div>
       </form>

@@ -5,7 +5,6 @@ import LabelDefault from '../../FormElements/label/LabelDefault'
 import InputDefault from '../../FormElements/Input/InputDefault'
 import ButtonDefault from '../../Button/ButtonDefault'
 import AlertDefault from '../../Alert/AlertDefault'
-import { useRouter } from 'next/navigation'
 import { useWebComments } from '@/src/hooks/comments/useWebComments'
 
 interface FormData {
@@ -16,11 +15,11 @@ interface FormData {
 }
 
 interface WebCommentProps {
-    onSuccess: () => void
+    onSuccess: () => void,
+    closeModal: () => void
 }
 
-const WebComment = ({ onSuccess }: WebCommentProps) => {
-    const router = useRouter()
+const WebComment = ({ onSuccess, closeModal }: WebCommentProps) => {
     const { submitComment } = useWebComments()
 
     const [formData, setFormData] = useState<FormData>({
@@ -62,7 +61,7 @@ const WebComment = ({ onSuccess }: WebCommentProps) => {
         setLoading(true)
 
         try {
-            await submitComment (formData)
+            await submitComment(formData)
 
             AlertDefault.success("Sizning fikringiz muvaffaqiyatli yuborildi!")
 
@@ -73,7 +72,7 @@ const WebComment = ({ onSuccess }: WebCommentProps) => {
                 comment: '',
             })
 
-            onSuccess() 
+            onSuccess()
         } catch (error: unknown) {
             if (typeof error === 'object' && error !== null && 'status' in error && 'message' in error) {
                 const { status, message } = error as { status: number; message: string }
@@ -143,8 +142,8 @@ const WebComment = ({ onSuccess }: WebCommentProps) => {
                 />
                 <ButtonDefault
                     label="Bekor qilish"
-                    onClick={() => router.back()}
-                    customClasses="!bg-gray-500 w-full"
+                    onClick={() => closeModal()}
+                    customClasses="!bg-gray-400 w-full"
                 />
             </div>
         </form>
