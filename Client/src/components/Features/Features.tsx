@@ -27,7 +27,7 @@ const Features: React.FC<FeatureProps> = ({ postId }) => {
 
     return (
         <div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 lg:grid-cols-1 xl:grid-cols-2 gap-2">
                 {firstSix.map((feature, index) => (
                     <div key={index} className="flex gap-3 p-2 border rounded">
                         <CheckCircleIcon className="text-green-600" />
