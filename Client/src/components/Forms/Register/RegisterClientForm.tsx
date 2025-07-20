@@ -54,53 +54,68 @@ const RegisterClientForm = () => {
 
     useEffect(() => {
         if (isSuccess) {
-            AlertDefault.success("Ro‘yxatdan o‘tish muvaffaqiyatli yakunlandi!")
+            AlertDefault.success("Ro'yxatdan o'tish muvaffaqiyatli yakunlandi!")
             router.push('/login')
         }
         if (isError && error) {
             if (error.message === "USERNAME_CONFLICT") {
                 AlertDefault.error("Bu username allaqachon ishlatilgan!")
             } else {
-                AlertDefault.error("Ro‘yxatdan o‘tishda xatolik yuz berdi!")
+                AlertDefault.error("Ro'yxatdan o'tishda xatolik yuz berdi!")
             }
         }
     }, [isSuccess, isError, error, router])
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4 w-full">
             <div>
-                <LabelDefault label="F.I.SH:" htmlFor="fullname" />
+                <LabelDefault 
+                    label="F.I.SH:" 
+                    htmlFor="fullname" 
+                    customClasses="text-sm sm:text-base font-medium text-gray-700 block mb-1 sm:mb-2"
+                />
                 <InputDefault
                     name="fullname"
                     type="text"
                     value={form.fullname}
                     onChange={handleChange}
-                    customClasses='bg-white rounded border-1 border-light-green'
+                    customClasses='bg-white rounded border-1 border-light-green w-full'
                     required={true}
+                    placeholder="To'liq ism va familiya"
                 />
             </div>
 
             <div>
-                <LabelDefault label="Username:" htmlFor="username" />
+                <LabelDefault 
+                    label="Username:" 
+                    htmlFor="username" 
+                    customClasses="text-sm sm:text-base font-medium text-gray-700 block mb-1 sm:mb-2"
+                />
                 <InputDefault
                     name="username"
                     type="text"
                     value={form.username}
                     onChange={handleChange}
-                    customClasses='bg-white rounded border-1 border-light-green'
+                    customClasses='bg-white rounded border-1 border-light-green w-full'
                     required={true}
+                    placeholder="Username kiriting"
                 />
             </div>
 
             <div>
-                <LabelDefault label="Telefon Raqamingiz:" htmlFor="phone" />
+                <LabelDefault 
+                    label="Telefon Raqamingiz:" 
+                    htmlFor="phone" 
+                    customClasses="text-sm sm:text-base font-medium text-gray-700 block mb-1 sm:mb-2"
+                />
                 <InputDefault
                     name="phone"
                     type="text"
                     value={form.phone}
                     onChange={handleChange}
-                    customClasses='bg-white rounded border-1 border-light-green'
+                    customClasses='bg-white rounded border-1 border-light-green w-full'
                     required={true}
+                    placeholder="+998 XX XXX XX XX"
                 />
             </div>
 
@@ -112,19 +127,24 @@ const RegisterClientForm = () => {
                     value={form.address}
                     onChange={handleChange}
                     options={uzbekistanProvinces}
-                    customClassesSelect="w-full h-15 border border-gray-300 rounded px-3 py-2"
+                    customClassesSelect="w-full h-[40px] sm:h-[45px] md:h-[50px] border border-gray-300 rounded px-3 sm:px-4 md:px-5 py-2 sm:py-3 md:py-4 text-sm sm:text-base"
                 />
             </div>
 
             <div>
-                <LabelDefault label="Parol:" htmlFor="password" />
+                <LabelDefault 
+                    label="Parol:" 
+                    htmlFor="password" 
+                    customClasses="text-sm sm:text-base font-medium text-gray-700 block mb-1 sm:mb-2"
+                />
                 <InputDefault
                     name="password"
                     type="password"
                     value={form.password}
                     onChange={handleChange}
-                    customClasses='bg-white rounded border-1 border-light-green'
-                    required={true}
+                    customClasses="bg-white rounded border-1 border-light-green w-full"
+                    required
+                    placeholder="Parol kiriting"
                 />
             </div>
 
@@ -143,9 +163,9 @@ const RegisterClientForm = () => {
             <button
                 type="submit"
                 disabled={isPending}
-                className="bg-light-green text-white px-6 py-2 rounded-md cursor-pointer hover:bg-opacity-90"
+                className="w-full bg-light-green text-white px-4 sm:px-6 py-2 sm:py-3 rounded-md text-sm sm:text-base font-semibold hover:bg-green-600 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed mt-6"
             >
-                {isPending ? "Yuborilmoqda..." : "Ro‘yxatdan o‘tish"}
+                {isPending ? "Yuborilmoqda..." : "Ro'yxatdan o'tish"}
             </button>
         </form>
     )

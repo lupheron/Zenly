@@ -23,14 +23,14 @@ const Register = () => {
     }
 
     return (
-        <div>
+        <div className="min-h-screen bg-gray-50">
             <NavbarSection />
 
-            <div className="flex items-center justify-center mt-50 h-150">
-                <div className='w-140 h-full bg-gray-200 p-5 rounded-l-2xl flex flex-col gap-4'>
+            <div className="flex flex-col md:flex-row items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
+                <div className='w-full max-w-md lg:max-w-lg xl:max-w-xl bg-gray-200 p-4 sm:p-6 lg:p-8 rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none h-auto md:h-[700px] lg:h-[670px] flex items-center'>
                     {selectedType && (
-                        <>
-                            <h2 className='text-2xl font-bold mb-4'>
+                        <div className="w-full">
+                            <h2 className='text-xl sm:text-2xl font-bold mb-4 sm:mb-6'>
                                 {selectedType === 'business'
                                     ? "Joy egasi uchun ro'yxatdan o'tish"
                                     : "Foydalanuvchi uchun ro'yxatdan o'tish"}
@@ -38,10 +38,11 @@ const Register = () => {
 
                             {selectedType === 'business' && <RegisterForm />}
                             {selectedType === 'user' && <RegisterClientForm />}
-                        </>
+                        </div>
                     )}
                 </div>
 
+                {/* Info Section */}
                 <RegisterClient />
             </div>
 
@@ -50,21 +51,21 @@ const Register = () => {
                 onClose={handleForceClose}
                 title="Ro'yxatdan o'tish turini tanlang!"
             >
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-3 sm:gap-4">
                     <button
                         onClick={() => handleSelect('business')}
-                        className="flex items-center gap-3 p-4 bg-light-green text-white rounded hover:opacity-90  cursor-pointer"
+                        className="flex items-center gap-3 p-3 sm:p-4 bg-light-green text-white rounded hover:opacity-90 cursor-pointer text-sm sm:text-base"
                     >
-                        <WorkIcon />
-                        <span className="text-lg font-medium">Joy egasi</span>
+                        <WorkIcon className="w-5 h-5 sm:w-6 sm:h-6" />
+                        <span className="font-medium">Joy egasi</span>
                     </button>
 
                     <button
                         onClick={() => handleSelect('user')}
-                        className="flex items-center gap-3 p-4 bg-dark-green text-white rounded hover:opacity-90  cursor-pointer"
+                        className="flex items-center gap-3 p-3 sm:p-4 bg-dark-green text-white rounded hover:opacity-90 cursor-pointer text-sm sm:text-base"
                     >
-                        <AccountCircleIcon />
-                        <span className="text-lg font-medium">Foydalanuvchi</span>
+                        <AccountCircleIcon className="w-5 h-5 sm:w-6 sm:h-6" />
+                        <span className="font-medium">Foydalanuvchi</span>
                     </button>
                 </div>
             </ReusableModal>
