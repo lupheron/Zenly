@@ -23,27 +23,33 @@ const PostsRatingCart = () => {
     const totalPages = Math.ceil(userPosts.length / postsPerPage)
 
     return (
-        <div className='bg-white p-6 rounded-xl shadow-xl w-150 h-full'>
-            <h1 className="text-xl font-semibold mb-4">Postlaringizning reytinglari</h1>
+        <div className='bg-white p-4 sm:p-6 rounded-xl shadow-xl w-full h-full'>
+            <h1 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Postlaringizning reytinglari</h1>
 
             {currentPosts.length === 0 ? (
-                <p>Sizda postlar mavjud emas!</p>
+                <p className="text-sm sm:text-base text-gray-500">Sizda postlar mavjud emas!</p>
             ) : (
-                currentPosts.map((post) => (
-                    <div key={post.id} className="border p-4 rounded mb-3">
-                        <div className="flex items-center justify-between">
-                            <h2 className="text-lg font-medium">{post.title}</h2>
-                            <Rating postId={post.id} />
+                <div className="space-y-3 sm:space-y-4">
+                    {currentPosts.map((post) => (
+                        <div key={post.id} className="border border-gray-200 p-3 sm:p-4 rounded-lg">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3">
+                                <h2 className="text-sm sm:text-base lg:text-lg font-medium">{post.title}</h2>
+                                <Rating postId={post.id} />
+                            </div>
                         </div>
-                    </div>
-                ))
+                    ))}
+                </div>
             )}
 
-            <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={(page) => setCurrentPage(page)}
-            />
+            {totalPages > 1 && (
+                <div className="mt-4 sm:mt-6">
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={(page) => setCurrentPage(page)}
+                    />
+                </div>
+            )}
         </div>
     )
 }

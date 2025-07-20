@@ -37,41 +37,56 @@ const Profile = () => {
     }
 
     return (
-        <div className='flex flex-row items-center gap-20 h-full'>
-            <div className='p-10 w-fit h-fit mx-auto bg-white shadow-xl rounded-2xl'>
-                <div className='flex flex-col items-center '>
+        <div className='flex flex-col 2xl:flex-row items-center gap-6 lg:gap-8 xl:gap-20 h-full'>
+            {/* Profile Card */}
+            <div className='w-full lg:w-156 xl:w-[700px] p-4 sm:p-6 lg:p-10 bg-white shadow-xl rounded-xl lg:rounded-2xl'>
+                <div className='flex flex-col items-center'>
                     <Image
-                        width={250}
-                        height={250}
+                        width={200}
+                        height={200}
                         src={data?.img}
                         alt='Profile Picture'
-                        className='rounded-full mt-5 mb-10'
+                        className='rounded-full w-32 h-32 sm:w-40 sm:h-40 lg:w-48 lg:h-48 xl:w-56 xl:h-56 mt-2 sm:mt-5 mb-6 sm:mb-10'
                     />
                 </div>
-                <div className='flex flex-col gap-2 text-center'>
-                    <h1 className='text-gray-600 text-5xl font-bold tracking-[1px]'>{data?.fullname}</h1>
-                    <p className='text-lg'><LocationOnIcon className='text-black text-xl' /> {data?.address || "Joy ko'rsatilmagan"}</p>
-                    <div className='flex items-center gap-15 text-xl mt-15 justify-center'>
-                        <h2><InsertEmoticonIcon className='text-black text-xl' /> {data?.username}</h2>
-                        <p><LocalPhoneIcon className='text-black text-xl' /> {data?.phone || "Telefon mavjud emas"}</p>
-                        <p><VerifiedIcon className='text-black text-xl' />{data.vip_status || "Noma'lum"}</p>
+                <div className='flex flex-col gap-2 sm:gap-3 text-center'>
+                    <h1 className='text-gray-600 text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-[1px]'>{data?.fullname}</h1>
+                    <p className='text-sm sm:text-base lg:text-lg flex items-center justify-center gap-1'>
+                        <LocationOnIcon className='text-black text-lg sm:text-xl' /> 
+                        {data?.address || "Joy ko'rsatilmagan"}
+                    </p>
+                    <div className='flex flex-col sm:flex-row items-center gap-3 sm:gap-6 lg:gap-15 text-sm sm:text-base lg:text-xl mt-6 sm:mt-10 lg:mt-15 justify-center'>
+                        <h2 className='flex items-center gap-1'>
+                            <InsertEmoticonIcon className='text-black text-lg sm:text-xl' /> 
+                            {data?.username}
+                        </h2>
+                        <p className='flex items-center gap-1'>
+                            <LocalPhoneIcon className='text-black text-lg sm:text-xl' /> 
+                            {data?.phone || "Telefon mavjud emas"}
+                        </p>
+                        <p className='flex items-center gap-1'>
+                            <VerifiedIcon className='text-black text-lg sm:text-xl' />
+                            {data.vip_status || "Noma'lum"}
+                        </p>
                     </div>
                 </div>
 
-                <div className='flex gap-x-5 mt-5'>
+                <div className='flex flex-col justify-center items-center sm:flex-row gap-3 sm:gap-5 mt-6 sm:mt-8 lg:mt-10'>
                     <ButtonDefault
                         label='Tahrirlash'
                         onClick={() => router.push('/user/profile/edit')}
-                        customClasses='w-full mt-10 cursor-pointer'
+                        customClasses='w-full sm:w-full cursor-pointer'
                     />
                     <ButtonDefault
                         label="O'chirish"
                         onClick={() => setDeleteModalOpen(true)}
-                        customClasses='w-full mt-10 cursor-pointer !bg-red-700'
+                        customClasses='w-full sm:w-full cursor-pointer !bg-red-700'
                     />
                 </div>
             </div>
-            <div className='flex flex-col gap-10'>
+
+            {/* Comments and Ratings Section */}
+            <div className='flex flex-col gap-6 lg:gap-8 xl:gap-10 w-full lg:w-156 xl:w-[700px]'>
                 <UserComments />
                 <PostsRatingCart />
             </div>

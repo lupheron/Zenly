@@ -29,7 +29,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
                 }
             })
             .catch(() => {
-                AlertDefault.error("Token noto‘g‘ri yoki sessiya tugagan.")
+                AlertDefault.error("Token noto'g'ri yoki sessiya tugagan.")
                 router.push("/login")
             })
             .finally(() => {
@@ -44,20 +44,22 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
     if (loading) return null // or a spinner
 
     return (
-        <div className="flex min-h-screen">
+        <div className="flex min-h-screen bg-gray-50">
             <Aside />
-            <div className='w-full height-full p-30 flex-1 overflow-auto'>
-                <div className='cursor-pointer flex items-center' onClick={handleBack}>
-                    <ArrowBackIcon />
-                    <ButtonDefault
-                        label='Qaytish'
-                        onClick={() => { }}
-                        customClasses='bg-transparent !text-black tracking-[1px] text-xl mb-5 hover:bg-transparent !px-0 !py-0 ml-2 mt-5'
-                    />
+            <div className='w-full lg:ml-0 flex-1 overflow-auto'>
+                <div className='p-4 sm:p-6 lg:p-8'>
+                    <div className='cursor-pointer flex items-center mb-4 sm:mb-6' onClick={handleBack}>
+                        <ArrowBackIcon className="w-5 h-5 sm:w-6 sm:h-6" />
+                        <ButtonDefault
+                            label='Qaytish'
+                            onClick={() => { }}
+                            customClasses='bg-transparent !text-black tracking-[1px] text-sm sm:text-base lg:text-xl hover:bg-transparent !px-0 !py-0 ml-2'
+                        />
+                    </div>
+                    <main className="min-h-[calc(100vh-120px)] border-1 rounded-xl sm:rounded-2xl bg-light-gray border-gray-200 shadow-[4px_0_6px_-1px_rgba(0,0,0,0.1)] p-4 sm:p-6 lg:p-10">
+                        {children}
+                    </main>
                 </div>
-                <main className="h-full border-1 rounded-2xl bg-light-gray border-gray-200 shadow-[4px_0_6px_-1px_rgba(0,0,0,0.1)] p-10">
-                    {children}
-                </main>
             </div>
         </div>
     )

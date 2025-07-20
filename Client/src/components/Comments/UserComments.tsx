@@ -23,18 +23,18 @@ const UserComments = () => {
     }
 
     return (
-        <div className="bg-white p-6 rounded-xl shadow-xl w-150 h-full min-h-85">
-            <h1 className="text-2xl font-bold mb-4">Mijozlar Fikri</h1>
-            <div className="space-y-4">
+        <div className="bg-white p-4 sm:p-6 rounded-xl shadow-xl w-full h-full min-h-60 sm:min-h-80 lg:min-h-85">
+            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold mb-3 sm:mb-4">Mijozlar Fikri</h1>
+            <div className="space-y-3 sm:space-y-4">
                 <SwiperDefault
                     slidesPerView={1}
-                    spaceBetween={30}
+                    spaceBetween={20}
                     className='w-full'
                     autoplay={{ delay: 8000 }}
                     pagination={false}
                 >
                     {data?.length === 0 ? (
-                        <p>Sizda komentlar mavjud emas!</p>
+                        <p className="text-sm sm:text-base text-gray-500">Sizda komentlar mavjud emas!</p>
                     ) : (
                         data?.map((comment, index) => (
                             <CommentCart
