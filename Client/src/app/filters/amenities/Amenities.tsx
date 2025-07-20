@@ -29,9 +29,9 @@ const Amenities: React.FC<AmenitiesProps> = ({ selectedAmenities, onChange }) =>
 
     return (
         <div>
-            <div className="flex flex-col gap-3 md:gap-4 mb-4 md:mb-6">
+            <div className="flex flex-col gap-7 md:gap-4 mb-4 md:mb-6">
                 {amenities.map((item) => (
-                    <div key={item.label} className="flex items-center gap-2 whitespace-nowrap">
+                    <div key={item.label} className="flex items-center gap-3 whitespace-nowrap">
                         <InputDefault
                             type="checkbox"
                             name="amenity"

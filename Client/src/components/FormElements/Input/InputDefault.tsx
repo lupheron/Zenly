@@ -25,8 +25,24 @@ const InputDefault: React.FC<InputProps> = ({
     checked,
     maxLength
 }) => {
+    const getInputClasses = () => {
+        if (type === 'checkbox') {
+            return `w-4 h-4 bg-gray-100 border-gray-300 rounded ${customClasses}`
+        }
+        
+        return `bg-light-gray px-3 sm:px-4 md:px-5 py-3 sm:py-4 md:py-5 border-none rounded text-black w-full h-[40px] sm:h-[45px] md:h-[50px] focus:outline-none text-sm sm:text-base ${customClasses}`
+    }
+
+    const getContainerClasses = () => {
+        if (type === 'checkbox') {
+            return `${customClasses} flex items-center justify-center`
+        }
+        
+        return `${customClasses} flex items-center justify-center w-full`
+    }
+
     return (
-        <div className={`${customClasses} flex items-center justify-center w-full`}>
+        <div className={getContainerClasses()}>
             <input
                 type={type}
                 name={name}
@@ -37,7 +53,7 @@ const InputDefault: React.FC<InputProps> = ({
                 placeholder={placeholder}
                 required={required}
                 maxLength={maxLength}
-                className={`bg-light-gray px-3 sm:px-4 md:px-5 py-3 sm:py-4 md:py-5 border-none rounded text-black w-full h-[40px] sm:h-[45px] md:h-[50px] focus:outline-none text-sm sm:text-base ${customClasses}`}
+                className={getInputClasses()}
             />
         </div>
     )
