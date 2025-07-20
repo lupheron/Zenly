@@ -28,7 +28,6 @@ const Rating: React.FC<RatingProps> = ({
     const [showHoverText, setShowHoverText] = useState(false)
     const [selfRateError, setSelfRateError] = useState(false)
 
-    // Check if user can rate this post
     const canRate = allowRating && 
                    currentUser && 
                    userRatingData && 
@@ -86,7 +85,6 @@ const Rating: React.FC<RatingProps> = ({
                         name={`rating-display-${postId}`}
                     />
 
-                    {/* Hover text - only show if user can rate */}
                     {showHoverText && canRate && (
                         <div className="absolute top-6 left-0 bg-white border border-gray-200 rounded-md px-2 py-1 shadow-lg z-10">
                             <span className="text-sm text-blue-600 whitespace-nowrap">Baho berish</span>
@@ -96,18 +94,15 @@ const Rating: React.FC<RatingProps> = ({
 
                 <span className="text-sm text-gray-600">({averageRating.toFixed(1)})</span>
 
-                {/* Show user's rating if they've already rated */}
                 {userRatingData?.has_rated && userRatingData?.user_rating && (
                     <span className="text-sm text-green-600">Sizning bahoyingiz: {userRatingData.user_rating}/5</span>
                 )}
 
-                {/* Show message if user can't rate their own post */}
                 {currentUser && postUserId === currentUser.id && (
                     <span className="text-sm text-gray-500">O&apos;z postlaringizga baho bera olmaysiz</span>
                 )}
             </div>
 
-            {/* Rating Modal */}
             <ReusableModal
                 open={showModal}
                 onClose={handleCancelRating}

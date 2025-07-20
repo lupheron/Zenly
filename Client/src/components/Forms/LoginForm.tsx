@@ -40,33 +40,45 @@ const LoginForm = () => {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4 w-full">
             <div>
-                <LabelDefault label="Username:" htmlFor="username" />
+                <LabelDefault 
+                    label="Username:" 
+                    htmlFor="username" 
+                    customClasses="text-sm sm:text-base font-medium text-gray-700 block mb-1 sm:mb-2"
+                />
                 <InputDefault
                     name="username"
                     type="text"
                     value={form.username}
                     onChange={handleChange}
                     required
+                    placeholder="Username kiriting"
+                    customClasses="w-full"
                 />
             </div>
 
             <div>
-                <LabelDefault label="Parol:" htmlFor="password" />
+                <LabelDefault 
+                    label="Parol:" 
+                    htmlFor="password" 
+                    customClasses="text-sm sm:text-base font-medium text-gray-700 block mb-1 sm:mb-2"
+                />
                 <InputDefault
                     name="password"
                     type="password"
                     value={form.password}
                     onChange={handleChange}
                     required
+                    placeholder="Parol kiriting"
+                    customClasses="w-full"
                 />
             </div>
 
             <button
                 type="submit"
                 disabled={isPending}
-                className="bg-light-green text-white px-6 py-2 rounded-md"
+                className="w-full bg-light-green text-white px-4 sm:px-6 py-2 sm:py-3 rounded-md text-sm sm:text-base font-semibold hover:bg-green-600 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed mt-6"
             >
                 {isPending ? 'Tekshirilmoqda...' : 'Kirish'}
             </button>
