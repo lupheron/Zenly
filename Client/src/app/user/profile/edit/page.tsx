@@ -3,9 +3,11 @@ import React from 'react'
 
 const EditUser = () => {
     return (
-        <div className='flex flex-col items-center justify-center'>
-            <h1 className='text-4xl font-bold tracking-[1px] mb-15'>Foydalanuvchi ma&apos;lumotlarini tahririlash</h1>
-            <div className='min-w-250 bg-white p-5 rounded-2xl'>
+        <div className='flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8'>
+            <h1 className='text-2xl sm:text-3xl lg:text-4xl font-bold tracking-[1px] mb-8 sm:mb-12 lg:mb-15 text-center'>
+                Foydalanuvchi ma&apos;lumotlarini tahririlash
+            </h1>
+            <div className='w-full max-w-md lg:max-w-2xl xl:max-w-4xl bg-white p-4 sm:p-6 lg:p-8 rounded-xl lg:rounded-2xl shadow-xl'>
                 <EditUserForm />
             </div>
         </div>

@@ -72,55 +72,81 @@ const EditUserForm = () => {
     if (isLoading) return <p>Yuklanmoqda...</p>
 
     return (
-        <form onSubmit={handleSubmit} className="flex gap-10 items-start">
-            <ProfileImageUpload value={form.img} onChange={handleImageChange} />
+        <form onSubmit={handleSubmit} className="flex flex-col xl:flex-row gap-6 lg:gap-10 items-start">
+            <div className="w-full lg:w-auto flex justify-center lg:justify-start">
+                <ProfileImageUpload value={form.img} onChange={handleImageChange} />
+            </div>
 
-            <div className="space-y-4 flex-1">
+            <div className="space-y-3 sm:space-y-4 flex-1 w-full">
                 <div>
-                    <LabelDefault label="F.I.SH:" htmlFor="fullname" />
+                    <LabelDefault 
+                        label="F.I.SH:" 
+                        htmlFor="fullname" 
+                        customClasses="text-sm sm:text-base font-medium text-gray-700 block mb-1 sm:mb-2"
+                    />
                     <InputDefault
                         name="fullname"
                         type="text"
                         value={form.fullname}
                         onChange={handleChange}
                         required
+                        placeholder="To'liq ism va familiya"
+                        customClasses="w-full"
                     />
                 </div>
 
                 <div>
-                    <LabelDefault label="Username:" htmlFor="username" />
+                    <LabelDefault 
+                        label="Username:" 
+                        htmlFor="username" 
+                        customClasses="text-sm sm:text-base font-medium text-gray-700 block mb-1 sm:mb-2"
+                    />
                     <InputDefault
                         name="username"
                         type="text"
                         value={form.username}
                         onChange={handleChange}
                         required
+                        placeholder="Username kiriting"
+                        customClasses="w-full"
                     />
                 </div>
 
                 <div>
-                    <LabelDefault label="Telefon Raqamingiz:" htmlFor="phone" />
+                    <LabelDefault 
+                        label="Telefon Raqamingiz:" 
+                        htmlFor="phone" 
+                        customClasses="text-sm sm:text-base font-medium text-gray-700 block mb-1 sm:mb-2"
+                    />
                     <InputDefault
                         name="phone"
                         type="text"
                         value={form.phone}
                         onChange={handleChange}
                         required
+                        placeholder="+998 XX XXX XX XX"
+                        customClasses="w-full"
                     />
                 </div>
 
                 <div>
-                    <LabelDefault label="Manzilingiz:" htmlFor="address" />
+                    <LabelDefault 
+                        label="Manzilingiz:" 
+                        htmlFor="address" 
+                        customClasses="text-sm sm:text-base font-medium text-gray-700 block mb-1 sm:mb-2"
+                    />
                     <InputDefault
                         name="address"
                         type="text"
                         value={form.address}
                         onChange={handleChange}
                         required
+                        placeholder="Manzilingizni kiriting"
+                        customClasses="w-full"
                     />
                 </div>
 
-                <div className="flex items-center gap-5 pt-2">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-5 pt-2">
                     <ButtonDefault
                         label={isPending ? 'Saqlanmoqda...' : 'Yangilash'}
                         type="submit"
