@@ -36,8 +36,8 @@ const UserPosts = () => {
 
   return (
     <div>
-      <div className='flex items-center justify-between'>
-        <h1 className='text-4xl font-bold tracking-[1px]'>Sizning Postlaringiz</h1>
+      <div className='flex flex-col sm:flex-row items-center justify-between gap-4'>
+        <h1 className='text-2xl sm:text-3xl lg:text-4xl font-bold tracking-[1px]'>Sizning Postlaringiz</h1>
         <ButtonDefault
           label='Yangi Post Joylash'
           onClick={() => router.push('/user/posts/create')}
@@ -51,7 +51,7 @@ const UserPosts = () => {
 
       {!isLoading && !error && posts.length > 0 && (
         <>
-          <div className='grid grid-cols-3 gap-2 mt-5'>
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 xl:gap-10 mt-5'>
             {currentPosts.map((post) => (
               <UsersPosts
                 key={post.id}
