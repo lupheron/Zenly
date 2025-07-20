@@ -69,6 +69,7 @@ Route::middleware(['auth.custom', 'security', Cors::class])->group(function () {
     Route::post('/post-comments', [PostComments::class, 'create']);
 
     // RATING
+    Route::get('/rating/{post_id}/check', [Rating::class, 'checkUserRating']);
     Route::post('/rating', [Rating::class, 'create']);
 
     // GALLERY

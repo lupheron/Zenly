@@ -1,6 +1,7 @@
 'use client'
 
-import { usePostRating, useCreateRating } from '@/src/hooks/rating/useRating'
+import { usePostRating, useCreateRating, useUserRating } from '@/src/hooks/rating/useRating'
+import { useUser } from '@/src/hooks/users/useUser'
 import StarRatings from 'react-star-ratings'
 import React, { useState } from 'react'
 import ReusableModal from '../Modal/ReusableModal'
@@ -16,14 +17,23 @@ const Rating: React.FC<RatingProps> = ({
     postUserId,
     allowRating = true
 }) => {
-    const { data, isLoading, error } = usePostRating(postId)
+    const { data: averageRating, isLoading, error } = usePostRating(postId)
+    const { data: userRatingData } = useUserRating(postId)
+    const { data: currentUser } = useUser()
     const createRating = useCreateRating()
+    
     const [userRating, setUserRating] = useState<number>(0)
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const [hasRated, setHasRated] = useState(false)
     const [showModal, setShowModal] = useState(false)
     const [showHoverText, setShowHoverText] = useState(false)
     const [selfRateError, setSelfRateError] = useState(false)
+
+    // Check if user can rate this post
+    const canRate = allowRating && 
+                   currentUser && 
+                   userRatingData && 
+                   !userRatingData.has_rated && 
+                   postUserId !== currentUser.id
 
     const handleRatingChange = (newRating: number) => {
         setUserRating(newRating)
@@ -33,10 +43,7 @@ const Rating: React.FC<RatingProps> = ({
         if (userRating === 0 || isSubmitting) return
         setIsSubmitting(true)
         try {
-            const userId = Number(localStorage.getItem('user_id'))
-            if (!userId) throw new Error('Foydalanuvchi aniqlanmadi')
-            await createRating.mutateAsync({ post_id: postId, user_id: userId, rating: userRating })
-            setHasRated(true)
+            await createRating.mutateAsync({ post_id: postId, rating: userRating })
             setShowModal(false)
         } catch (error) {
             console.error('Error submitting rating:', error)
@@ -52,32 +59,26 @@ const Rating: React.FC<RatingProps> = ({
     }
 
     const handleStarClick = () => {
-        const userId = Number(localStorage.getItem('user_id'))
-        if (allowRating && !hasRated) {
-            if (postUserId && userId === postUserId) {
-                setSelfRateError(true)
-                setShowModal(true)
-            } else {
-                setShowModal(true)
-            }
+        if (canRate) {
+            setShowModal(true)
         }
     }
 
     if (isLoading) return <p className="text-sm text-gray-400">Yuklanmoqda...</p>
-    if (error || data === undefined) return <p className="text-sm text-red-500">Reyting yo&apos;q</p>
+    if (error || averageRating === undefined) return <p className="text-sm text-red-500">Reyting yo&apos;q</p>
 
     return (
         <>
             <div className="flex flex-col xl:flex-row xl:items-center gap-2">
                 <div
                     className="relative"
-                    onMouseEnter={() => allowRating && !hasRated && setShowHoverText(true)}
+                    onMouseEnter={() => canRate && setShowHoverText(true)}
                     onMouseLeave={() => setShowHoverText(false)}
-                    onClick={allowRating && !hasRated ? handleStarClick : undefined}
-                    style={{ cursor: allowRating && !hasRated ? 'pointer' : 'default' }}
+                    onClick={canRate ? handleStarClick : undefined}
+                    style={{ cursor: canRate ? 'pointer' : 'default' }}
                 >
                     <StarRatings
-                        rating={data}
+                        rating={averageRating}
                         starRatedColor="gold"
                         numberOfStars={5}
                         starDimension="17px"
@@ -85,19 +86,24 @@ const Rating: React.FC<RatingProps> = ({
                         name={`rating-display-${postId}`}
                     />
 
-                    {/* Hover text */}
-                    {showHoverText && allowRating && !hasRated && (
+                    {/* Hover text - only show if user can rate */}
+                    {showHoverText && canRate && (
                         <div className="absolute top-6 left-0 bg-white border border-gray-200 rounded-md px-2 py-1 shadow-lg z-10">
                             <span className="text-sm text-blue-600 whitespace-nowrap">Baho berish</span>
                         </div>
                     )}
                 </div>
 
-                <span className="text-sm text-gray-600">({data.toFixed(1)})</span>
+                <span className="text-sm text-gray-600">({averageRating.toFixed(1)})</span>
 
-                {/* Success message */}
-                {hasRated && (
-                    <span className="text-sm text-green-600">Rahmat!</span>
+                {/* Show user's rating if they've already rated */}
+                {userRatingData?.has_rated && userRatingData?.user_rating && (
+                    <span className="text-sm text-green-600">Sizning bahoyingiz: {userRatingData.user_rating}/5</span>
+                )}
+
+                {/* Show message if user can't rate their own post */}
+                {currentUser && postUserId === currentUser.id && (
+                    <span className="text-sm text-gray-500">O&apos;z postlaringizga baho bera olmaysiz</span>
                 )}
             </div>
 
