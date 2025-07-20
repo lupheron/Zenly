@@ -32,6 +32,9 @@ const PopularActivity = () => {
                                 slidesPerView: 2
                             },
                             1040: {
+                                slidesPerView: 2
+                            },
+                            1280: {
                                 slidesPerView: 3
                             }
                         }}

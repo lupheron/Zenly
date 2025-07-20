@@ -12,27 +12,28 @@ const Comment = () => {
         <>
             <button
                 className="
-                    group fixed bottom-5 right-5 z-50
+                    group fixed bottom-4 right-4 sm:bottom-5 sm:right-5 z-50
                     flex items-center justify-start
-                    w-14 h-14 md:w-16 md:h-16
+                    w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16
                     rounded-full bg-purple-700 shadow-lg
                     transition-all duration-300
-                    hover:w-64 hover:pl-4
+                    hover:w-48 sm:hover:w-56 md:hover:w-64 hover:pl-3 sm:hover:pl-4
                     overflow-hidden
                     border border-purple-700
                     hover:rounded-xl
                     cursor-pointer
-                    px-5
+                    px-3 sm:px-4 md:px-5
                 "
                 onClick={() => setOpenModal(true)}
             >
-                <AddCommentIcon className="text-white text-xl" />
+                <AddCommentIcon className="text-white text-lg sm:text-xl flex-shrink-0" />
                 <span
                     className="
-                        text-sm md:text-base ml-2 text-white
+                        text-xs sm:text-sm md:text-base ml-2 text-white
                         opacity-0 group-hover:opacity-100
                         transition-opacity duration-300
                         whitespace-nowrap
+                        font-medium
                     "
                 >
                     Websayt haqida fikringiz

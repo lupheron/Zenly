@@ -26,7 +26,7 @@ const InputDefault: React.FC<InputProps> = ({
     maxLength
 }) => {
     return (
-        <div className={`${customClasses} flex items-center justify-center`}>
+        <div className={`${customClasses} flex items-center justify-center w-full`}>
             <input
                 type={type}
                 name={name}
@@ -37,7 +37,7 @@ const InputDefault: React.FC<InputProps> = ({
                 placeholder={placeholder}
                 required={required}
                 maxLength={maxLength}
-                className={`bg-light-gray px-5 py-5 border-none rounded text-black w-full h-[45px] focus:outline-none ${customClasses}`}
+                className={`bg-light-gray px-3 sm:px-4 md:px-5 py-3 sm:py-4 md:py-5 border-none rounded text-black w-full h-[40px] sm:h-[45px] md:h-[50px] focus:outline-none text-sm sm:text-base ${customClasses}`}
             />
         </div>
     )

@@ -26,12 +26,29 @@ const ReusableModal: React.FC<ReusableModalProps> = ({
             onCancel={onClose}
             closable={true}
             footer={null}
-            title={title}
-            className={`!p-4 sm:!p-6 md:!p-8 !top-4 sm:!top-10 ${customeClasses}`}
-            width={typeof width === 'number' ? width : '90%'} 
-            style={{ maxWidth: '750px', margin: '0 auto' }} 
+            title={
+                <div className="text-sm sm:text-base md:text-lg font-semibold text-gray-800">
+                    {title}
+                </div>
+            }
+            className={`
+                !p-3 sm:!p-4 md:!p-6 
+                !top-2 sm:!top-4 md:!top-10 
+                !mx-2 sm:!mx-4 md:!mx-auto
+                ${customeClasses}
+            `}
+            width="95%"
+            style={{ 
+                maxWidth: typeof width === 'number' ? `${width}px` : '600px',
+                margin: '0 auto',
+                top: '5%'
+            }}
+            centered={false}
+            destroyOnClose={true}
         >
-            {children}
+            <div className="w-full max-h-[80vh] overflow-y-auto">
+                {children}
+            </div>
         </Modal>
     )
 }

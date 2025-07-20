@@ -91,9 +91,13 @@ const WebComment = ({ onSuccess, closeModal }: WebCommentProps) => {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-                <LabelDefault label="Ism va Familiyangiz:" htmlFor="fullname" />
+        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4 w-full">
+            <div className="w-full">
+                <LabelDefault 
+                    label="Ism va Familiyangiz:" 
+                    htmlFor="fullname" 
+                    customClasses="text-sm sm:text-base font-medium text-gray-700 block mb-1 sm:mb-2"
+                />
                 <InputDefault
                     name="fullname"
                     id="fullname"
@@ -101,12 +105,17 @@ const WebComment = ({ onSuccess, closeModal }: WebCommentProps) => {
                     required
                     value={formData.fullname}
                     onChange={handleChange}
-                    customClasses="mt-1"
+                    customClasses="w-full"
+                    placeholder="Ism va familiyangizni kiriting"
                 />
             </div>
 
-            <div>
-                <LabelDefault label="Sarlavha:" htmlFor="title" />
+            <div className="w-full">
+                <LabelDefault 
+                    label="Sarlavha:" 
+                    htmlFor="title" 
+                    customClasses="text-sm sm:text-base font-medium text-gray-700 block mb-1 sm:mb-2"
+                />
                 <InputDefault
                     name="title"
                     id="title"
@@ -114,36 +123,42 @@ const WebComment = ({ onSuccess, closeModal }: WebCommentProps) => {
                     required
                     value={formData.title}
                     onChange={handleChange}
-                    customClasses="mt-1"
+                    customClasses="w-full"
                     maxLength={20}
+                    placeholder="Sarlavha (maksimal 20 belgi)"
                 />
             </div>
 
-            <div>
-                <LabelDefault label="Fikr:" htmlFor="comment" />
-                <div className="flex items-center justify-center">
+            <div className="w-full">
+                <LabelDefault 
+                    label="Fikr:" 
+                    htmlFor="comment" 
+                    customClasses="text-sm sm:text-base font-medium text-gray-700 block mb-1 sm:mb-2"
+                />
+                <div className="w-full">
                     <textarea
                         name="comment"
                         id="comment"
                         value={formData.comment}
                         onChange={handleChange}
                         required
-                        className="mt-1 bg-light-gray px-5 py-5 border-none rounded text-black w-full h-[100px] focus:outline-none"
+                        className="w-full bg-light-gray px-3 sm:px-4 md:px-5 py-3 sm:py-4 md:py-5 border-none rounded text-black h-[80px] sm:h-[100px] md:h-[120px] focus:outline-none resize-none text-sm sm:text-base"
+                        placeholder="O'z fikringizni yozing..."
                     />
                 </div>
             </div>
 
-            <div className="flex items-center gap-5">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full pt-2">
                 <ButtonDefault
                     label={loading ? 'Yuborilmoqda...' : 'Yuborish'}
                     type="submit"
                     isDisabled={loading}
-                    customClasses="w-full"
+                    customClasses="w-full sm:flex-1 h-12 sm:h-auto text-sm sm:text-base"
                 />
                 <ButtonDefault
                     label="Bekor qilish"
                     onClick={() => closeModal()}
-                    customClasses="!bg-gray-400 w-full"
+                    customClasses="!bg-gray-400 w-full sm:flex-1 h-12 sm:h-auto text-sm sm:text-base"
                 />
             </div>
         </form>
