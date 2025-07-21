@@ -152,12 +152,12 @@ const EditPostForm = () => {
             const imgBase64 =
                 mainFileList[0]?.url?.startsWith('data:image')
                     ? mainFileList[0].url.split(',')[1]
-                    : null 
+                    : null
 
             const payload: UpdatePostPayload = {
                 ...form,
                 user_id: userId!,
-                img: imgBase64 
+                img: imgBase64
             }
 
             await editPost.mutateAsync({ postId, data: payload })
@@ -180,9 +180,11 @@ const EditPostForm = () => {
 
     return (
         <form onSubmit={handleSubmit} className="flex flex-col gap-6 mx-auto">
-            <div className="flex flex-col gap-10 md:flex-row">
-                <div className="min-w-[220px] md:w-1/3">
-                    <div className='h-80 w-auto'>
+            <div className="flex flex-col lg:flex-row gap-10">
+                {/* Media section - Left side on large screens, top on smaller screens */}
+                <div className="lg:order-1 order-1 lg:min-w-[320px] lg:w-1/3 w-full">
+                    {/* Main image */}
+                    <div className='h-80 w-auto mb-6'>
                         <LabelDefault label="Asosiy rasm:" htmlFor="main-img" />
                         <input
                             type="file"
@@ -221,7 +223,8 @@ const EditPostForm = () => {
                         </div>
                     </div>
 
-                    <div className="mt-6">
+                    {/* Gallery */}
+                    <div className="mb-6">
                         <LabelDefault label="Galereya rasmlari:" htmlFor='gallery' />
                         <EditGalleryForm
                             postId={postId}
@@ -231,35 +234,39 @@ const EditPostForm = () => {
                         />
                     </div>
 
-                    <div className="mt-10">
-                        <h1>Sharoitlar</h1>
-                        <button
-                            type="button"
-                            onClick={() => setCreateModalOpen(true)}
-                            className="ml-2 text-blue-600 hover:text-blue-800 align-middle"
-                            style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
-                        >
-                            <AddIcon />
-                        </button>
-                    </div>
-
-                    {featuresList.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mt-2">
-                            {featuresList.map((feature) => (
-                                <Tag
-                                    key={feature.id}
-                                    closable
-                                    onClose={() => handleDeleteFeature(feature.id)}
-                                    className="custom-tag"
-                                >
-                                    <span className='text-xl p-3'>{feature.name}</span>
-                                </Tag>
-                            ))}
+                    {/* Features */}
+                    <div>
+                        <div className="flex items-center mb-2">
+                            <h1 className="text-lg font-semibold">Sharoitlar</h1>
+                            <button
+                                type="button"
+                                onClick={() => setCreateModalOpen(true)}
+                                className="ml-2 text-blue-600 hover:text-blue-800"
+                                style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+                            >
+                                <AddIcon />
+                            </button>
                         </div>
-                    )}
+
+                        {featuresList.length > 0 && (
+                            <div className="flex flex-wrap gap-2">
+                                {featuresList.map((feature) => (
+                                    <Tag
+                                        key={feature.id}
+                                        closable
+                                        onClose={() => handleDeleteFeature(feature.id)}
+                                        className="custom-tag"
+                                    >
+                                        <span className='text-xl p-3'>{feature.name}</span>
+                                    </Tag>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </div>
 
-                <div className="flex-1 flex flex-col gap-4">
+                {/* Form fields section - Right side on large screens, bottom on smaller screens */}
+                <div className="lg:order-2 order-2 flex-1 flex flex-col gap-4">
                     <LabelDefault label="Sarlavha:" htmlFor="title" />
                     <InputDefault
                         type='text'
