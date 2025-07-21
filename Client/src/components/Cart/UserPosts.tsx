@@ -35,7 +35,7 @@ const UsersPosts: React.FC<UsersPostsProps> = ({
     };
 
     return (
-        <div className={`w-auto flex flex-col justify-between bg-white rounded-xl shadow p-4 lg:p-6 max-w-sm lg:max-w-md xl:max-w-lg mx-auto ${customClasses}`}>
+        <div className={`w-auto flex flex-col justify-between bg-white rounded-xl shadow p-4 lg:p-6 max-w-sm lg:max-w-md xl:max-w-lg mx-auto lg:min-w-[400px] ${customClasses}`}>
             <Image
                 width={350}
                 height={450}
