@@ -11,7 +11,7 @@ const PopularActivity = () => {
     const router = useRouter();
 
     return (
-        <div className="popular-activities mt-20">
+        <div className="popular-activities mt-20" id='activities'>
             <div className="w-50 mx-auto mb-20" data-aos="fade-down">
                 <TitleButtons label="Mashhur servislar" customClasses="text-green-700 bg-green-50" />
             </div>

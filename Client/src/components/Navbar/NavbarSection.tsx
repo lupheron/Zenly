@@ -58,7 +58,7 @@ const NavbarSection = () => {
                     {navLinks.map(({ label, link }) => (
                         <li key={link}>
                             <Link
-                                href={`/${link}`}
+                                href={`#${link}`}
                                 className="text-[17px] text-mulish font-semibold tracking-[1] text-white hover:text-light-green transition duration-300"
                             >
                                 {label}
@@ -134,7 +134,7 @@ const NavbarSection = () => {
                     {navLinks.map(({ label, link }) => (
                         <li key={link}>
                             <Link
-                                href={`/${link}`}
+                                href={`#${link}`}
                                 className="block text-[17px] text-white font-semibold hover:text-light-green transition duration-300"
                                 onClick={() => setMenuOpen(false)}
                             >

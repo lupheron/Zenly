@@ -14,7 +14,7 @@ const AboutSection = () => {
     const router = useRouter();
 
     return (
-        <div className="mt-20 px-4 md:px-8">
+        <div className="mt-20 px-4 md:px-8" id='about-us'>
             <div className="max-w-[900px] mx-auto flex flex-col items-center text-center gap-5" data-aos="fade-down">
                 <TitleButtons label="Biz haqimizda" customClasses="text-green-700 bg-green-50" />
                 <h1 className="text-[28px] sm:text-[34px] md:text-[33px] font-semibold">
