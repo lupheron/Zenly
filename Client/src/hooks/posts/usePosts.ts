@@ -7,6 +7,7 @@ export interface Post {
     id: number
     title: string
     user_id: number
+    area_id: number
     small_description: string
     img: string
 }
