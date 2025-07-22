@@ -6,13 +6,13 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import ButtonDefault from '@/src/components/Button/ButtonDefault';
 import Image from 'next/image';
-import UserComments from '@/src/components/Comments/UserComments';
 import PostsRatingCart from '@/src/components/Cart/PostsRatingCart';
 import { useUser } from '@/src/hooks/users/useUser';
 import { useRouter } from 'next/navigation';
 import DeleteModal from '@/src/components/Modal/DeleteModal';
 import AlertDefault from '@/src/components/Alert/AlertDefault';
 import Loader from '@/src/components/Loader/Loader';
+import SubscriptionCart from '@/src/components/Cart/SubscriptionCart';
 
 const Profile = () => {
     const { data, deleteUser } = useUser()
@@ -38,7 +38,7 @@ const Profile = () => {
     }
 
     return (
-        <div className='flex flex-col 2xl:flex-row items-center gap-6 lg:gap-8 xl:gap-20 h-full'>
+        <div className='flex flex-col 2xl:flex-row items-center gap-6 lg:gap-8 xl:gap-20 h-full mt-20'>
             {/* Profile Card */}
             <div className='w-full lg:w-156 xl:w-[700px] p-4 sm:p-6 lg:p-10 bg-white shadow-xl rounded-xl lg:rounded-2xl'>
                 <div className='flex flex-col items-center'>
@@ -88,7 +88,7 @@ const Profile = () => {
 
             {/* Comments and Ratings Section */}
             <div className='flex flex-col gap-6 lg:gap-8 xl:gap-10 w-full lg:w-156 xl:w-[700px]'>
-                <UserComments />
+                <SubscriptionCart />
                 <PostsRatingCart />
             </div>
 

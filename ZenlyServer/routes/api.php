@@ -79,6 +79,12 @@ Route::middleware(['auth.custom', 'security', Cors::class])->group(function () {
     // FEATURES
     Route::post('/features', [Features::class, 'create']);
     Route::delete('/features/{id}', [Features::class, 'delete']);
+
+    // SUBSCRIPTIONS
+    Route::post('/subscriptions', [\App\Http\Controllers\Subscription::class, 'create']);
+    Route::get('/subscriptions', [\App\Http\Controllers\Subscription::class, 'index']);
+    Route::get('/subscriptions/{id}', [\App\Http\Controllers\Subscription::class, 'show']);
+    Route::put('/subscriptions/{id}/status', [\App\Http\Controllers\Subscription::class, 'updateStatus']);
 });
 
 // // Admin Security Routes (add role-based middleware later)
