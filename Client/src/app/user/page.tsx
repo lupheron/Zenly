@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/src/hooks/users/useUser'
+import Loader from '../../components/Loader/Loader'
 
 export default function Dashboard() {
     const router = useRouter()
@@ -17,7 +18,7 @@ export default function Dashboard() {
     }, [data, isLoading, router])
 
     if (isLoading || !data) {
-        return <p>Yuklanmoqda...</p>
+        return <Loader />
     }
 
     return (

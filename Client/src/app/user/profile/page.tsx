@@ -12,6 +12,7 @@ import { useUser } from '@/src/hooks/users/useUser';
 import { useRouter } from 'next/navigation';
 import DeleteModal from '@/src/components/Modal/DeleteModal';
 import AlertDefault from '@/src/components/Alert/AlertDefault';
+import Loader from '@/src/components/Loader/Loader';
 
 const Profile = () => {
     const { data, deleteUser } = useUser()
@@ -33,7 +34,7 @@ const Profile = () => {
     }
 
     if (!data) {
-        return <div>Loading...</div>;
+        return <Loader />
     }
 
     return (

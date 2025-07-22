@@ -5,6 +5,9 @@ import QueryProvider from "./providers/QueryProvider";
 import { Toaster } from "sonner";
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { LoaderProvider } from '../components/Loader/LoaderContext';
+import RouteChangeListener from '../components/Loader/RouteChangeListener';
+import LoaderOverlay from '../components/Loader/LoaderOverlay';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,10 +33,14 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <QueryProvider>
-          <Toaster richColors position="top-center" />
-          {children}
-          <Analytics />
-          <SpeedInsights />
+          <LoaderProvider>
+            <RouteChangeListener />
+            <LoaderOverlay />
+            <Toaster richColors position="top-center" />
+            {children}
+            <Analytics />
+            <SpeedInsights />
+          </LoaderProvider>
         </QueryProvider>
       </body>
     </html>

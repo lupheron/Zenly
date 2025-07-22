@@ -6,6 +6,7 @@ import { useUsersPosts } from '@/src/hooks/posts/useUsersPosts'
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import ButtonDefault from '@/src/components/Button/ButtonDefault'
+import Loader from '../../../components/Loader/Loader'
 
 const UserPosts = () => {
   const [userId, setUserId] = useState<number | null>(null)
@@ -34,6 +35,10 @@ const UserPosts = () => {
   const indexOfFirstPost = indexOfLastPost - postsPerPage
   const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost)
 
+  if (isLoading) {
+    return <Loader />
+  }
+
   return (
     <div>
       <div className='flex flex-col sm:flex-row items-center justify-between gap-4'>
@@ -45,11 +50,10 @@ const UserPosts = () => {
       </div>
       <hr className='mt-5' />
 
-      {isLoading && <p>Yuklanmoqda...</p>}
       {error && <p className="text-red-500">Olishda xatolik yuz berdi.</p>}
-      {!isLoading && !error && posts.length === 0 && <p>Postlar mavjud emas</p>}
+      {!error && posts.length === 0 && <p>Postlar mavjud emas</p>}
 
-      {!isLoading && !error && posts.length > 0 && (
+      {!error && posts.length > 0 && (
         <>
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 xl:gap-10 mt-5'>
             {currentPosts.map((post) => (
