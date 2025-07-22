@@ -16,12 +16,16 @@ import PostComments from '@/src/components/Forms/Comments/PostComments'
 import SwiperDefault from '@/src/components/Swiper/SwiperDefault'
 import CommentCart from '@/src/components/Cart/CommentCart'
 import { usePostViews } from '@/src/hooks/postViews/usePostViews'
+import { useUser } from '@/src/hooks/users/useUser'
+import AlertDefault from '@/src/components/Alert/AlertDefault'
+import { useCreateBookingRequest } from '@/src/hooks/booking/useBookingRequests'
 
 const PostInfo = () => {
     const params = useParams()
     const postId = Number(params?.id)
     const [openModal, setOpenModal] = useState(false)
     const [openCommentModal, setOpenCommentModal] = useState(false)
+    const { data: currentUser } = useUser()
 
     const banners = [
         { id: 1, title: 'Plyajdagi dam olish' },
@@ -39,12 +43,14 @@ const PostInfo = () => {
     const resolvedPostId = post?.id
 
     const { data: totalViews = 0 } = usePostViews(resolvedPostId ?? 0)
+    const bookingMutation = useCreateBookingRequest()
 
     if (!postId) return null
     if (isLoading) return <p className="text-center py-10">Yuklanmoqda...</p>
     if (error || !post) return <p className="text-center py-10 text-red-500">Xatolik yuz berdi yoki post topilmadi</p>
 
     const areaTitle = banners.find(b => b.id === post.area_id)?.title ?? 'Nomaʼlum tur'
+    const isCurrentUserOwner = currentUser?.id === post.user_id
 
     return (
         <div className='w-full md:w-[90%] lg:w-[85%] xl:w-[80%] mx-auto mt-8 md:mt-12 lg:mt-16 px-4 sm:px-6'>
@@ -103,8 +109,16 @@ const PostInfo = () => {
 
                         <div className='flex flex-col sm:flex-row items-center gap-3 md:gap-5 mt-6 md:mt-8'>
                             <ButtonDefault
-                                label="Bron qilish"
+                                label={bookingMutation.isPending ? 'Yuborilmoqda...' : 'Bron qilish'}
                                 customClasses='h-10 sm:h-12 !rounded-lg !cursor-pointer !text-xs sm:!text-sm mt-0 w-full'
+                                onClick={() => {
+                                    console.log('Bron qilish clicked', { isCurrentUserOwner, postId: post.id });
+                                    if (isCurrentUserOwner) {
+                                        AlertDefault.error("Siz o'z postlaringizni bron qila olmaysiz")
+                                    } else {
+                                        bookingMutation.mutate({ post_id: post.id })
+                                    }
+                                }}
                             />
                             <ButtonDefault
                                 label="Komentlarni ko'rish"
@@ -112,11 +126,13 @@ const PostInfo = () => {
                                 onClick={() => setOpenCommentModal(true)}
                             />
                         </div>
-                        <ButtonDefault
-                            label="Fikr qoldirish"
-                            customClasses='w-full h-10 sm:h-12 mt-4 md:mt-5 !rounded-lg !cursor-pointer bg-purple-500 !text-xs sm:!text-sm'
-                            onClick={() => setOpenModal(true)}
-                        />
+                        {!isCurrentUserOwner && (
+                            <ButtonDefault
+                                label="Fikr qoldirish"
+                                customClasses='w-full h-10 sm:h-12 mt-4 md:mt-5 !rounded-lg !cursor-pointer bg-purple-500 !text-xs sm:!text-sm'
+                                onClick={() => setOpenModal(true)}
+                            />
+                        )}
                     </div>
                 </LargeContainer>
             </div>

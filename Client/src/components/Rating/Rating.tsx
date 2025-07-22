@@ -21,18 +21,18 @@ const Rating: React.FC<RatingProps> = ({
     const { data: userRatingData } = useUserRating(postId)
     const { data: currentUser } = useUser()
     const createRating = useCreateRating()
-    
+
     const [userRating, setUserRating] = useState<number>(0)
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [showModal, setShowModal] = useState(false)
     const [showHoverText, setShowHoverText] = useState(false)
     const [selfRateError, setSelfRateError] = useState(false)
 
-    const canRate = allowRating && 
-                   currentUser && 
-                   userRatingData && 
-                   !userRatingData.has_rated && 
-                   postUserId !== currentUser.id
+    const canRate = allowRating &&
+        currentUser &&
+        userRatingData &&
+        !userRatingData.has_rated &&
+        postUserId !== currentUser.id
 
     const handleRatingChange = (newRating: number) => {
         setUserRating(newRating)
@@ -68,7 +68,7 @@ const Rating: React.FC<RatingProps> = ({
 
     return (
         <>
-            <div className="flex flex-col xl:flex-row xl:items-center gap-2">
+            <div className="flex flex-col xl:flex-col gap-2">
                 <div
                     className="relative"
                     onMouseEnter={() => canRate && setShowHoverText(true)}
@@ -85,6 +85,8 @@ const Rating: React.FC<RatingProps> = ({
                         name={`rating-display-${postId}`}
                     />
 
+                    <span className="text-sm text-gray-600 ml-3">({averageRating.toFixed(1)})</span>
+
                     {showHoverText && canRate && (
                         <div className="absolute top-6 left-0 bg-white border border-gray-200 rounded-md px-2 py-1 shadow-lg z-10">
                             <span className="text-sm text-blue-600 whitespace-nowrap">Baho berish</span>
@@ -92,7 +94,6 @@ const Rating: React.FC<RatingProps> = ({
                     )}
                 </div>
 
-                <span className="text-sm text-gray-600">({averageRating.toFixed(1)})</span>
 
                 {userRatingData?.has_rated && userRatingData?.user_rating && (
                     <span className="text-sm text-green-600">Sizning bahoyingiz: {userRatingData.user_rating}/5</span>

@@ -11,6 +11,7 @@ use App\Http\Controllers\Rating;
 use App\Http\Controllers\Uploads;
 use App\Http\Controllers\Users;
 use App\Http\Controllers\AreaTypesController;
+use App\Http\Controllers\BookingRequest;
 use App\Http\Middleware\Cors;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -85,6 +86,9 @@ Route::middleware(['auth.custom', 'security', Cors::class])->group(function () {
     Route::get('/subscriptions', [\App\Http\Controllers\Subscription::class, 'index']);
     Route::get('/subscriptions/{id}', [\App\Http\Controllers\Subscription::class, 'show']);
     Route::put('/subscriptions/{id}/status', [\App\Http\Controllers\Subscription::class, 'updateStatus']);
+
+    // BOOKING REQUESTS
+    Route::post('/booking-requests', [BookingRequest::class, 'create']);
 });
 
 // // Admin Security Routes (add role-based middleware later)
