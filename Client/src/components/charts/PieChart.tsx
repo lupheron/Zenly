@@ -40,12 +40,12 @@ const PieChart: React.FC<PieChartProps> = ({ labels, data }) => {
                 display: true,
                 position: 'top' as const,
                 align: 'center' as const,
-                fullSize: false, // Makes the legend not take full width
+                fullSize: false, 
                 labels: {
                     boxWidth: 20,
                     padding: 20,
                 },
-                maxWidth: 400, // Optional: force horizontal fit
+                maxWidth: 400, 
             },
         },
         layout: {

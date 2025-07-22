@@ -1,12 +1,15 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/src/hooks/users/useUser'
 import Loader from '../../components/Loader/Loader'
 import PieChart from '../../components/charts/PieChart'
+import LineChart from '../../components/charts/LineChart'
 import { usePosts } from '@/src/hooks/posts/usePosts'
 import { useAreaTypes } from '@/src/hooks/area_types/useAreaType'
+import { useQuery } from '@tanstack/react-query'
+import api from '@/src/utils/axios'
 
 export default function Dashboard() {
     const router = useRouter()
@@ -14,6 +17,7 @@ export default function Dashboard() {
     const { data: posts, isLoading: postsLoading } = usePosts()
     const { data: areaTypes, isLoading: areaTypesLoading } = useAreaTypes()
     const [userId, setUserId] = useState<number | null>(null)
+    const [sortBy, setSortBy] = useState<'views' | 'rating'>('views')
 
     useEffect(() => {
         if (!isLoading && data) {
@@ -25,22 +29,107 @@ export default function Dashboard() {
         setUserId(storedId ? Number(storedId) : null)
     }, [data, isLoading, router])
 
-    if (isLoading || !data || postsLoading || areaTypesLoading || userId === null) {
+    // Get only the current user's posts
+    const userPosts = useMemo(() => posts?.filter((p) => p.user_id === userId) || [], [posts, userId])
+
+    // Fetch views for each post
+    const { data: viewsData, isLoading: viewsLoading } = useQuery({
+        queryKey: ['user-posts-views', userPosts.map(p => p.id)],
+        queryFn: async () => {
+            if (!userPosts.length) return [];
+            const results = await Promise.all(
+                userPosts.map(async (post) => {
+                    const res = await api.get(`/posts/${post.id}/increase-interest`)
+                    // Sum all clicks for this post
+                    const views = Array.isArray(res.data.data)
+                        ? res.data.data.reduce((sum: number, v: { clicked: number }) => sum + (v.clicked || 0), 0)
+                        : 0;
+                    return { postId: post.id, views };
+                })
+            );
+            return results;
+        },
+        enabled: !!userId && !!userPosts.length,
+    })
+
+    // Fetch ratings for each post
+    const { data: ratingsData, isLoading: ratingsLoading } = useQuery({
+        queryKey: ['user-posts-ratings', userPosts.map(p => p.id)],
+        queryFn: async () => {
+            if (!userPosts.length) return [];
+            const results = await Promise.all(
+                userPosts.map(async (post) => {
+                    const res = await api.get(`/rating/${post.id}`)
+                    return { postId: post.id, rating: res.data.average_rating || 0 };
+                })
+            );
+            return results;
+        },
+        enabled: !!userId && !!userPosts.length,
+    })
+
+    const areaTypeLabels = useMemo(() => areaTypes?.map((a) => a.name.replace(/'/g, "&apos;")) || [], [areaTypes])
+    const areaTypeIds = useMemo(() => areaTypes?.map((a) => a.id) || [], [areaTypes])
+    const postCounts = useMemo(() => areaTypeIds.map(
+        (id) => userPosts.filter((p) => p.area_id === id).length || 0
+    ), [areaTypeIds, userPosts])
+
+    // Prepare data for LineChart
+    // Sort posts by selected metric
+    const sortedPosts = useMemo(() => {
+        const arr = [...userPosts]
+        if (sortBy === 'views' && viewsData) {
+            arr.sort((a, b) => {
+                const aViews = viewsData.find(v => v.postId === a.id)?.views || 0
+                const bViews = viewsData.find(v => v.postId === b.id)?.views || 0
+                return bViews - aViews
+            })
+        } else if (sortBy === 'rating' && ratingsData) {
+            arr.sort((a, b) => {
+                const aRating = ratingsData.find(r => r.postId === a.id)?.rating || 0
+                const bRating = ratingsData.find(r => r.postId === b.id)?.rating || 0
+                return bRating - aRating
+            })
+        }
+        return arr
+    }, [userPosts, sortBy, viewsData, ratingsData])
+
+    const lineLabels = useMemo(() => sortedPosts.map(p => p.title.replace(/'/g, "&apos;")), [sortedPosts])
+    const lineData = useMemo(() => sortedPosts.map(p => {
+        if (sortBy === 'views' && viewsData) {
+            return viewsData.find(v => v.postId === p.id)?.views || 0
+        } else if (sortBy === 'rating' && ratingsData) {
+            return ratingsData.find(r => r.postId === p.id)?.rating || 0
+        }
+        return 0
+    }), [sortedPosts, sortBy, viewsData, ratingsData])
+
+    if (isLoading || !data || postsLoading || areaTypesLoading || userId === null || viewsLoading || ratingsLoading) {
         return <Loader />
     }
-
-    const userPosts = posts?.filter((p) => p.user_id === userId) || []
-    const areaTypeLabels = areaTypes?.map((a) => a.name) || []
-    const areaTypeIds = areaTypes?.map((a) => a.id) || []
-    const postCounts = areaTypeIds.map(
-        (id) => userPosts.filter((p) => p.area_id === id).length || 0
-    )
 
     return (
         <div>
             <h1 className="text-2xl font-bold mb-8">Boshqaruv paneli</h1>
-            <div className="mb-8">
-                <PieChart labels={areaTypeLabels} data={postCounts} />
+            <div className="mb-8 flex flex-col lg:flex-row gap-8 items-start">
+                <div className="flex-1">
+                    <PieChart labels={areaTypeLabels} data={postCounts} />
+                </div>
+                <div className="flex-1 w-full">
+                    <div className="mb-4 flex items-center gap-2">
+                        <label htmlFor="sortBy" className="font-semibold">Ko&apos;rsatish:</label>
+                        <select
+                            id="sortBy"
+                            value={sortBy}
+                            onChange={e => setSortBy(e.target.value as 'views' | 'rating')}
+                            className="border rounded px-2 py-1"
+                        >
+                            <option value="views">Eng ko&apos;p ko&apos;rilganlar</option>
+                            <option value="rating">Eng yuqori reyting</option>
+                        </select>
+                    </div>
+                    <LineChart labels={lineLabels} data={lineData} />
+                </div>
             </div>
         </div>
     )

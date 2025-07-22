@@ -32,7 +32,7 @@ export const useTopRatedPosts = () => {
             const res = await api.get('/posts/top-rated');
             return res.data.data;
         },
-        staleTime: 2 * 24 * 60 * 60 * 1000, // 2 days
+        staleTime: 2 * 24 * 60 * 60 * 1000, 
         retry: 3,
     });
 }
