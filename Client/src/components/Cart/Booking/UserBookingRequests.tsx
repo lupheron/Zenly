@@ -1,12 +1,15 @@
 import React from 'react'
 import ButtonDefault from '../../Button/ButtonDefault'
-import { useUpdateBookingRequestStatus } from '@/src/hooks/booking/useBookingRequests'
+import BookingCheckingForm from '@/src/components/Forms/BookingCheckingForm'
+import { useUpdateBookingRequestStatus, useCreateBookingChecking } from '@/src/hooks/booking/useBookingRequests'
+import { useQueryClient } from '@tanstack/react-query'
 
 export interface PostBookingRequest {
     id: number
     post_title: string
     post_id: number
     requester_fullname: string
+    user_phone: string
     send_date: string
     status: string
 }
@@ -18,12 +21,35 @@ interface UserBookingRequestsProps {
 
 const UserBookingRequests: React.FC<UserBookingRequestsProps> = ({ bookings, onBookingClick }) => {
     const updateStatus = useUpdateBookingRequestStatus()
+    const [checkingModalOpen, setCheckingModalOpen] = React.useState(false)
+    const [selectedBooking, setSelectedBooking] = React.useState<PostBookingRequest | null>(null)
+    const createChecking = useCreateBookingChecking()
+    const queryClient = useQueryClient()
 
-    const handleAcceptBooking = (id: number) => {
-        updateStatus.mutate({ id, status: 'active' })
+    const handleAcceptBooking = (booking: PostBookingRequest) => {
+        setSelectedBooking(booking)
+        setCheckingModalOpen(true)
     }
     const handleRejectBooking = (id: number) => {
         updateStatus.mutate({ id, status: 'cancelled' })
+    }
+
+    const handleCheckingSubmit = (data: { start_date: string, end_date: string, price: number }) => {
+        if (!selectedBooking) return
+        const user_id = Number(localStorage.getItem('user_id'))
+        createChecking.mutate({
+            request_id: selectedBooking.id,
+            user_id,
+            post_id: selectedBooking.post_id,
+            ...data
+        }, {
+            onSuccess: () => {
+                setCheckingModalOpen(false)
+                setSelectedBooking(null)
+                // Refetch bookings after successful checking
+                queryClient.invalidateQueries({ queryKey: ['booking-requests-for-user-posts'] })
+            }
+        })
     }
 
     if (!bookings.length) return <div>Hech qanday so&apos;rov topilmadi.</div>
@@ -33,26 +59,31 @@ const UserBookingRequests: React.FC<UserBookingRequestsProps> = ({ bookings, onB
             {bookings.map(b => (
                 <div
                     key={b.id}
-                    className="p-4 bg-white rounded shadow cursor-pointer hover:bg-gray-100"
+                    className="p-4 bg-white rounded shadow hover:bg-gray-100"
 
                 >
                     <div className=' flex flex-col sm:flex-row sm:items-center sm:justify-between'>
                         <div>
                             <div className="font-bold text-lg cursor-pointer text-blue-500 hover:underline" onClick={() => onBookingClick(b)}>{b.post_title}</div>
-                            <div className="text-gray-600">So&apos;rovchi: {b.requester_fullname}</div>
+                            <div className="text-gray-600">Mijoz: {b.requester_fullname}</div>
                             <div className="text-gray-500 text-sm">Yuborilgan: {new Date(b.send_date).toLocaleString()}</div>
+                            <div className="text-gray-500 text-sm">Telefon raqami: <a
+                                href={`tel:${b.user_phone}`}
+                                className='text-blue-500 cursor-pointer hover:underline'
+                            >
+                                {b.user_phone}
+                            </a></div>
                         </div>
                         <div className="mt-2 sm:mt-0 flex gap-2">
                             <span className={`px-3 py-1 rounded-full text-white ${b.status === 'pending' ? 'bg-yellow-500' : b.status === 'active' ? 'bg-green-600' : 'bg-red-600'}`}>{b.status}</span>
                         </div>
                     </div>
+                    <p className='text-red-500 text-sm mt-5'>So&apos;rovni qabul qilishdan avval mijoz milan aloqaga chiqishingzni so&apos;rab qolamiz!!!</p>
                     {b.status === 'pending' && (
                         <div className='flex gap-2 items-center mt-5'>
                             <ButtonDefault
                                 label="Qabul qilish"
-                                onClick={() => {
-                                    handleAcceptBooking(b.id);
-                                }}
+                                onClick={() => handleAcceptBooking(b)}
                                 customClasses=''
                             />
                             <ButtonDefault
@@ -77,6 +108,12 @@ const UserBookingRequests: React.FC<UserBookingRequestsProps> = ({ bookings, onB
                     )}
                 </div>
             ))}
+            <BookingCheckingForm
+                open={checkingModalOpen}
+                onClose={() => setCheckingModalOpen(false)}
+                onSubmit={handleCheckingSubmit}
+                onSuccess={() => queryClient.invalidateQueries({ queryKey: ['booking-requests-for-user-posts'] })}
+            />
         </div>
     )
 }

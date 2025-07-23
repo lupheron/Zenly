@@ -40,6 +40,7 @@ export interface UserBookingRequest {
   id: number
   post_title: string
   user_fullname: string
+  user_phone: string
   send_date: string
   status: string
   post_id: number
@@ -64,6 +65,7 @@ export interface PostBookingRequest {
   post_title: string
   post_id: number
   requester_fullname: string
+  user_phone: string
   send_date: string
   status: string
 }
@@ -90,6 +92,15 @@ export const useUpdateBookingRequestStatus = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['booking-requests-for-user-posts'] })
+    }
+  })
+}
+
+export const useCreateBookingChecking = () => {
+  return useMutation({
+    mutationFn: async (data: { request_id: number, user_id: number, post_id: number, start_date: string, end_date: string, price: number }) => {
+      const res = await api.post('/booking-checking', data)
+      return res.data
     }
   })
 }

@@ -12,6 +12,7 @@ use App\Http\Controllers\Uploads;
 use App\Http\Controllers\Users;
 use App\Http\Controllers\AreaTypesController;
 use App\Http\Controllers\BookingRequest;
+use App\Http\Controllers\BookingChecking;
 use App\Http\Middleware\Cors;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -92,6 +93,9 @@ Route::middleware(['auth.custom', 'security', Cors::class])->group(function () {
     Route::get('/booking-requests/user/{user_id}', [BookingRequest::class, 'getByUser']);
     Route::get('/booking-requests/for-user-posts/{user_id}', [BookingRequest::class, 'getRequestsForUserPosts']);
     Route::put('/booking-requests/{id}/status', [BookingRequest::class, 'updateStatus']);
+
+    // BOOKING CHECKING
+    Route::post('/booking-checking', [BookingChecking::class, 'create']);
 });
 
 // // Admin Security Routes (add role-based middleware later)

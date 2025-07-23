@@ -8,13 +8,19 @@ interface DateRangePickerProps {
     initialCheckIn?: Date | null;
     initialCheckOut?: Date | null;
     className?: string;
+    showTimeSelect?: boolean; // new prop to allow datetime selection
+    checkInLabel?: string;
+    checkOutLabel?: string;
 }
 
-export default function DateRangePicker({
+export function DateRangePicker({
     onDateChange,
     initialCheckIn = null,
     initialCheckOut = null,
     className = '',
+    showTimeSelect = false,
+    checkInLabel = 'Kirish',
+    checkOutLabel = 'Chiqish',
 }: DateRangePickerProps) {
     const [checkIn, setCheckIn] = useState<Date | null>(initialCheckIn);
     const [checkOut, setCheckOut] = useState<Date | null>(initialCheckOut);
@@ -37,7 +43,7 @@ export default function DateRangePicker({
     return (
         <div className={`flex flex-col sm:flex-row gap-4 ${className}`}>
             <div className="w-full">
-                <LabelDefault htmlFor='check-in' label='Kirish' customClasses='block text-sm font-medium text-gray-700 mb-1' />
+                <LabelDefault htmlFor='check-in' label={checkInLabel} customClasses='block text-sm font-medium text-gray-700 mb-1' />
                 <DatePicker
                     id="check-in"
                     selected={checkIn}
@@ -46,16 +52,18 @@ export default function DateRangePicker({
                     startDate={checkIn}
                     endDate={checkOut}
                     minDate={new Date()}
-                    placeholderText="Kirish Kuni"
+                    placeholderText={checkInLabel + ' Kuni'}
                     className="w-full p-2 border border-gray-300 rounded-md active:border-0 focus:border-transparent"
-                    dateFormat="MMM d, yyyy"
+                    dateFormat={showTimeSelect ? 'MMM d, yyyy HH:mm' : 'MMM d, yyyy'}
                     isClearable
                     clearButtonClassName="after:bg-blue-500"
+                    showTimeSelect={showTimeSelect}
+                    timeFormat="HH:mm"
                 />
             </div>
 
             <div className="w-full">
-                <LabelDefault htmlFor='check-out' label='Chiqish' customClasses='block text-sm font-medium text-gray-700 mb-1' />
+                <LabelDefault htmlFor='check-out' label={checkOutLabel} customClasses='block text-sm font-medium text-gray-700 mb-1' />
                 <DatePicker
                     id="check-out"
                     selected={checkOut}
@@ -64,11 +72,13 @@ export default function DateRangePicker({
                     startDate={checkIn}
                     endDate={checkOut}
                     minDate={checkIn || new Date()}
-                    placeholderText="Chiqish Kuni"
+                    placeholderText={checkOutLabel + ' Kuni'}
                     className="w-full p-2 border border-gray-300 rounded-md active:border-0 focus:border-transparent"
-                    dateFormat="MMM d, yyyy"
+                    dateFormat={showTimeSelect ? 'MMM d, yyyy HH:mm' : 'MMM d, yyyy'}
                     isClearable
                     clearButtonClassName="after:bg-blue-500"
+                    showTimeSelect={showTimeSelect}
+                    timeFormat="HH:mm"
                     disabled={!checkIn}
                 />
             </div>

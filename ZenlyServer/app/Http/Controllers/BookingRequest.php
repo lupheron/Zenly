@@ -96,6 +96,7 @@ class BookingRequest extends Controller
                 'posts.title as post_title',
                 'posts.id as post_id',
                 'users.fullname as user_fullname',
+                'users.phone as user_phone',
                 'users_from_posts.fullname as post_owner_fullname',
                 'booking_requests.send_date',
                 'booking_requests.status'
@@ -127,8 +128,9 @@ class BookingRequest extends Controller
             ->select(
                 'booking_requests.id',
                 'posts.title as post_title',
-                'posts.id as post_id',
+                'posts.id as post_id',  
                 'requesters.fullname as requester_fullname',
+                'requesters.phone as user_phone',
                 'booking_requests.send_date',
                 'booking_requests.status'
             )
