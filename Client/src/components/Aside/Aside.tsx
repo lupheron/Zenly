@@ -9,6 +9,7 @@ import PanoramaIcon from '@mui/icons-material/Panorama'
 import MenuIcon from '@mui/icons-material/Menu'
 import CloseIcon from '@mui/icons-material/Close'
 import { usePathname, useRouter } from 'next/navigation'
+import TurnedInIcon from '@mui/icons-material/TurnedIn'
 
 const Aside = () => {
     const pathname = usePathname()
@@ -30,6 +31,11 @@ const Aside = () => {
             label: "Profil",
             route: "/user/profile",
             icon: <AccountCircleIcon className="w-5 h-5 sm:w-6 sm:h-6" />
+        },
+        {
+            label: "Bron so'rovlari",
+            route: "/user/booked",
+            icon: <TurnedInIcon className="w-5 h-5 sm:w-6 sm:h-6" />
         }
     ]
 

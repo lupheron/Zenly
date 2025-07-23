@@ -90,11 +90,14 @@ class BookingRequest extends Controller
         $bookings = DB::table('booking_requests')
             ->join('posts', 'booking_requests.post_id', '=', 'posts.id')
             ->join('users', 'booking_requests.user_id', '=', 'users.id')
+            ->join('users as users_from_posts', 'posts.user_id', '=', 'users_from_posts.id')
             ->where('booking_requests.user_id', $user_id)
             ->select(
                 'booking_requests.id',
                 'posts.title as post_title',
+                'posts.id as post_id',
                 'users.fullname as user_fullname',
+                'users_from_posts.fullname as post_owner_fullname',
                 'booking_requests.send_date',
                 'booking_requests.status'
             )
@@ -103,6 +106,38 @@ class BookingRequest extends Controller
 
         return response()->json([
             'message' => 'Booking requests fetched successfully.',
+            'status' => 200,
+            'data' => $bookings
+        ]);
+    }
+
+    public function getRequestsForUserPosts(Request $request, $user_id)
+    {
+        $authUser = $request->user();
+        if (!$authUser || $authUser->id != $user_id) {
+            return response()->json([
+                "message" => "You are not allowed to access these bookings",
+                "status" => 403
+            ], 403);
+        }
+
+        $bookings = DB::table('booking_requests')
+            ->join('posts', 'booking_requests.post_id', '=', 'posts.id')
+            ->join('users as requesters', 'booking_requests.user_id', '=', 'requesters.id')
+            ->where('posts.user_id', $user_id)
+            ->select(
+                'booking_requests.id',
+                'posts.title as post_title',
+                'posts.id as post_id',
+                'requesters.fullname as requester_fullname',
+                'booking_requests.send_date',
+                'booking_requests.status'
+            )
+            ->orderByDesc('booking_requests.send_date')
+            ->get();
+
+        return response()->json([
+            'message' => 'Booking requests for your posts fetched successfully.',
             'status' => 200,
             'data' => $bookings
         ]);

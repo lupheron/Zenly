@@ -42,6 +42,8 @@ export interface UserBookingRequest {
   user_fullname: string
   send_date: string
   status: string
+  post_id: number
+  post_owner_fullname: string
 }
 
 export const useUserBookingRequests = (user_id: number | null) => {
@@ -50,6 +52,28 @@ export const useUserBookingRequests = (user_id: number | null) => {
     queryFn: async () => {
       if (!user_id) return []
       const res = await api.get(`/booking-requests/user/${user_id}`)
+      return res.data.data
+    },
+    enabled: !!user_id,
+    retry: 2,
+  })
+}
+
+export interface PostBookingRequest {
+  id: number
+  post_title: string
+  post_id: number
+  requester_fullname: string
+  send_date: string
+  status: string
+}
+
+export const useBookingRequestsForUserPosts = (user_id: number | null) => {
+  return useQuery<PostBookingRequest[]>({
+    queryKey: ['booking-requests-for-user-posts', user_id],
+    queryFn: async () => {
+      if (!user_id) return []
+      const res = await api.get(`/booking-requests/for-user-posts/${user_id}`)
       return res.data.data
     },
     enabled: !!user_id,

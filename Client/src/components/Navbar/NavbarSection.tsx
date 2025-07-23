@@ -8,11 +8,14 @@ import { useUser } from '@/src/hooks/users/useUser';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
+import { useRouter } from 'next/navigation';
 
 const NavbarSection = () => {
     const [hasToken, setHasToken] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const { data } = useUser();
+    const router = useRouter();
+
     useEffect(() => {
         const token = localStorage.getItem("token");
         setHasToken(!!token);
@@ -23,6 +26,15 @@ const NavbarSection = () => {
         { label: "Mashxur maskanlar", link: "activities" },
         { label: "Foydalanuvchilar fikri", link: "coments" }
     ];
+
+    const handleProfileClick = () => {
+        if (!data) return;
+        if (data.type === 0) {
+            router.push('/user');
+        } else if (data.type === 1) {
+            router.push('/customer');
+        }
+    };
 
     return (
         <nav className="w-full sticky top-0 bottom-0 bg-dark-green z-50">
@@ -52,9 +64,9 @@ const NavbarSection = () => {
                 <div className="hidden lg:flex items-center space-x-4">
                     {hasToken ? (
                         <>
-                            <Link
-                                href={data?.type !== 0 ? "/customer/profile" : "/user/profile"}
+                            <div
                                 className="cursor-pointer"
+                                onClick={handleProfileClick}
                             >
                                 <Image
                                     src={data?.img ?? ""}
@@ -63,7 +75,7 @@ const NavbarSection = () => {
                                     height={60}
                                     className="rounded-full object-cover"
                                 />
-                            </Link>
+                            </div>
                             <button
                                 onClick={() => {
                                     localStorage.removeItem("token");
@@ -129,10 +141,12 @@ const NavbarSection = () => {
                 <div className="px-4 mt-8 space-y-4">
                     {hasToken ? (
                         <>
-                            <Link
-                                href={data?.type !== 0 ? "/customer/profile" : "/user/profile"}
-                                onClick={() => setMenuOpen(false)}
+                            <div
                                 className="flex items-center space-x-3 cursor-pointer"
+                                onClick={() => {
+                                    setMenuOpen(false);
+                                    handleProfileClick();
+                                }}
                             >
                                 <Image
                                     src={data?.img ?? ""}
@@ -142,7 +156,7 @@ const NavbarSection = () => {
                                     className="rounded-full object-cover"
                                 />
                                 <span className="text-white text-[16px]">Profil</span>
-                            </Link>
+                            </div>
                             <button
                                 onClick={() => {
                                     localStorage.removeItem("token");
