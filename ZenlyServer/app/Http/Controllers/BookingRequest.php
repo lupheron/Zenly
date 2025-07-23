@@ -76,4 +76,35 @@ class BookingRequest extends Controller
             'data'    => $booking
         ], 201);
     }
+
+    public function getByUser(Request $request, $user_id)
+    {
+        $authUser = $request->user();
+        if (!$authUser || $authUser->id != $user_id) {
+            return response()->json([
+                "message" => "You are not allowed to access these bookings",
+                "status" => 403
+            ], 403);
+        }
+
+        $bookings = DB::table('booking_requests')
+            ->join('posts', 'booking_requests.post_id', '=', 'posts.id')
+            ->join('users', 'booking_requests.user_id', '=', 'users.id')
+            ->where('booking_requests.user_id', $user_id)
+            ->select(
+                'booking_requests.id',
+                'posts.title as post_title',
+                'users.fullname as user_fullname',
+                'booking_requests.send_date',
+                'booking_requests.status'
+            )
+            ->orderByDesc('booking_requests.send_date')
+            ->get();
+
+        return response()->json([
+            'message' => 'Booking requests fetched successfully.',
+            'status' => 200,
+            'data' => $bookings
+        ]);
+    }
 }

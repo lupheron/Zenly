@@ -1,7 +1,7 @@
 'use client'
 
 import api from '@/src/utils/axios'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import AlertDefault from '@/src/components/Alert/AlertDefault'
 import { AxiosError } from 'axios'
 
@@ -34,4 +34,25 @@ export const useCreateBookingRequest = () => {
             AlertDefault.success('Bron qilish so\'rovi yuborildi!')
         },
     })
+}
+
+export interface UserBookingRequest {
+  id: number
+  post_title: string
+  user_fullname: string
+  send_date: string
+  status: string
+}
+
+export const useUserBookingRequests = (user_id: number | null) => {
+  return useQuery<UserBookingRequest[]>({
+    queryKey: ['user-booking-requests', user_id],
+    queryFn: async () => {
+      if (!user_id) return []
+      const res = await api.get(`/booking-requests/user/${user_id}`)
+      return res.data.data
+    },
+    enabled: !!user_id,
+    retry: 2,
+  })
 }

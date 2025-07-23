@@ -5,6 +5,7 @@ import Link from 'next/link'
 import React, { useState } from 'react'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import DashboardIcon from '@mui/icons-material/Dashboard'
+import TurnedInIcon from '@mui/icons-material/TurnedIn';
 import MenuIcon from '@mui/icons-material/Menu'
 import CloseIcon from '@mui/icons-material/Close'
 import { usePathname, useRouter } from 'next/navigation'
@@ -24,6 +25,11 @@ const CustomerAside = () => {
             label: "Profil",
             route: "/customer/profile",
             icon: <AccountCircleIcon className="w-5 h-5 sm:w-6 sm:h-6" />
+        },
+        {
+            label: "Buyurtmalar",
+            route: "/customer/booked",
+            icon: <TurnedInIcon className="w-5 h-5 sm:w-6 sm:h-6" />
         }
     ]
 
