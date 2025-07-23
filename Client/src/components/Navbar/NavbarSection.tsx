@@ -8,33 +8,15 @@ import { useUser } from '@/src/hooks/users/useUser';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
-import { useRouter } from 'next/navigation';
-import ReusableModal from '../Modal/ReusableModal';
-import ClientData from '../Containers/ClientData';
-import EditClientForm from '../Forms/EditClient/EditClientForm';
 
 const NavbarSection = () => {
     const [hasToken, setHasToken] = useState(false);
-    const [showModal, setShowModal] = useState(false);
-    const [showEditForm, setShowEditForm] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const { data } = useUser();
-    const router = useRouter();
-
     useEffect(() => {
         const token = localStorage.getItem("token");
         setHasToken(!!token);
     }, []);
-
-    const TypeChecking = () => {
-        if (!data) return;
-
-        if (data.type !== 0) {
-            setShowModal(true);
-        } else {
-            router.push("/user");
-        }
-    };
 
     const navLinks = [
         { label: "Biz haqimizda", link: "about-us" },
@@ -70,8 +52,8 @@ const NavbarSection = () => {
                 <div className="hidden lg:flex items-center space-x-4">
                     {hasToken ? (
                         <>
-                            <div
-                                onClick={TypeChecking}
+                            <Link
+                                href={data?.type !== 0 ? "/customer/profile" : "/user/profile"}
                                 className="cursor-pointer"
                             >
                                 <Image
@@ -81,7 +63,7 @@ const NavbarSection = () => {
                                     height={60}
                                     className="rounded-full object-cover"
                                 />
-                            </div>
+                            </Link>
                             <button
                                 onClick={() => {
                                     localStorage.removeItem("token");
@@ -147,11 +129,9 @@ const NavbarSection = () => {
                 <div className="px-4 mt-8 space-y-4">
                     {hasToken ? (
                         <>
-                            <div
-                                onClick={() => {
-                                    setMenuOpen(false);
-                                    TypeChecking();
-                                }}
+                            <Link
+                                href={data?.type !== 0 ? "/customer/profile" : "/user/profile"}
+                                onClick={() => setMenuOpen(false)}
                                 className="flex items-center space-x-3 cursor-pointer"
                             >
                                 <Image
@@ -162,7 +142,7 @@ const NavbarSection = () => {
                                     className="rounded-full object-cover"
                                 />
                                 <span className="text-white text-[16px]">Profil</span>
-                            </div>
+                            </Link>
                             <button
                                 onClick={() => {
                                     localStorage.removeItem("token");
@@ -187,23 +167,6 @@ const NavbarSection = () => {
                     )}
                 </div>
             </div>
-
-            {showModal && (
-                <ReusableModal
-                    open={showModal}
-                    onClose={() => {
-                        setShowModal(false);
-                        setShowEditForm(false);
-                    }}
-                    title={showEditForm ? "Profilni Tahrirlash" : "Profil Ma'lumotlari"}
-                >
-                    {showEditForm ? (
-                        <EditClientForm closeEditForm={() => setShowEditForm(false)} />
-                    ) : (
-                        <ClientData openEditForm={() => setShowEditForm(true)} />
-                    )}
-                </ReusableModal>
-            )}
         </nav>
     );
 };

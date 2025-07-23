@@ -7,12 +7,9 @@ import ProfileImageUpload from '../../FormElements/Uploads/ProfileImgUpload'
 import LabelDefault from '../../FormElements/label/LabelDefault'
 import InputDefault from '../../FormElements/Input/InputDefault'
 import ButtonDefault from '../../Button/ButtonDefault'
+import { useRouter } from 'next/navigation'
 
-interface EditClientFormProps {
-    closeEditForm: () => void
-}
-
-const EditClientForm = ({ closeEditForm }: EditClientFormProps) => {
+const EditClientForm = () => {
     const [form, setForm] = useState({
         fullname: '',
         username: '',
@@ -23,6 +20,7 @@ const EditClientForm = ({ closeEditForm }: EditClientFormProps) => {
 
     const { data, isLoading, updateUser } = useUser()
     const { mutate, isPending, isSuccess, isError, error } = updateUser
+    const router = useRouter()
 
     useEffect(() => {
         if (data) {
@@ -60,7 +58,7 @@ const EditClientForm = ({ closeEditForm }: EditClientFormProps) => {
     useEffect(() => {
         if (isSuccess) {
             AlertDefault.success("Ma'lumotlar muvaffaqiyatli yangilandi!");
-            closeEditForm();
+            router.push('/customer/profile');
         }
         if (isError && error) {
             if (error.message === "USERNAME_CONFLICT") {
@@ -69,7 +67,7 @@ const EditClientForm = ({ closeEditForm }: EditClientFormProps) => {
                 AlertDefault.error("Taxrirlashda xatolik yuz berdi!")
             }
         }
-    }, [isSuccess, isError, closeEditForm]);
+    }, [isSuccess, isError, router]);
 
     if (isLoading) return <p>Yuklanmoqda...</p>
 
@@ -132,7 +130,7 @@ const EditClientForm = ({ closeEditForm }: EditClientFormProps) => {
 
                     <ButtonDefault
                         label="Bekor qilish"
-                        onClick={closeEditForm}
+                        onClick={() => router.push('/customer/profile')}
                         isDisabled={isPending}
                         customClasses='w-full !bg-gray-300 !text-black tracking-[1px]'
                     />
