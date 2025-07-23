@@ -1,7 +1,7 @@
 'use client'
 
 import api from '@/src/utils/axios'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import AlertDefault from '@/src/components/Alert/AlertDefault'
 import { AxiosError } from 'axios'
 
@@ -78,5 +78,18 @@ export const useBookingRequestsForUserPosts = (user_id: number | null) => {
     },
     enabled: !!user_id,
     retry: 2,
+  })
+}
+
+export const useUpdateBookingRequestStatus = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ id, status }: { id: number, status: string }) => {
+      const res = await api.put(`/booking-requests/${id}/status`, { status })
+      return res.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['booking-requests-for-user-posts'] })
+    }
   })
 }

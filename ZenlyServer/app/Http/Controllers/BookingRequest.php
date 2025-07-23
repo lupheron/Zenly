@@ -40,19 +40,18 @@ class BookingRequest extends Controller
             ], 404);
         }
 
-        $existingRequest = DB::table('booking_requests')
+        // Find the latest booking request for this user and post
+        $latestRequest = DB::table('booking_requests')
             ->where('user_id', $user_id)
             ->where('post_id', $post_id)
             ->orderByDesc('send_date')
             ->first();
 
-        if ($existingRequest) {
-            $lastSent = Carbon::parse($existingRequest->send_date);
-            $daysSince = $lastSent->diffInDays(Carbon::now());
-
-            if ($daysSince < 3) { // You can change 3 to any number of days
+        if ($latestRequest) {
+            // If the latest request is not cancelled and its book_status is not 0, block new request
+            if ($latestRequest->status !== 'cancelled' && $latestRequest->book_status != 0) {
                 return response()->json([
-                    'message' => "Siz ushbu joyga $daysSince kun oldin so'rov yuborgansiz. Iltimos, keyinroq qayta urinib ko'ring.",
+                    'message' => "Siz allaqachon ushbu joyga so'rov yuborgansiz va u hali bekor qilinmagan.",
                     'status'  => 429
                 ], 429);
             }
@@ -140,6 +139,41 @@ class BookingRequest extends Controller
             'message' => 'Booking requests for your posts fetched successfully.',
             'status' => 200,
             'data' => $bookings
+        ]);
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $authUser = $request->user();
+        $booking = DB::table('booking_requests')
+            ->join('posts', 'booking_requests.post_id', '=', 'posts.id')
+            ->where('booking_requests.id', $id)
+            ->select('posts.user_id as post_owner_id')
+            ->first();
+
+        if (!$booking || $authUser->id != $booking->post_owner_id) {
+            return response()->json([
+                "message" => "You are not allowed to update this booking request",
+                "status" => 403
+            ], 403);
+        }
+
+        $status = $request->input('status');
+        if (!in_array($status, ['active', 'cancelled'])) {
+            return response()->json([
+                "message" => "Invalid status",
+                "status" => 422
+            ], 422);
+        }
+
+        DB::table('booking_requests')->where('id', $id)->update([
+            'status' => $status,
+            'updated_at' => now(),
+        ]);
+
+        return response()->json([
+            "message" => "Booking request status updated",
+            "status" => 200
         ]);
     }
 }

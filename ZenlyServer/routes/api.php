@@ -91,6 +91,7 @@ Route::middleware(['auth.custom', 'security', Cors::class])->group(function () {
     Route::post('/booking-requests', [BookingRequest::class, 'create']);
     Route::get('/booking-requests/user/{user_id}', [BookingRequest::class, 'getByUser']);
     Route::get('/booking-requests/for-user-posts/{user_id}', [BookingRequest::class, 'getRequestsForUserPosts']);
+    Route::put('/booking-requests/{id}/status', [BookingRequest::class, 'updateStatus']);
 });
 
 // // Admin Security Routes (add role-based middleware later)

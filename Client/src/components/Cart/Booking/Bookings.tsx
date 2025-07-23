@@ -24,10 +24,9 @@ const Bookings: React.FC<BookingsProps> = ({ bookings, onBookingClick }) => {
         <div
           key={b.id}
           className="p-4 bg-white rounded shadow flex flex-col sm:flex-row sm:items-center sm:justify-between cursor-pointer hover:bg-gray-100"
-          onClick={() => onBookingClick(b)}
         >
           <div>
-            <div className="font-bold text-lg">{b.post_title}</div>
+            <div className="font-bold text-lg cursor-pointer text-blue-500 hover:underline" onClick={() => onBookingClick(b)}>{b.post_title}</div>
             <div className="text-gray-600">Foydalanuvchi: {b.user_fullname}</div>
             <div className="text-gray-600">Joy egasi: {b.post_owner_fullname}</div>
             <div className="text-gray-500 text-sm">Yuborilgan: {new Date(b.send_date).toLocaleString()}</div>
