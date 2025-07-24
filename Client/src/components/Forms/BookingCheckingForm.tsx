@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import ReusableModal from '@/src/components/Modal/ReusableModal'
 import LabelDefault from '../FormElements/label/LabelDefault'
 import { DateRangePicker } from '../FormElements/DatePciker/DatePicker'
-import AlertDefault from '../Alert/AlertDefault'
 
 interface BookingCheckingFormProps {
     open: boolean
@@ -32,7 +31,6 @@ const BookingCheckingForm: React.FC<BookingCheckingFormProps> = ({ open, onClose
                 end_date: checkOut.toISOString(),
                 price: Number(price)
             })
-            AlertDefault.success('Bron checking muvaffaqiyatli yaratildi!')
             setTimeout(() => {
                 onClose()
                 if (onSuccess) onSuccess()
@@ -45,8 +43,8 @@ const BookingCheckingForm: React.FC<BookingCheckingFormProps> = ({ open, onClose
     }
 
     return (
-        <ReusableModal open={open} onClose={onClose} title="Bron tafsilotlari (Checking)" width={400}>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <ReusableModal open={open} onClose={onClose} title="Bron tafsilotlari (Checking)" width={500}>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-6 sm:gap-8 p-2 sm:p-4">
                 <DateRangePicker
                     onDateChange={handleDateChange}
                     initialCheckIn={checkIn}
@@ -66,7 +64,7 @@ const BookingCheckingForm: React.FC<BookingCheckingFormProps> = ({ open, onClose
                         required
                     />
                 </div>
-                <button type="submit" className="bg-blue-600 text-white rounded px-4 py-2" disabled={loading}>
+                <button type="submit" className="bg-blue-600 text-white rounded px-4 py-2 cursor-pointer" disabled={loading}>
                     {loading ? 'Yuborilmoqda...' : 'Tasdiqlash'}
                 </button>
             </form>

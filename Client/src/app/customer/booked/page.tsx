@@ -13,8 +13,8 @@ const BookedPlaces = () => {
   if (isError) return <div>Xatolik yuz berdi.</div>
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-6">Mening bron so&apos;rovlarim</h1>
+    <div className="max-w-3xl mx-auto px-2 sm:px-4 md:px-8 py-4">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6">Mening bron so&apos;rovlarim</h1>
       <Bookings bookings={data} onBookingClick={(booking) => router.push(`/posts/${booking.post_id}`)} />
     </div>
   )

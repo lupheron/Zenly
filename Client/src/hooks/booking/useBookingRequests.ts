@@ -104,3 +104,38 @@ export const useCreateBookingChecking = () => {
     }
   })
 }
+
+export interface BookingChecking {
+  id: number;
+  request_id: number;
+  user_id: number;
+  post_id: number;
+  owner_confirmed: boolean;
+  customer_confirmed: boolean;
+  owner_data: string | null;
+  customer_data: string | null;
+  status: string;
+  created_at: string;
+}
+
+export const useBookingCheckingByRequestId = (request_id: number | null) => {
+  return useQuery<BookingChecking | null>({
+    queryKey: ['booking-checking', request_id],
+    queryFn: async () => {
+      if (!request_id) return null
+      const res = await api.get(`/booking-checking/by-request/${request_id}`)
+      return res.data.data
+    },
+    enabled: !!request_id,
+    retry: 2,
+  })
+}
+
+export const useCustomerConfirmBookingChecking = () => {
+  return useMutation({
+    mutationFn: async ({ id, start_date, end_date, price }: { id: number, start_date: string, end_date: string, price: number }) => {
+      const res = await api.post(`/booking-checking/${id}/customer-confirm`, { start_date, end_date, price })
+      return res.data
+    }
+  })
+}

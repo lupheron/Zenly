@@ -1,7 +1,7 @@
 import React from 'react'
 import ButtonDefault from '../../Button/ButtonDefault'
 import BookingCheckingForm from '@/src/components/Forms/BookingCheckingForm'
-import { useUpdateBookingRequestStatus, useCreateBookingChecking } from '@/src/hooks/booking/useBookingRequests'
+import { useUpdateBookingRequestStatus, useCreateBookingChecking, useBookingCheckingByRequestId } from '@/src/hooks/booking/useBookingRequests'
 import { useQueryClient } from '@tanstack/react-query'
 
 export interface PostBookingRequest {
@@ -60,7 +60,6 @@ const UserBookingRequests: React.FC<UserBookingRequestsProps> = ({ bookings, onB
                 <div
                     key={b.id}
                     className="p-4 bg-white rounded shadow hover:bg-gray-100"
-
                 >
                     <div className=' flex flex-col sm:flex-row sm:items-center sm:justify-between'>
                         <div>
@@ -78,7 +77,11 @@ const UserBookingRequests: React.FC<UserBookingRequestsProps> = ({ bookings, onB
                             <span className={`px-3 py-1 rounded-full text-white ${b.status === 'pending' ? 'bg-yellow-500' : b.status === 'active' ? 'bg-green-600' : 'bg-red-600'}`}>{b.status}</span>
                         </div>
                     </div>
-                    <p className='text-red-500 text-sm mt-5'>So&apos;rovni qabul qilishdan avval mijoz milan aloqaga chiqishingzni so&apos;rab qolamiz!!!</p>
+                    <p className='text-red-500 text-sm mt-5'>So&apos;rovni qabul qilishdan avval mijoz bilan aloqaga chiqishingzni so&apos;rab qolamiz!!!</p>
+                    {/* Show waiting message if booking_checking exists and customer_confirmed is false */}
+                    {b.status === 'active' && (
+                      <BookingCheckingStatus requestId={b.id} />
+                    )}
                     {b.status === 'pending' && (
                         <div className='flex gap-2 items-center mt-5'>
                             <ButtonDefault
@@ -116,6 +119,16 @@ const UserBookingRequests: React.FC<UserBookingRequestsProps> = ({ bookings, onB
             />
         </div>
     )
+}
+
+// Child component to use hook per booking
+const BookingCheckingStatus: React.FC<{ requestId: number }> = ({ requestId }) => {
+  const { data: checking, isLoading } = useBookingCheckingByRequestId(requestId)
+  if (isLoading) return null
+  if (checking && checking.owner_confirmed && !checking.customer_confirmed) {
+    return <div className="mt-3 text-yellow-600 font-semibold">Mijoz ma&apos;lumotini tasdiqlashini kutyapmiz...</div>
+  }
+  return null
 }
 
 export default UserBookingRequests
