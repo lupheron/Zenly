@@ -28,6 +28,7 @@ class Posts extends Controller
             ->leftJoin('rating', 'rating.post_id', '=', 'posts.id')
             ->leftJoin('post_comments', 'post_comments.post_id', '=', 'posts.id')
             ->leftJoin('post_views', 'post_views.post_id', '=', 'posts.id')
+            ->where('posts.status', 1)
             ->groupBy('posts.id');
 
         if ($request->has('area_id')) {
@@ -165,6 +166,7 @@ class Posts extends Controller
             ->leftJoin('post_comments', 'post_comments.post_id', '=', 'posts.id')
             ->leftJoin('post_views', 'post_views.post_id', '=', 'posts.id')
             ->leftJoin('features', 'posts.id', '=', 'features.post_id')
+            ->where('posts.status', 1)
             ->groupBy('posts.id');
 
         if ($areaId) {

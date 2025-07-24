@@ -96,6 +96,8 @@ class BookingChecking extends Controller
                     'customer_data' => json_encode($customerData),
                     'status' => 'active',
                 ]);
+            // Set the related post status to 0 (booked)
+            DB::table('posts')->where('id', $checking->post_id)->update(['status' => 0]);
             $checking = DB::table('booking_checking')->where('id', $id)->first();
             return response()->json([
                 'message' => 'Customer confirmation received. Data matches. Booking is now active.',
@@ -144,6 +146,8 @@ class BookingChecking extends Controller
                 ->where('id', $check->request_id)
                 ->where('book_status', '!=', 0)
                 ->update(['book_status' => 0]);
+            // Set the related post status to 1 (available)
+            DB::table('posts')->where('id', $check->post_id)->update(['status' => 1]);
         }
     }
 }

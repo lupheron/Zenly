@@ -67,6 +67,7 @@ const UserPosts = () => {
                 price={post.price_daily}
                 onClick={() => router.push(`/user/posts/${post.id}`)}
                 postId={post.id}
+                status={Number(post.status)}
               />
             ))}
           </div>

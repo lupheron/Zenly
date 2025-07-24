@@ -13,11 +13,12 @@ interface UsersPostsProps {
     onClick: () => void;
     customClasses?: string;
     postId?: number;
+    status?: number;
 }
 
 const UsersPosts: React.FC<UsersPostsProps> = ({
     src, title, description, location, rating, price,
-    onClick, customClasses = '', postId
+    onClick, customClasses = '', postId, status
 }) => {
 
     const handleReadMoreClick = () => {
@@ -50,6 +51,10 @@ const UsersPosts: React.FC<UsersPostsProps> = ({
                 <div className='flex items-center gap-2'>
                     <Rating postId={rating} />
                 </div>
+                {/* Booked status message */}
+                {status === 0 && (
+                  <div className='text-red-600 font-semibold text-sm mt-2'>Bu post band qilingan</div>
+                )}
             </div>
             <div className='flex flex-col gap-4 lg:gap-6 bg-blue-50 rounded-lg px-4 lg:px-6 py-3 lg:py-4 mt-4 lg:mt-5'>
                 <div>
