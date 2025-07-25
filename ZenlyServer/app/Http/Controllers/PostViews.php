@@ -10,11 +10,18 @@ class PostViews extends Controller
 {
     public function getViews(Request $request, $post_id)
     {
-        $views = DB::table("post_views")
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $query = DB::table("post_views")
             ->where("post_id", $post_id)
-            ->select("clicked")
-            ->get();
-
+            ->select("clicked");
+        if ($startDate) {
+            $query->where('created_at', '>=', $startDate);
+        }
+        if ($endDate) {
+            $query->where('created_at', '<=', $endDate);
+        }
+        $views = $query->get();
         return response()->json([
             "message" => "Post views fetched successfully",
             "status" => 200,

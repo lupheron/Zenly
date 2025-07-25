@@ -5,10 +5,16 @@ import PieChart from '../../components/charts/PieChart'
 import LineChart from '../../components/charts/LineChart'
 import UserComments from '@/src/components/Comments/UserComments'
 import SelectDefault from '@/src/components/FormElements/Select/SelectDefault'
-import { useDashboard } from '@/src/hooks/useDashboard'
+import { useDashboardWithDateFilter, DateFilterValue } from '@/src/hooks/useDashboard'
 import BarChart from '../../components/charts/BarChart'
+import DateFilter from '../../components/Filter/DateFilter'
+import { useState } from 'react'
 
 export default function Dashboard() {
+    const [dateFilter, setDateFilter] = useState<DateFilterValue>({
+        startDate: '',
+        endDate: '',
+    })
     const {
         isLoading,
         pieChartData,
@@ -19,7 +25,7 @@ export default function Dashboard() {
         selectedPostId,
         setSelectedPostId,
         barChartData,
-    } = useDashboard()
+    } = useDashboardWithDateFilter(dateFilter)
 
     if (isLoading) {
         return <Loader />
@@ -28,7 +34,8 @@ export default function Dashboard() {
     return (
         <div>
             <h1 className="text-2xl font-bold mb-8">Boshqaruv paneli</h1>
-            <hr className='mb-5' />
+            <DateFilter value={dateFilter} onChange={setDateFilter} />
+            <hr className='mb-5 mt-5' />
 
             <div className="mb-8 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
                 {/* Pie Chart Section */}
@@ -73,7 +80,7 @@ export default function Dashboard() {
                         customClassesLabel={'text-lg font-bold'}
                         customClassesSelect={'w-full border rounded px-2 py-1 cursor-pointer outline-none'}
                     />
-                    <UserComments postId={selectedPostId} />
+                    <UserComments postId={selectedPostId} dateFilter={dateFilter} />
                 </div>
 
                 {/* Booked Posts Bar Chart Section */}

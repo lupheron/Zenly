@@ -7,12 +7,19 @@ use Illuminate\Support\Facades\DB;
 
 class Rating extends Controller
 {
-    public function getUserAverageRating($postId)
+    public function getUserAverageRating($postId, Request $request)
     {
-        $avg = DB::table('rating')
-            ->where('post_id', $postId)
-            ->avg('rating');
-
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $query = DB::table('rating')
+            ->where('post_id', $postId);
+        if ($startDate) {
+            $query->where('created_at', '>=', $startDate);
+        }
+        if ($endDate) {
+            $query->where('created_at', '<=', $endDate);
+        }
+        $avg = $query->avg('rating');
         return response()->json([
             'post_id' => $postId,
             'average_rating' => round($avg ?? 0, 1),

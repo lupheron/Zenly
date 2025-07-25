@@ -11,9 +11,12 @@ interface Comment {
     text: string
 }
 
-const fetchUserComments = async (user_id: string): Promise<Comment[]> => {
-    const res = await api.get(`/post-comments/${user_id}`)
-    return res.data
+const fetchUserComments = async (user_id: string, dateFilter?: { startDate?: string; endDate?: string }): Promise<Comment[]> => {
+    const params: Record<string, string> = {};
+    if (dateFilter?.startDate) params.start_date = dateFilter.startDate;
+    if (dateFilter?.endDate) params.end_date = dateFilter.endDate;
+    const res = await api.get(`/post-comments/${user_id}`, { params });
+    return res.data;
 }
 
 export const createPostComments = async (data: PostComment): Promise<{ success: boolean }> => {
@@ -21,10 +24,10 @@ export const createPostComments = async (data: PostComment): Promise<{ success: 
     return { success: true }
 }
 
-export const useUserComments = (user_id: string | null) => {
+export const useUserComments = (user_id: string | null, dateFilter?: { startDate?: string; endDate?: string }) => {
     return useQuery({
-        queryKey: ['user-comments', user_id],
-        queryFn: () => fetchUserComments(user_id!),
+        queryKey: ['user-comments', user_id, dateFilter?.startDate, dateFilter?.endDate],
+        queryFn: () => fetchUserComments(user_id!, dateFilter),
         enabled: !!user_id,
         retry: 3,
     })

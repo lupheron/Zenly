@@ -33,7 +33,15 @@ class Posts extends Controller
         if ($request->has('area_id')) {
             $query->where('area_id', $request->input('area_id'));
         }
-
+        // Date filtering
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        if ($startDate) {
+            $query->where('posts.created_at', '>=', $startDate);
+        }
+        if ($endDate) {
+            $query->where('posts.created_at', '<=', $endDate);
+        }
         $posts = $query->get();
 
         foreach ($posts as $post) {
@@ -69,7 +77,8 @@ class Posts extends Controller
                 "status" => 403
             ], 403);
         }
-
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
         $posts = DB::table("posts")
             ->select(
                 "posts.*",
@@ -81,6 +90,12 @@ class Posts extends Controller
             ->leftJoin('post_comments', 'post_comments.post_id', '=', 'posts.id')
             ->leftJoin('post_views', 'post_views.post_id', '=', 'posts.id')
             ->where("posts.user_id", $id)
+            ->when($startDate, function($query) use ($startDate) {
+                $query->where('posts.created_at', '>=', $startDate);
+            })
+            ->when($endDate, function($query) use ($endDate) {
+                $query->where('posts.created_at', '<=', $endDate);
+            })
             ->groupBy('posts.id')
             ->get();
 
@@ -108,9 +123,11 @@ class Posts extends Controller
         ]);
     }
 
-    public function getPostById($id)
+    public function getPostById($id, Request $request)
     {
-        $post = DB::table("posts")
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $query = DB::table("posts")
             ->select(
                 "posts.*",
                 DB::raw("AVG(rating.rating) as avg_rating"),
@@ -120,9 +137,14 @@ class Posts extends Controller
             ->leftJoin('rating', 'rating.post_id', '=', 'posts.id')
             ->leftJoin('post_comments', 'post_comments.post_id', '=', 'posts.id')
             ->leftJoin('post_views', 'post_views.post_id', '=', 'posts.id')
-            ->where("posts.id", $id)
-            ->groupBy('posts.id')
-            ->first();
+            ->where("posts.id", $id);
+        if ($startDate) {
+            $query->where('posts.created_at', '>=', $startDate);
+        }
+        if ($endDate) {
+            $query->where('posts.created_at', '<=', $endDate);
+        }
+        $post = $query->groupBy('posts.id')->first();
 
         if (!$post) {
             return response()->json([
@@ -153,7 +175,8 @@ class Posts extends Controller
         $sort = $request->input('sort');
         $guests = $request->input('guests');
         $areaId = $request->input('area_id');
-
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
         $query = DB::table('posts')
             ->select(
                 'posts.*',
@@ -167,25 +190,25 @@ class Posts extends Controller
             ->leftJoin('features', 'posts.id', '=', 'features.post_id')
             ->where('posts.status', 1)
             ->groupBy('posts.id');
-
         if ($areaId) {
             $query->where('posts.area_id', $areaId);
         }
-
         if ($location) {
             $query->where('posts.location', 'LIKE', '%' . $location . '%');
         }
-
         if (!empty($amenities)) {
             $query->whereIn('features.name', $amenities)
                 ->havingRaw('COUNT(features.id) = ?', [count($amenities)]);
         }
-
-        // Fixed member filtering: show posts with members >= requested guests
         if ($guests && is_numeric($guests)) {
             $query->where('posts.members', '>=', (int)$guests);
         }
-
+        if ($startDate) {
+            $query->where('posts.created_at', '>=', $startDate);
+        }
+        if ($endDate) {
+            $query->where('posts.created_at', '<=', $endDate);
+        }
         if ($sort) {
             switch ($sort) {
                 case 'rating':
@@ -208,7 +231,6 @@ class Posts extends Controller
                     break;
             }
         }
-
         $posts = $query->get();
 
         foreach ($posts as $post) {
@@ -411,9 +433,11 @@ class Posts extends Controller
     /**
      * Get top 10 posts by average rating, refreshed every 2 days.
      */
-    public function topRated()
+    public function topRated(Request $request)
     {
-        $posts = DB::table('posts')
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $query = DB::table('posts')
             ->select(
                 'posts.*',
                 DB::raw('AVG(rating.rating) as avg_rating'),
@@ -423,10 +447,14 @@ class Posts extends Controller
             ->leftJoin('rating', 'rating.post_id', '=', 'posts.id')
             ->leftJoin('post_comments', 'post_comments.post_id', '=', 'posts.id')
             ->leftJoin('post_views', 'post_views.post_id', '=', 'posts.id')
-            ->groupBy('posts.id')
-            ->orderByDesc('avg_rating')
-            ->limit(10)
-            ->get();
+            ->groupBy('posts.id');
+        if ($startDate) {
+            $query->where('posts.created_at', '>=', $startDate);
+        }
+        if ($endDate) {
+            $query->where('posts.created_at', '<=', $endDate);
+        }
+        $posts = $query->orderByDesc('avg_rating')->limit(10)->get();
 
         foreach ($posts as $post) {
             $post->img = $post->img ? asset($post->img) : null;

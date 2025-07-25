@@ -85,12 +85,19 @@ class BookingRequest extends Controller
                 "status" => 403
             ], 403);
         }
-
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
         $bookings = DB::table('booking_requests')
             ->join('posts', 'booking_requests.post_id', '=', 'posts.id')
             ->join('users', 'booking_requests.user_id', '=', 'users.id')
             ->join('users as users_from_posts', 'posts.user_id', '=', 'users_from_posts.id')
             ->where('booking_requests.user_id', $user_id)
+            ->when($startDate, function($query) use ($startDate) {
+                $query->where('booking_requests.created_at', '>=', $startDate);
+            })
+            ->when($endDate, function($query) use ($endDate) {
+                $query->where('booking_requests.created_at', '<=', $endDate);
+            })
             ->select(
                 'booking_requests.id',
                 'posts.title as post_title',
@@ -157,10 +164,19 @@ class BookingRequest extends Controller
             ], 403);
         }
 
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
         $counts = DB::table('posts')
-            ->leftJoin('booking_requests', function($join) {
+            ->leftJoin('booking_requests', function($join) use ($startDate, $endDate) {
                 $join->on('posts.id', '=', 'booking_requests.post_id')
                      ->where('booking_requests.status', '=', 'active');
+                if ($startDate) {
+                    $join->where('booking_requests.created_at', '>=', $startDate);
+                }
+                if ($endDate) {
+                    $join->where('booking_requests.created_at', '<=', $endDate);
+                }
             })
             ->where('posts.user_id', $user_id)
             ->groupBy('posts.id', 'posts.title')

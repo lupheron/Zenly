@@ -47,12 +47,15 @@ export interface UserBookingRequest {
   post_owner_fullname: string
 }
 
-export const useUserBookingRequests = (user_id: number | null) => {
+export const useUserBookingRequests = (user_id: number | null, dateFilter?: { startDate?: string; endDate?: string }) => {
   return useQuery<UserBookingRequest[]>({
-    queryKey: ['user-booking-requests', user_id],
+    queryKey: ['user-booking-requests', user_id, dateFilter?.startDate, dateFilter?.endDate],
     queryFn: async () => {
       if (!user_id) return []
-      const res = await api.get(`/booking-requests/user/${user_id}`)
+      const params: Record<string, string> = {};
+      if (dateFilter?.startDate) params.start_date = dateFilter.startDate;
+      if (dateFilter?.endDate) params.end_date = dateFilter.endDate;
+      const res = await api.get(`/booking-requests/user/${user_id}`, { params });
       return res.data.data
     },
     enabled: !!user_id,
@@ -70,12 +73,15 @@ export interface PostBookingRequest {
   status: string
 }
 
-export const useBookingRequestsForUserPosts = (user_id: number | null) => {
+export const useBookingRequestsForUserPosts = (user_id: number | null, dateFilter?: { startDate?: string; endDate?: string }) => {
   return useQuery<PostBookingRequest[]>({
-    queryKey: ['booking-requests-for-user-posts', user_id],
+    queryKey: ['booking-requests-for-user-posts', user_id, dateFilter?.startDate, dateFilter?.endDate],
     queryFn: async () => {
       if (!user_id) return []
-      const res = await api.get(`/booking-requests/for-user-posts/${user_id}`)
+      const params: Record<string, string> = {};
+      if (dateFilter?.startDate) params.start_date = dateFilter.startDate;
+      if (dateFilter?.endDate) params.end_date = dateFilter.endDate;
+      const res = await api.get(`/booking-requests/for-user-posts/${user_id}`, { params });
       return res.data.data
     },
     enabled: !!user_id,

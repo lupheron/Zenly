@@ -8,9 +8,10 @@ import SwiperDefault from '../Swiper/SwiperDefault'
 
 interface UserCommentsProps {
   postId?: number | null;
+  dateFilter?: { startDate?: string; endDate?: string };
 }
 
-const UserComments: React.FC<UserCommentsProps> = ({ postId }) => {
+const UserComments: React.FC<UserCommentsProps> = ({ postId, dateFilter }) => {
   const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -19,7 +20,7 @@ const UserComments: React.FC<UserCommentsProps> = ({ postId }) => {
   }, []);
 
   // If postId is provided, fetch comments for that post, else for the user
-  const { data, isLoading, error } = useUserComments(postId ? String(postId) : userId);
+  const { data, isLoading, error } = useUserComments(postId ? String(postId) : userId, dateFilter);
 
   if (isLoading) return <p>Yuklanmoqda...</p>
   if (error) {

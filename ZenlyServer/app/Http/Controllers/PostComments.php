@@ -8,9 +8,18 @@ use Illuminate\Support\Facades\DB;
 
 class PostComments extends Controller
 {
-    public function index($id)
+    public function index($id, Request $request)
     {
-        $comments = DB::table('post_comments')->where('post_id', $id)->get();
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $query = DB::table('post_comments')->where('post_id', $id);
+        if ($startDate) {
+            $query->where('created_at', '>=', $startDate);
+        }
+        if ($endDate) {
+            $query->where('created_at', '<=', $endDate);
+        }
+        $comments = $query->get();
         return response()->json($comments);
     }
 
@@ -39,6 +48,7 @@ class PostComments extends Controller
             'user_id' => $request['user_id'],
             'name' => $request['name'],
             'text' => $request['text'],
+            'created_at' => Carbon::now()
         ]);
 
         return response()->json(['message' => 'Comment created successfully'], 201);
