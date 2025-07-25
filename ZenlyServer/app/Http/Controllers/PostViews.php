@@ -30,7 +30,6 @@ class PostViews extends Controller
             return response()->json(['message' => 'Post not found'], 404);
         }
 
-        // Ensure only authenticated users can access this
         $authUser = $request->user();
         if (!$authUser) {
             return response()->json(['message' => 'Unauthorized'], 401);
@@ -43,37 +42,31 @@ class PostViews extends Controller
             return response()->json(['message' => 'Owner view ignored']);
         }
 
-        // Check if there's already a view record for this post (regardless of user)
+        // Check if this user has already viewed this post
         $existingView = DB::table('post_views')
             ->where('post_id', $post_id)
+            ->where('user_id', $userId)
             ->first();
 
         if ($existingView) {
-            // Update existing view record
-            DB::table('post_views')
-                ->where('post_id', $post_id)
-                ->update([
-                    'clicked' => $existingView->clicked + 1,
-                    'user_id' => $userId, // Update to current user
-                    'updated_at' => Carbon::now()
-                ]);
-
+            // User has already viewed this post, do not increment
             return response()->json([
-                'message' => 'View count updated',
-                'total_clicks' => $existingView->clicked + 1
+                'message' => 'User has already viewed this post',
+                'total_clicks' => DB::table('post_views')->where('post_id', $post_id)->count()
             ]);
         } else {
-            // First time this post is viewed
+            // First time this user views this post
             DB::table('post_views')->insert([
                 'post_id' => $post_id,
                 'user_id' => $userId,
                 'clicked' => 1,
-                'created_at' => Carbon::now()
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
             ]);
 
             return response()->json([
-                'message' => 'First view recorded for this post',
-                'total_clicks' => 1
+                'message' => 'First view recorded for this user and post',
+                'total_clicks' => DB::table('post_views')->where('post_id', $post_id)->count()
             ]);
         }
     }

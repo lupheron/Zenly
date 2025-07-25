@@ -10,11 +10,16 @@ import DeleteModal from '@/src/components/Modal/DeleteModal'
 import { usePostById } from '@/src/hooks/posts/usePostsById'
 import { usePostViews } from '@/src/hooks/postViews/usePostViews'
 import LargeContainer from '@/src/components/Containers/LargeContainer'
+import { useUserComments } from '@/src/hooks/comments/useUserComments'
+import ReusableModal from '@/src/components/Modal/ReusableModal'
+import SwiperDefault from '@/src/components/Swiper/SwiperDefault'
+import CommentCart from '@/src/components/Cart/CommentCart'
 
 const UserPostInfo = () => {
     const params = useParams()
     const router = useRouter()
     const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+    const [openCommentModal, setOpenCommentModal] = useState(false)
 
     const postId = Number(params?.id) || 0
 
@@ -29,6 +34,7 @@ const UserPostInfo = () => {
     const resolvedPostId = post?.id
 
     const { data: totalViews = 0 } = usePostViews(resolvedPostId ?? 0)
+    const { data: comments, isLoading: commentsLoading } = useUserComments(postId.toString())
 
     const handleDelete = () => {
         deleteMutation.mutate(undefined, {
@@ -53,7 +59,7 @@ const UserPostInfo = () => {
             <div className='w-full mx-auto mt-8 md:mt-12 lg:mt-16'>
                 <div className='rounded-lg md:rounded-xl px-4 py-6 md:px-6 lg:px-8 xl:px-10 md:py-8 bg-light-gray'>
                     <LargeContainer className="flex items-start flex-col xl:items-center xl:flex-row gap-6 md:gap-8 lg:gap-10 mx-auto">
-                        <div className='w-full xl:w-[35%] flex flex-col gap-y-4 md:gap-y-6'>
+                        <div className='w-full xl:w-[55%] flex flex-col gap-y-4 md:gap-y-6'>
                             <Gallery postId={post.id} mainImg={post.img} />
                         </div>
 
@@ -96,7 +102,8 @@ const UserPostInfo = () => {
 
                             <ButtonDefault
                                 label="Komentlarni ko'rish"
-                                customClasses='h-10 sm:h-12 !bg-orange-500 !rounded-lg !cursor-auto !text-xs sm:!text-sm mt-6 md:mt-8 w-full'
+                                customClasses='h-10 sm:h-12 !bg-orange-500 !rounded-lg !cursor-pointer !text-xs sm:!text-sm mt-6 md:mt-8 w-full'
+                                onClick={() => setOpenCommentModal(true)}
                             />
 
                             <div className='flex flex-col sm:flex-row gap-3 md:gap-5 mt-4 md:mt-5'>
@@ -122,6 +129,36 @@ const UserPostInfo = () => {
                 onCancel={() => setDeleteModalOpen(false)}
                 text={"Haqiqatan ham ushbu postni o'chirmoqchimisiz?"}
             />
+
+            <ReusableModal
+                open={openCommentModal}
+                onClose={() => setOpenCommentModal(false)}
+                title='Foydalanuvchilar fikri'
+            >
+                {commentsLoading ? (
+                    <p className="text-center text-lg">Yuklanmoqda...</p>
+                ) : (
+                    <SwiperDefault
+                        slidesPerView={1}
+                        spaceBetween={30}
+                        className='w-full mt-10'
+                        autoplay={{}}
+                        pagination={false}
+                    >
+                        {Array.isArray(comments) && comments.length > 0 ? (
+                            comments.map((comment, index) => (
+                                <CommentCart
+                                    key={index}
+                                    comment={comment.text}
+                                    nameTitle={comment.name}
+                                />
+                            ))
+                        ) : (
+                            <p className="text-center text-lg">Hozircha hech qanday fikr mavjud emas.</p>
+                        )}
+                    </SwiperDefault>
+                )}
+            </ReusableModal>
         </>
     )
 }
