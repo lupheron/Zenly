@@ -93,6 +93,7 @@ Route::middleware(['auth.custom', 'security', Cors::class])->group(function () {
     Route::get('/booking-requests/user/{user_id}', [BookingRequest::class, 'getByUser']);
     Route::get('/booking-requests/for-user-posts/{user_id}', [BookingRequest::class, 'getRequestsForUserPosts']);
     Route::put('/booking-requests/{id}/status', [BookingRequest::class, 'updateStatus']);
+    Route::get('/booking-requests/booking-counts/{user_id}', [BookingRequest::class, 'getBookingCountsForUserPosts']);
 
     // BOOKING CHECKING
     Route::post('/booking-checking', [BookingChecking::class, 'create']);

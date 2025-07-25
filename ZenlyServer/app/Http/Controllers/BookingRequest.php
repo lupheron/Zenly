@@ -144,6 +144,36 @@ class BookingRequest extends Controller
         ]);
     }
 
+    /**
+     * Get booking counts for each post owned by the user (for dashboard bar chart)
+     */
+    public function getBookingCountsForUserPosts(Request $request, $user_id)
+    {
+        $authUser = $request->user();
+        if (!$authUser || $authUser->id != $user_id) {
+            return response()->json([
+                'message' => 'You are not allowed to access these booking counts',
+                'status' => 403
+            ], 403);
+        }
+
+        $counts = DB::table('posts')
+            ->leftJoin('booking_requests', function($join) {
+                $join->on('posts.id', '=', 'booking_requests.post_id')
+                     ->where('booking_requests.status', '=', 'active');
+            })
+            ->where('posts.user_id', $user_id)
+            ->groupBy('posts.id', 'posts.title')
+            ->select('posts.id as post_id', 'posts.title as post_title', DB::raw('COUNT(booking_requests.id) as count'))
+            ->get();
+
+        return response()->json([
+            'message' => 'Booking counts fetched successfully.',
+            'status' => 200,
+            'data' => $counts
+        ]);
+    }
+
     public function updateStatus(Request $request, $id)
     {
         $authUser = $request->user();

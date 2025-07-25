@@ -7,6 +7,7 @@ import { useUser } from '@/src/hooks/users/useUser'
 import { usePosts, Post } from '@/src/hooks/posts/usePosts'
 import { useAreaTypes } from '@/src/hooks/area_types/useAreaType'
 import api from '@/src/utils/axios'
+import { useQuery as useQueryBookingCounts } from '@tanstack/react-query'
 
 interface ViewData {
     postId: number
@@ -49,6 +50,16 @@ interface DashboardData {
 
     // User posts
     userPosts: Post[]
+    barChartData: {
+        labels: string[]
+        data: number[]
+    }
+}
+
+interface BookingCount {
+    post_id: number;
+    post_title: string;
+    count: number;
 }
 
 export const useDashboard = (): DashboardData => {
@@ -127,6 +138,18 @@ export const useDashboard = (): DashboardData => {
         staleTime: 5 * 60 * 1000, // 5 minutes
     })
 
+    // Fetch booking counts for user's posts
+    const { data: bookingCountsData, isLoading: bookingCountsLoading } = useQueryBookingCounts<BookingCount[]>({
+        queryKey: ['user-posts-booking-counts', userId],
+        queryFn: async () => {
+            if (!userId) return [];
+            const res = await api.get(`/booking-requests/booking-counts/${userId}`);
+            return res.data.data || [];
+        },
+        enabled: !!userId,
+        staleTime: 5 * 60 * 1000,
+    });
+
     // Prepare pie chart data (posts by area type)
     const pieChartData = useMemo(() => {
         const labels = areaTypes?.map((a) => a.name.replace(/'/g, "&apos;")) || []
@@ -178,6 +201,15 @@ export const useDashboard = (): DashboardData => {
         }))
     }, [userPosts])
 
+    // Prepare bar chart data (booked posts)
+    const barChartData = useMemo(() => {
+        if (!bookingCountsData) return { labels: [], data: [] };
+        return {
+            labels: bookingCountsData.map((item) => item.post_title.replace(/'/g, "&apos;")),
+            data: bookingCountsData.map((item) => item.count),
+        };
+    }, [bookingCountsData]);
+
     // Determine overall loading state
     const isLoading = userLoading ||
         postsLoading ||
@@ -185,6 +217,7 @@ export const useDashboard = (): DashboardData => {
         userId === null ||
         viewsLoading ||
         ratingsLoading
+        || bookingCountsLoading
 
     return {
         isLoading,
@@ -196,5 +229,6 @@ export const useDashboard = (): DashboardData => {
         selectedPostId,
         setSelectedPostId,
         userPosts,
+        barChartData,
     }
 }

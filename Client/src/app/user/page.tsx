@@ -6,6 +6,7 @@ import LineChart from '../../components/charts/LineChart'
 import UserComments from '@/src/components/Comments/UserComments'
 import SelectDefault from '@/src/components/FormElements/Select/SelectDefault'
 import { useDashboard } from '@/src/hooks/useDashboard'
+import BarChart from '../../components/charts/BarChart'
 
 export default function Dashboard() {
     const {
@@ -17,6 +18,7 @@ export default function Dashboard() {
         setSortBy,
         selectedPostId,
         setSelectedPostId,
+        barChartData,
     } = useDashboard()
 
     if (isLoading) {
@@ -72,6 +74,14 @@ export default function Dashboard() {
                         customClassesSelect={'w-full border rounded px-2 py-1 cursor-pointer outline-none'}
                     />
                     <UserComments postId={selectedPostId} />
+                </div>
+
+                {/* Booked Posts Bar Chart Section */}
+                <div className="w-full flex flex-col gap-4">
+                    <h1 className="text-2xl font-bold mb-4 text-center">
+                        Postlar bo&apos;yicha band qilishlar soni
+                    </h1>
+                    <BarChart labels={barChartData.labels} data={barChartData.data} />
                 </div>
             </div>
         </div>
