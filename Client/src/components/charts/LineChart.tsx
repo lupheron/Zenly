@@ -48,7 +48,7 @@ const LineChart: React.FC<LineChartProps> = ({ labels, data }) => {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
+    <div className="w-full min-h-[200px] h-[250px] md:h-[300px] xl:h-[350px] max-w-2xl mx-auto">
       <Line data={chartData} options={options} />
     </div>
   );

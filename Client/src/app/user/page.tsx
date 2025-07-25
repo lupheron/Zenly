@@ -32,14 +32,14 @@ export default function Dashboard() {
     }
 
     return (
-        <div>
-            <h1 className="text-2xl font-bold mb-8">Boshqaruv paneli</h1>
+        <div className="px-2 sm:px-4">
+            <h1 className="text-2xl font-bold mb-8 text-center">Boshqaruv paneli</h1>
             <DateFilter value={dateFilter} onChange={setDateFilter} />
             <hr className='mb-5 mt-5' />
 
-            <div className="mb-8 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            <div className="mb-8 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 xl:grid-rows-2 gap-8 items-start w-full">
                 {/* Pie Chart Section */}
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                     <h1 className='text-2xl font-bold mb-4 text-center'>
                         Manzillar bo&apos;yicha postlar soni
                     </h1>
@@ -47,7 +47,7 @@ export default function Dashboard() {
                 </div>
 
                 {/* Line Chart Section */}
-                <div className="flex-1 w-full">
+                <div className="flex-1 min-w-0 w-full">
                     <h1 className='text-2xl font-bold mb-4 text-center'>
                         Eng ko&apos;p ko&apos;rilgan va reytingi yuqori postlar
                     </h1>
@@ -69,7 +69,7 @@ export default function Dashboard() {
                 </div>
 
                 {/* Comments Section */}
-                <div className='w-full flex flex-col gap-4'>
+                <div className='w-full flex flex-col gap-4 min-w-0'>
                     <SelectDefault
                         options={postOptions}
                         onChange={e => setSelectedPostId(Number(e.target.value))}
@@ -84,7 +84,7 @@ export default function Dashboard() {
                 </div>
 
                 {/* Booked Posts Bar Chart Section */}
-                <div className="w-full flex flex-col gap-4">
+                <div className="w-full flex flex-col gap-4 min-w-0">
                     <h1 className="text-2xl font-bold mb-4 text-center">
                         Postlar bo&apos;yicha band qilishlar soni
                     </h1>

@@ -60,7 +60,7 @@ const PieChart: React.FC<PieChartProps> = ({ labels, data }) => {
 
 
     return (
-        <div className="w-full max-w-3xl mx-auto h-[400px]">
+        <div className="w-full min-h-[250px] h-[300px] md:h-[350px] xl:h-[400px] max-w-3xl mx-auto">
             <Pie data={chartData} options={options} />
         </div>
     );
