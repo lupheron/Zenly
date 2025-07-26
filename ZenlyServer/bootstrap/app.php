@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\AuthByRememberToken;
+use App\Http\Middleware\AdminAuth;
 use App\Http\Middleware\Cors;
 use App\Http\Middleware\SecurityMiddleware;
 use App\Http\Middleware\HandleAppearance;
@@ -31,7 +32,8 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'auth.custom' => AuthByRememberToken::class,
-            'security' => SecurityMiddleware::class, // Add this line
+            'auth.admin' => AdminAuth::class,
+            'security' => SecurityMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

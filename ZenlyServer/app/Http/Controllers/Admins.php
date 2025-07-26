@@ -18,127 +18,6 @@ class Admins extends Controller
     }
 
     /**
-     * Get all admins (only accessible by super admins)
-     */
-    public function index(Request $request)
-    {
-        $authUser = $request->user();
-
-        if (!$authUser || $authUser->type !== 'admin') {
-            // Log unauthorized admin access attempt
-            $this->securityService->logSuspiciousActivity(
-                $authUser->id ?? 0,
-                'Admins',
-                'index',
-                'unauthorized_admin_access',
-                ['user_type' => $authUser->type ?? 'anonymous']
-            );
-
-            return response()->json([
-                "message" => "Only admins can access this",
-                "status" => 403
-            ], 403);
-        }
-
-        $admins = DB::table("admins")->whereNull('deleted_at')->get();
-        return response()->json($admins);
-    }
-
-    /**
-     * Get admin by ID
-     */
-    public function getAdminById(Request $request, $id)
-    {
-        $authUser = $request->user();
-
-        if (!$authUser || $authUser->type !== 'admin') {
-            // Log unauthorized admin access attempt
-            $this->securityService->logSuspiciousActivity(
-                $authUser->id ?? 0,
-                'Admins',
-                'getAdminById',
-                'unauthorized_admin_access',
-                ['requested_admin_id' => $id, 'auth_user_id' => $authUser->id ?? null]
-            );
-
-            return response()->json([
-                "message" => "You are not allowed to access this admin",
-                "status" => 403
-            ], 403);
-        }
-
-        $admin = DB::table("admins")->where("id", $id)->whereNull('deleted_at')->first();
-        if ($admin) {
-            return response()->json($admin);
-        } else {
-            return response()->json([
-                "message" => "Admin not found",
-                "status" => 404
-            ], 404);
-        }
-    }
-
-    /**
-     * Register a new admin
-     */
-    public function register(Request $request)
-    {
-        $existingAdmin = DB::table('admins')->where('username', $request['username'])->first();
-
-        if ($existingAdmin) {
-            $this->securityService->logSuspiciousActivity(
-                0,
-                'Admins',
-                'register',
-                'duplicate_username_attempt',
-                ['username' => $request['username']]
-            );
-
-            return response()->json([
-                "message" => "Username already exists",
-                "status" => 409
-            ], 409);
-        }
-
-        try {
-            $admin = DB::table('admins')->insert([
-                "name" => $request["name"],
-                "surename" => $request["surename"],
-                "username" => $request["username"],
-                "password" => Hash::make($request["password"]),
-                "status" => $request["status"] ?? true,
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now(),
-            ]);
-
-            if ($admin) {
-                return response()->json([
-                    "message" => "Admin registered successfully",
-                    "status" => 200
-                ]);
-            } else {
-                return response()->json([
-                    "message" => "Registration failed",
-                    "status" => 500
-                ], 500);
-            }
-        } catch (\Exception $e) {
-            $this->securityService->logSuspiciousActivity(
-                0,
-                'Admins',
-                'register',
-                'registration_error',
-                ['error' => $e->getMessage(), 'username' => $request['username']]
-            );
-
-            return response()->json([
-                "message" => "Registration failed",
-                "status" => 500
-            ], 500);
-        }
-    }
-
-    /**
      * Admin login
      */
     public function login(Request $request)
@@ -226,19 +105,61 @@ class Admins extends Controller
     }
 
     /**
+     * Get current admin info
+     */
+    public function me(Request $request)
+    {
+        $admin = $request->user();
+        return response()->json($admin);
+    }
+
+    /**
+     * Get admin by ID
+     */
+    public function getAdminById(Request $request, $id)
+    {
+        $authAdmin = $request->user();
+
+        if (!$authAdmin || $authAdmin->type !== 'admin') {
+            $this->securityService->logSuspiciousActivity(
+                $authAdmin->id ?? 0,
+                'Admins',
+                'getAdminById',
+                'unauthorized_admin_access',
+                ['requested_admin_id' => $id, 'auth_admin_id' => $authAdmin->id ?? null]
+            );
+
+            return response()->json([
+                "message" => "You are not allowed to access this admin",
+                "status" => 403
+            ], 403);
+        }
+
+        $admin = DB::table("admins")->where("id", $id)->whereNull('deleted_at')->first();
+        if ($admin) {
+            return response()->json($admin);
+        } else {
+            return response()->json([
+                "message" => "Admin not found",
+                "status" => 404
+            ], 404);
+        }
+    }
+
+    /**
      * Update admin information
      */
     public function update(Request $request, $id)
     {
-        $authUser = $request->user();
+        $authAdmin = $request->user();
 
-        if (!$authUser || $authUser->type !== 'admin') {
+        if (!$authAdmin || $authAdmin->type !== 'admin') {
             $this->securityService->logSuspiciousActivity(
-                $authUser->id ?? 0,
+                $authAdmin->id ?? 0,
                 'Admins',
                 'update',
                 'unauthorized_admin_update',
-                ['requested_admin_id' => $id, 'auth_user_id' => $authUser->id ?? null]
+                ['requested_admin_id' => $id, 'auth_admin_id' => $authAdmin->id ?? null]
             );
 
             return response()->json([
@@ -254,7 +175,7 @@ class Admins extends Controller
 
         if ($existingAdmin) {
             $this->securityService->logSuspiciousActivity(
-                $authUser->id,
+                $authAdmin->id,
                 'Admins',
                 'update',
                 'duplicate_username_update_attempt',
@@ -308,7 +229,7 @@ class Admins extends Controller
             }
         } catch (\Exception $e) {
             $this->securityService->logSuspiciousActivity(
-                $authUser->id,
+                $authAdmin->id,
                 'Admins',
                 'update',
                 'admin_update_error',
@@ -317,235 +238,6 @@ class Admins extends Controller
 
             return response()->json([
                 "message" => "Failed to update admin",
-                "status" => 500
-            ], 500);
-        }
-    }
-
-    /**
-     * Delete admin (soft delete)
-     */
-    public function delete(Request $request, $id)
-    {
-        $authUser = $request->user();
-
-        if (!$authUser || $authUser->type !== 'admin') {
-            $this->securityService->logSuspiciousActivity(
-                $authUser->id ?? 0,
-                'Admins',
-                'delete',
-                'unauthorized_admin_delete',
-                ['requested_admin_id' => $id, 'auth_user_id' => $authUser->id ?? null]
-            );
-
-            return response()->json([
-                "message" => "You are not allowed to delete this admin",
-                "status" => 403
-            ], 403);
-        }
-
-        // Prevent admin from deleting themselves
-        if ($authUser->id == $id) {
-            return response()->json([
-                "message" => "You cannot delete your own account",
-                "status" => 403
-            ], 403);
-        }
-
-        try {
-            $admin = DB::table("admins")->where("id", $id)->update([
-                'deleted_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ]);
-
-            if ($admin) {
-                return response()->json([
-                    "message" => "Admin deleted successfully",
-                    "status" => 200
-                ]);
-            } else {
-                return response()->json([
-                    "message" => "Failed to delete admin",
-                    "status" => 500
-                ], 500);
-            }
-        } catch (\Exception $e) {
-            $this->securityService->logSuspiciousActivity(
-                $authUser->id,
-                'Admins',
-                'delete',
-                'admin_delete_error',
-                ['error' => $e->getMessage(), 'admin_id' => $id]
-            );
-
-            return response()->json([
-                "message" => "Failed to delete admin",
-                "status" => 500
-            ], 500);
-        }
-    }
-
-    /**
-     * Create admin (admin creation endpoint)
-     */
-    public function create(Request $request)
-    {
-        $authUser = $request->user();
-
-        // Only admins can create other admins
-        if (!$authUser || $authUser->type !== 'admin') {
-            $this->securityService->logSuspiciousActivity(
-                $authUser->id ?? 0,
-                'Admins',
-                'create',
-                'unauthorized_admin_creation',
-                ['user_type' => $authUser->type ?? 'anonymous']
-            );
-
-            return response()->json([
-                "message" => "Only admins can create other admins",
-                "status" => 403
-            ], 403);
-        }
-
-        // Use the register method logic for admin creation
-        return $this->register($request);
-    }
-
-    /**
-     * Change admin status (activate/deactivate)
-     */
-    public function changeStatus(Request $request, $id)
-    {
-        $authUser = $request->user();
-
-        if (!$authUser || $authUser->type !== 'admin') {
-            $this->securityService->logSuspiciousActivity(
-                $authUser->id ?? 0,
-                'Admins',
-                'changeStatus',
-                'unauthorized_status_change',
-                ['requested_admin_id' => $id, 'auth_user_id' => $authUser->id ?? null]
-            );
-
-            return response()->json([
-                "message" => "You are not allowed to change admin status",
-                "status" => 403
-            ], 403);
-        }
-
-        // Prevent admin from deactivating themselves
-        if ($authUser->id == $id) {
-            return response()->json([
-                "message" => "You cannot change your own status",
-                "status" => 403
-            ], 403);
-        }
-
-        $admin = DB::table("admins")->where("id", $id)->whereNull('deleted_at')->first();
-        if (!$admin) {
-            return response()->json([
-                "message" => "Admin not found",
-                "status" => 404
-            ], 404);
-        }
-
-        $newStatus = $request->input('status', !$admin->status);
-
-        try {
-            $updated = DB::table("admins")->where("id", $id)->update([
-                'status' => $newStatus,
-                'updated_at' => Carbon::now()
-            ]);
-
-            if ($updated) {
-                $statusText = $newStatus ? 'activated' : 'deactivated';
-                return response()->json([
-                    "message" => "Admin {$statusText} successfully",
-                    "status" => 200
-                ]);
-            } else {
-                return response()->json([
-                    "message" => "Failed to change admin status",
-                    "status" => 500
-                ], 500);
-            }
-        } catch (\Exception $e) {
-            $this->securityService->logSuspiciousActivity(
-                $authUser->id,
-                'Admins',
-                'changeStatus',
-                'status_change_error',
-                ['error' => $e->getMessage(), 'admin_id' => $id]
-            );
-
-            return response()->json([
-                "message" => "Failed to change admin status",
-                "status" => 500
-            ], 500);
-        }
-    }
-
-    /**
-     * Get admin profile
-     */
-    public function profile(Request $request)
-    {
-        $authUser = $request->user();
-
-        if (!$authUser || $authUser->type !== 'admin') {
-            return response()->json([
-                "message" => "Unauthorized access",
-                "status" => 401
-            ], 401);
-        }
-
-        $admin = DB::table("admins")->where("id", $authUser->id)->whereNull('deleted_at')->first();
-        if ($admin) {
-            return response()->json($admin);
-        } else {
-            return response()->json([
-                "message" => "Admin profile not found",
-                "status" => 404
-            ], 404);
-        }
-    }
-
-    /**
-     * Logout admin
-     */
-    public function logout(Request $request)
-    {
-        $authUser = $request->user();
-
-        if (!$authUser || $authUser->type !== 'admin') {
-            return response()->json([
-                "message" => "Unauthorized access",
-                "status" => 401
-            ], 401);
-        }
-
-        try {
-            DB::table("admins")->where("id", $authUser->id)->update([
-                "remember_token" => null,
-                "updated_at" => Carbon::now()
-            ]);
-
-            return response()->json([
-                "message" => "Logged out successfully",
-                "status" => 200
-            ]);
-        } catch (\Exception $e) {
-            $this->securityService->logSuspiciousActivity(
-                $authUser->id,
-                'Admins',
-                'logout',
-                'logout_error',
-                ['error' => $e->getMessage()]
-            );
-
-            return response()->json([
-                "message" => "Failed to logout",
                 "status" => 500
             ], 500);
         }
