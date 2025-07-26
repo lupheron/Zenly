@@ -20,11 +20,16 @@ use Illuminate\Support\Facades\Route;
 
 // Public routes (no auth required)
 Route::group(['middleware' => [Cors::class]], function () {
-    // Publicly accessible routes
+    // User authentication
     Route::post('/register', [Users::class, 'register']);
     Route::post('/login', [Users::class, 'login']);
+    
+    // Admin authentication
+    Route::post('/admin/register', [Admins::class, 'register']);
     Route::post('/admin/login', [Admins::class, 'login']);
     Route::get('/admin/debug', [Admins::class, 'debug']);
+    
+    // Public content
     Route::get('/posts', [Posts::class, 'index']);
     Route::get('/post/{id}', [Posts::class, 'getPostById']);
     Route::get('/posts/filter', [Posts::class, 'filter']);
@@ -38,6 +43,14 @@ Route::group(['middleware' => [Cors::class]], function () {
     Route::post('/area-types', [AreaTypesController::class, 'store']);
     Route::put('/area-types/{id}', [AreaTypesController::class, 'update']);
     Route::get('/posts/top-rated', [Posts::class, 'topRated']);
+});
+
+// Admin routes (authenticated admins only)
+Route::middleware(['auth.admin', 'admin.security', Cors::class])->group(function () {
+    Route::post('/admin/logout', [Admins::class, 'logout']);
+    Route::get('/admin/me', [Admins::class, 'me']);
+    Route::put('/admin/{id}', [Admins::class, 'update']);
+    Route::delete('/admin/{id}', [Admins::class, 'delete']);
 });
 
 // User routes (authenticated users only)

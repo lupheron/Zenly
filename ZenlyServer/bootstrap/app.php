@@ -4,6 +4,7 @@ use App\Http\Middleware\AuthByRememberToken;
 use App\Http\Middleware\AdminAuth;
 use App\Http\Middleware\Cors;
 use App\Http\Middleware\SecurityMiddleware;
+use App\Http\Middleware\AdminSecurityMiddleware;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
@@ -34,6 +35,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth.custom' => AuthByRememberToken::class,
             'auth.admin' => AdminAuth::class,
             'security' => SecurityMiddleware::class,
+            'admin.security' => AdminSecurityMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

@@ -10,21 +10,30 @@ function InputDefault({
   id, 
   required = false, 
   disabled = false,
+  label,
+  showLabel = false,
   ...props 
 }) {
   return (
-    <input
-      type={type}
-      className={styles.input}
-      placeholder={placeholder}
-      value={value}
-      onChange={onChange}
-      name={name}
-      id={id}
-      required={required}
-      disabled={disabled}
-      {...props}
-    />
+    <div className={styles.inputContainer}>
+      {showLabel && label && (
+        <label htmlFor={id} className={styles.inputLabel}>
+          {label}
+        </label>
+      )}
+      <input
+        type={type}
+        className={styles.input}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        name={name}
+        id={id}
+        required={required}
+        disabled={disabled}
+        {...props}
+      />
+    </div>
   );
 }
 

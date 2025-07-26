@@ -37,13 +37,12 @@ function LoginForm({ onSubmit, loading = false, error = null }) {
 
       <form onSubmit={handleSubmit}>
         <div className={styles.formGroup}>
-          <label htmlFor="username" className={styles.label}>
-            Username
-          </label>
           <InputDefault
             type="text"
             name="username"
             id="username"
+            label="Username"
+            showLabel={true}
             placeholder="Enter your username"
             value={formData.username}
             onChange={handleInputChange}
@@ -53,13 +52,12 @@ function LoginForm({ onSubmit, loading = false, error = null }) {
         </div>
 
         <div className={styles.formGroup}>
-          <label htmlFor="password" className={styles.label}>
-            Password
-          </label>
           <InputDefault
             type="password"
             name="password"
             id="password"
+            label="Password"
+            showLabel={true}
             placeholder="Enter your password"
             value={formData.password}
             onChange={handleInputChange}
