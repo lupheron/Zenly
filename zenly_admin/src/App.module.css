@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  font-family: "Quicksand", sans-serif;
 }
 
 .App-logo {
@@ -22,10 +23,12 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  font-family: "Quicksand", sans-serif;
 }
 
 .App-link {
   color: #61dafb;
+  font-family: "Quicksand", sans-serif;
 }
 
 @keyframes App-logo-spin {

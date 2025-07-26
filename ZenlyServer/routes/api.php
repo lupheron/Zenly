@@ -24,6 +24,7 @@ Route::group(['middleware' => [Cors::class]], function () {
     Route::post('/register', [Users::class, 'register']);
     Route::post('/login', [Users::class, 'login']);
     Route::post('/admin/login', [Admins::class, 'login']);
+    Route::get('/admin/debug', [Admins::class, 'debug']);
     Route::get('/posts', [Posts::class, 'index']);
     Route::get('/post/{id}', [Posts::class, 'getPostById']);
     Route::get('/posts/filter', [Posts::class, 'filter']);
@@ -99,26 +100,4 @@ Route::middleware(['auth.custom', 'security', Cors::class])->group(function () {
     Route::get('/user/{id}', [Users::class, 'getUsersById']);
     Route::put('/users/{id}', [Users::class, 'update']);
     Route::delete('/users/{id}', [Users::class, 'delete']);
-});
-
-// Admin routes (authenticated admins only)
-Route::prefix('admin')->middleware(['auth.admin', 'security', Cors::class])->group(function () {
-    // Admin info
-    Route::get('/me', [Admins::class, 'me']);
-    
-    // Admin management
-    Route::get('/{id}', [Admins::class, 'getAdminById']);
-    Route::put('/{id}', [Admins::class, 'update']);
-    
-    // User management (admin only)
-    Route::get('/users', [Users::class, 'index']);
-    Route::post('/users', [Users::class, 'create']);
-    
-    // Admin Security Routes
-    Route::get('/security/dashboard', [SecurityController::class, 'dashboard']);
-    Route::get('/security/blocked-users', [SecurityController::class, 'getBlockedUsers']);
-    Route::post('/security/unblock-user/{userId}', [SecurityController::class, 'unblockUser']);
-    Route::get('/security/suspicious-activities', [SecurityController::class, 'getSuspiciousActivities']);
-    Route::get('/security/logs', [SecurityController::class, 'getSecurityLogs']);
-    Route::get('/security/user-report/{userId}', [SecurityController::class, 'getUserActivityReport']);
 });
