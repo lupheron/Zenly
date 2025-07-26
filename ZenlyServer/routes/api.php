@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\SecurityController;
+use App\Http\Controllers\Admins;
 use App\Http\Controllers\Comments;
 use App\Http\Controllers\Features;
 use App\Http\Controllers\Gallery;
@@ -22,6 +23,7 @@ Route::group(['middleware' => [Cors::class]], function () {
     // Publicly accessible routes
     Route::post('/register', [Users::class, 'register']);
     Route::post('/login', [Users::class, 'login']);
+    Route::post('/admin/login', [Admins::class, 'login']);
     Route::get('/posts', [Posts::class, 'index']);
     Route::get('/post/{id}', [Posts::class, 'getPostById']);
     Route::get('/posts/filter', [Posts::class, 'filter']);
@@ -99,6 +101,17 @@ Route::middleware(['auth.custom', 'security', Cors::class])->group(function () {
     Route::post('/booking-checking', [BookingChecking::class, 'create']);
     Route::post('/booking-checking/{id}/customer-confirm', [BookingChecking::class, 'customerConfirm']);
     Route::get('/booking-checking/by-request/{request_id}', [BookingChecking::class, 'getByRequestId']);
+
+    // ADMINS
+    Route::get('/admins', [Admins::class, 'index']);
+    Route::get('/admin/{id}', [Admins::class, 'getAdminById']);
+    Route::post('/admins', [Admins::class, 'create']);
+    Route::post('/admin/register', [Admins::class, 'register']);
+    Route::put('/admins/{id}', [Admins::class, 'update']);
+    Route::delete('/admins/{id}', [Admins::class, 'delete']);
+    Route::put('/admins/{id}/status', [Admins::class, 'changeStatus']);
+    Route::get('/admin/profile', [Admins::class, 'profile']);
+    Route::post('/admin/logout', [Admins::class, 'logout']);
 });
 
 // // Admin Security Routes (add role-based middleware later)
