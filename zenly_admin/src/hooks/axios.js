@@ -14,8 +14,12 @@ const api = axios.create({
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('remember_token');
-        if (token) {
+        const adminId = localStorage.getItem('admin_id');
+        
+        if (token && adminId) {
             config.headers.Authorization = `Bearer ${token}`;
+            // Add admin identifier if needed
+            config.headers['X-Admin-ID'] = adminId;
         }
         return config;
     },
