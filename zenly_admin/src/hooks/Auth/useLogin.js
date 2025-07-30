@@ -48,7 +48,6 @@ const useLoginStore = create((set, get) => ({
                 // Store token
                 localStorage.setItem('remember_token', res.data.data.token);
                 localStorage.setItem('admin_id', res.data.data.admin.id);
-                
                 // Set user data
                 set({ 
                     user: res.data.data.admin,
@@ -56,7 +55,6 @@ const useLoginStore = create((set, get) => ({
                     loading: false,
                     error: null
                 });
-                
                 return { success: true, data: res.data.data };
             } else {
                 set({ 

@@ -13,15 +13,32 @@ class Admins extends Controller
 {
     public function login(Request $request)
     {
-        $username = $request->input('username');
-        $password = $request->input('password');
-
-        // Simple DB check (no hashing, no security, for demo only!)
-        $admin = DB::table('admins')->where('username', $username)->first();
-        if ($admin && $admin->password === $password) {
-            return response()->json(['success' => true, 'message' => 'Login successful', 'admin' => $admin]);
+        $user = DB::table('admins')->where('username', $request['username'])->first();
+        if ($user && Hash::check($request['password'], $user->password)) {
+            $token = Hash::make($request['username'] . $request['password']);
+            $t = DB::table('admins')->where('id', $user->id)->update(['remember_token' => $token]);
+            if ($t) {
+                $user->token = $token;
+                return response()->json([
+                    'success' => true,
+                    'data' => [
+                        'admin' => $user,
+                        'token' => $token
+                    ]
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error creating token',
+                    'status' => 500
+                ], 500);
+            }
         } else {
-            return response()->json(['success' => false, 'message' => 'Invalid credentials'], 401);
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid credentials',
+                'status' => 401
+            ], 401);
         }
     }
 }
