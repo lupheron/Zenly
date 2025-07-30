@@ -1,16 +1,30 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import LoginForm from '../../Components/Macro/Forms/Login/LoginForm';
+import useLoginStore from '../../hooks/Auth/useLogin';
 
 function Login() {
-    const handleLogin = (formData) => {
-        console.log('Login attempt:', formData);
-        // Here you would typically call your login API
-        // Example:
-        // loginUser(formData).then(response => {
-        //     // Handle successful login
-        // }).catch(error => {
-        //     // Handle login error
-        // });
+    const navigate = useNavigate();
+    const { handleLogin, loading, error, isAuthenticated, clearError } = useLoginStore();
+
+    // Check if user is already authenticated
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate('/dashboard');
+        }
+    }, [isAuthenticated, navigate]);
+
+    // Clear error when component mounts
+    useEffect(() => {
+        clearError();
+    }, [clearError]);
+
+    const onSubmit = async (formData) => {
+        const result = await handleLogin(formData);
+        if (result.success) {
+            // Redirect to dashboard on successful login
+            navigate('/dashboard');
+        }
     };
 
     return (
@@ -23,9 +37,9 @@ function Login() {
             padding: '20px'
         }}>
             <LoginForm 
-                onSubmit={handleLogin}
-                loading={false}
-                error={null}
+                onSubmit={onSubmit}
+                loading={loading}
+                error={error}
             />
         </div>
     );

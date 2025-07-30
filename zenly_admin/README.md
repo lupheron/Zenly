@@ -1,70 +1,93 @@
-# Getting Started with Create React App
+# Zenly Admin Panel
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React-based admin panel with a fully working authentication system.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- ✅ Complete login/logout functionality
+- ✅ Protected routes with authentication
+- ✅ Admin dashboard with user information
+- ✅ Form validation and error handling
+- ✅ Remember me functionality
+- ✅ Responsive design
+- ✅ State management with Zustand
 
-### `npm start`
+## Setup Instructions
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 1. Install Dependencies
+```bash
+npm install
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 2. Configure API URL
+Create a `.env` file in the root directory:
+```
+REACT_APP_API_URL=http://localhost:8000/api
+```
 
-### `npm test`
+### 3. Start the Development Server
+```bash
+npm start
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+The application will open at `http://localhost:3000`
 
-### `npm run build`
+## API Endpoints Used
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+The admin panel connects to the following Laravel API endpoints:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- `POST /api/admin/login` - Admin login
+- `POST /api/admin/logout` - Admin logout  
+- `GET /api/admin/me` - Get current admin profile
+- `PUT /api/admin/{id}` - Update admin profile
+- `DELETE /api/admin/{id}` - Delete admin account
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Authentication Flow
 
-### `npm run eject`
+1. **Login**: Users enter username and password
+2. **Token Storage**: JWT token is stored in localStorage
+3. **Route Protection**: Protected routes check authentication status
+4. **Auto-redirect**: Authenticated users are redirected to dashboard
+5. **Logout**: Clears token and redirects to login
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## File Structure
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```
+src/
+├── Components/
+│   ├── Macro/Forms/Login/LoginForm.jsx
+│   └── Mircro/
+│       ├── Button/ButtonDefault.jsx
+│       └── FormElements/Input/InputDefault.jsx
+├── hooks/
+│   ├── Auth/useLogin.js
+│   └── axios.js
+├── Layouts/Authentication/Login.jsx
+├── Pages/Dashboard.jsx
+└── App.jsx
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Usage
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+1. Navigate to `/login` to access the login form
+2. Enter admin credentials
+3. Upon successful login, you'll be redirected to `/dashboard`
+4. Use the logout button to sign out
 
-## Learn More
+## Security Features
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- Admin isolation (admins can only access their own data)
+- Token-based authentication
+- Automatic token refresh
+- Protected routes
+- Form validation
+- Error handling
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Development
 
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+The application uses:
+- **React 19** for the UI
+- **Zustand** for state management
+- **Axios** for API calls
+- **React Router** for navigation
+- **CSS Modules** for styling

@@ -34,8 +34,6 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'auth.custom' => AuthByRememberToken::class,
             'auth.admin' => AdminAuth::class,
-            'security' => SecurityMiddleware::class,
-            'admin.security' => AdminSecurityMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

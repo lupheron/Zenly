@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create axios instance with base configuration
 const api = axios.create({
-    baseURL: process.env.REACT_APP_API_URL,
+    baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8000/api',
     timeout: 10000,
     headers: {
         'Content-Type': 'application/json',
@@ -33,9 +33,11 @@ api.interceptors.response.use(
         if (error.response?.status === 401) {
             // Clear invalid tokens
             localStorage.removeItem('remember_token');
-            localStorage.removeItem('user_id');
+            localStorage.removeItem('admin_id');
             // Redirect to login if needed
-            window.location.href = '/login';
+            if (window.location.pathname !== '/login') {
+                window.location.href = '/login';
+            }
         }
         return Promise.reject(error);
     }
