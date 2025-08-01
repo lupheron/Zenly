@@ -5,14 +5,17 @@ import { useUserByIdStore } from '../../../hooks/Users/useUserById';
 import styles from '../../../assets/css/index.module.css';
 import ButtonDefault from '../../../Components/Mircro/Button/ButtonDefault';
 import DelModal from '../../../Components/Macro/Modals/DelModal';
+import Modal from '../../../Components/Macro/Modals/Modal';
+import EditUserForm from '../../../Components/Macro/Forms/Users/EditUserForm';
 
 function DetailedUser() {
     const { id } = useParams();
     const navigate = useNavigate();
     const { user: currentUser, logout, loading } = useLoginStore();
-    const { user: userData, loading: loadingUser, error, getUserById, clearUser, deleteUser } = useUserByIdStore();
+    const { user: userData, loading: loadingUser, error, getUserById, clearUser, deleteUser, updateUser, updateLoading } = useUserByIdStore();
     const [imageError, setImageError] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
 
     useEffect(() => {
         if (id) {
@@ -50,6 +53,26 @@ function DetailedUser() {
         setShowDeleteModal(false);
     };
 
+    const handleEditClick = () => {
+        setShowEditModal(true);
+    };
+
+    const handleEditCancel = () => {
+        setShowEditModal(false);
+    };
+
+    const handleEditSubmit = async (formData) => {
+        try {
+            await updateUser(userData.id, formData);
+            setShowEditModal(false);
+            // Show success message or refresh data
+            alert('User updated successfully!');
+        } catch (error) {
+            console.error('Update failed:', error);
+            alert('Failed to update user. Please try again.');
+        }
+    };
+
     // Function to format date
     const formatDate = (dateString) => {
         if (!dateString) return 'Not available';
@@ -59,20 +82,26 @@ function DetailedUser() {
     // Function to get image URL
     const getImageUrl = (imagePath) => {
         if (!imagePath) return null;
-        const baseUrl = process.env.REACT_APP_API_URL;
+        const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
         console.log('getImageUrl called with:', imagePath);
 
-        // If the path already includes 'uploads/', use it directly
+        // If it's already a full URL, return as is
+        if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+            return imagePath;
+        }
+
+        // If the path starts with 'uploads/', use the /files/ route
         if (imagePath.startsWith('uploads/')) {
-            const fullUrl = `${baseUrl}/uploads/${imagePath.replace('uploads/', '')}`;
+            const pathWithoutUploads = imagePath.replace('uploads/', '');
+            const fullUrl = `${baseUrl}/files/${pathWithoutUploads}`;
             console.log('Image URL:', fullUrl, 'Original path:', imagePath);
             return fullUrl;
         }
 
-        // Otherwise, construct the path
+        // Otherwise, assume it's just the filename and construct the path
         const cleanPath = imagePath.startsWith('/') ? imagePath.slice(1) : imagePath;
-        const fullUrl = `${baseUrl}/uploads/${cleanPath}`;
+        const fullUrl = `${baseUrl}/files/${cleanPath}`;
         console.log('Image URL:', fullUrl, 'Original path:', imagePath);
         return fullUrl;
     };
@@ -262,6 +291,7 @@ function DetailedUser() {
                     <ButtonDefault
                         children={"Foydalanuvchini tahrirlash"}
                         variant={"yellow"}
+                        onClick={handleEditClick}
                     />
 
                     <ButtonDefault
@@ -281,6 +311,22 @@ function DetailedUser() {
                     confirmText="Delete User"
                     cancelText="Cancel"
                 />
+
+                {/* Edit User Modal */}
+                <Modal
+                    isOpen={showEditModal}
+                    onClose={handleEditCancel}
+                    title="Edit User"
+                    size="large"
+                    closeOnOverlayClick={false}
+                >
+                    <EditUserForm
+                        userData={userData}
+                        onSubmit={handleEditSubmit}
+                        onCancel={handleEditCancel}
+                        loading={updateLoading}
+                    />
+                </Modal>
 
             </div>
         </div>

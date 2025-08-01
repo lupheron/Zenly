@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use App\Services\SecurityService;
 
 class Users extends Controller
@@ -15,24 +16,6 @@ class Users extends Controller
     public function __construct(SecurityService $securityService)
     {
         $this->securityService = $securityService;
-    }
-
-    public function index()
-    {
-        $users = DB::table("users")->get();
-        return response()->json([
-            "success" => true,
-            "data" => $users
-        ]);
-    }
-
-    public function getUserByIdAdmin($id)
-    {
-        $user = DB::table("users")->where("id", $id)->first();
-        return response()->json([
-            "success" => true,
-            "data" => $user
-        ]);
     }
 
     public function getUsersById(Request $request, $id)
@@ -428,7 +411,128 @@ class Users extends Controller
         return $this->register($request);
     }
 
-    public function deleteUserAdmin(Request $request, $id)
+    // ADMIN SIDE
+
+    public function index()
+    {
+        $users = DB::table("users")->get();
+        return response()->json([
+            "success" => true,
+            "data" => $users
+        ]);
+    }
+
+    public function getUserByIdAdmin($id)
+    {
+        $user = DB::table("users")->where("id", $id)->first();
+        return response()->json([
+            "success" => true,
+            "data" => $user
+        ]);
+    }
+
+    public function updateUserAdmin(Request $request, $id)
+    {
+        // Get the current user
+        $currentUser = DB::table("users")->where("id", $id)->first();
+        if (!$currentUser) {
+            return response()->json([
+                "message" => "User not found",
+                "status" => 404
+            ], 404);
+        }
+
+        // Check if username is being changed and if it already exists
+        if ($request->filled('username') && $request['username'] !== $currentUser->username) {
+            $existingUser = DB::table('users')
+                ->where('username', $request['username'])
+                ->where('id', '!=', $id)
+                ->first();
+
+            if ($existingUser) {
+                return response()->json([
+                    "message" => "Username already exists",
+                    "status" => 409
+                ], 409);
+            }
+        }
+
+        // Prepare update data - only include fields that are provided
+        $updateData = ['updated_at' => Carbon::now()];
+
+        // Only update fields that are provided in the request
+        if ($request->filled('fullname')) {
+            $updateData['fullname'] = $request['fullname'];
+        }
+
+        if ($request->filled('username')) {
+            $updateData['username'] = $request['username'];
+        }
+
+        if ($request->filled('phone')) {
+            $updateData['phone'] = $request['phone'];
+        }
+
+        if ($request->filled('address')) {
+            $updateData['address'] = $request['address'];
+        }
+
+        if ($request->has('vip_status')) {
+            $updateData['vip_status'] = $request['vip_status'];
+        }
+
+        if ($request->has('type')) {
+            $updateData['type'] = $request['type'];
+        }
+
+        // Handle image upload
+        if ($request->hasFile('img')) {
+            try {
+                $username = $request->filled('username') ? $request['username'] : $currentUser->username;
+                $uploadPath = public_path('uploads/' . $username);
+
+                // Create directory if it doesn't exist
+                if (!file_exists($uploadPath)) {
+                    mkdir($uploadPath, 0777, true);
+                }
+
+                // Delete old image if it exists
+                if ($currentUser->img && file_exists(public_path($currentUser->img))) {
+                    unlink(public_path($currentUser->img));
+                }
+
+                $file = $request->file('img');
+                $filename = $username . '_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $file->move($uploadPath, $filename);
+                $updateData['img'] = 'uploads/' . $username . '/' . $filename;
+            } catch (\Exception $e) {
+                return response()->json([
+                    "message" => "Failed to upload image",
+                    "status" => 500
+                ], 500);
+            }
+        }
+
+        // Update user data
+        $updated = DB::table("users")->where("id", $id)->update($updateData);
+
+        if ($updated || !empty($updateData)) {
+            $updatedUser = DB::table("users")->where("id", $id)->first();
+            return response()->json([
+                "message" => "User updated successfully",
+                "status" => 200,
+                "data" => $updatedUser
+            ]);
+        } else {
+            return response()->json([
+                "message" => "No changes made",
+                "status" => 200,
+                "data" => $currentUser
+            ]);
+        }
+    }
+
+    public function deleteUserAdmin($id)
     {
         $user = DB::table("users")->where("id", $id)->delete();
         return response()->json([

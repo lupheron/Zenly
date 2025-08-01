@@ -73,6 +73,7 @@ Route::middleware(['auth.admin', Cors::class])->group(function () {
     // USERS
     Route::get('/admin/users', [Users::class, 'index']);
     Route::get('/admin/users/{id}', [Users::class, 'getUserByIdAdmin']);
+    Route::put('/admin/users/{id}', [Users::class, 'updateUserAdmin']);
     Route::delete('/admin/users/{id}', [Users::class, 'deleteUserAdmin']);
 });
 
