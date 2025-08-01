@@ -2,21 +2,50 @@ import * as React from 'react';
 import { useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
+import { Link } from 'react-router-dom';
 import { useUsersStore } from '../../../hooks/Users/useUsers';
 import styles from '../../../assets/css/index.module.css';
 
 const columns = [
-  { field: 'id', headerName: 'ID', width: 70 },
+  {
+    field: 'sequence',
+    headerName: '#',
+    width: 70,
+    sortable: false,
+    filterable: false
+  },
   { field: 'fullname', headerName: 'Full Name', width: 150 },
-  { field: 'username', headerName: 'Username', width: 130 },
+  {
+    field: 'username',
+    headerName: 'Username',
+    width: 130,
+    renderCell: (params) => (
+      <Link
+        to={`/users/${params.row.id}`}
+        style={{
+          color: '#007bff',
+          textDecoration: 'none',
+          fontWeight: '500'
+        }}
+        onMouseEnter={(e) => {
+          e.target.style.textDecoration = 'underline';
+        }}
+        onMouseLeave={(e) => {
+          e.target.style.textDecoration = 'none';
+        }}
+      >
+        {params.value}
+      </Link>
+    )
+  },
   { field: 'phone', headerName: 'Phone', width: 130 },
   { field: 'address', headerName: 'Address', width: 200 },
-  { 
-    field: 'vip_status', 
-    headerName: 'VIP Status', 
+  {
+    field: 'vip_status',
+    headerName: 'VIP Status',
     width: 100,
     renderCell: (params) => (
-      <span style={{ 
+      <span style={{
         color: params.value ? '#28a745' : '#6c757d',
         fontWeight: 'bold'
       }}>
@@ -24,22 +53,22 @@ const columns = [
       </span>
     )
   },
-  { 
-    field: 'type', 
-    headerName: 'Type', 
+  {
+    field: 'type',
+    headerName: 'Type',
     width: 100,
     renderCell: (params) => (
-      <span style={{ 
+      <span style={{
         color: params.value === 'admin' ? '#dc3545' : '#007bff',
         fontWeight: 'bold'
       }}>
-        {params.value || 'user'}
+        {params.value === 1 ? 'Client' : 'User'}
       </span>
     )
   },
-  { 
-    field: 'created_at', 
-    headerName: 'Created At', 
+  {
+    field: 'created_at',
+    headerName: 'Created At',
     width: 150,
     renderCell: (params) => (
       <span>
@@ -47,12 +76,12 @@ const columns = [
       </span>
     )
   },
-  { 
-    field: 'deleted_at', 
-    headerName: 'Status', 
+  {
+    field: 'deleted_at',
+    headerName: 'Status',
     width: 100,
     renderCell: (params) => (
-      <span style={{ 
+      <span style={{
         color: params.value ? '#dc3545' : '#28a745',
         fontWeight: 'bold'
       }}>
@@ -87,17 +116,23 @@ export default function UsersTable() {
     );
   }
 
+  // Add sequence numbers to the users data
+  const usersWithSequence = users.map((user, index) => ({
+    ...user,
+    sequence: index + 1
+  }));
+
   return (
     <Paper className={styles.usersTable}>
       <DataGrid
-        rows={users}
+        rows={usersWithSequence}
         columns={columns}
         initialState={{ pagination: { paginationModel } }}
         pageSizeOptions={[5, 10, 25, 50]}
         checkboxSelection
         disableRowSelectionOnClick
         sx={{ border: 0 }}
-        getRowClassName={(params) => 
+        getRowClassName={(params) =>
           params.row.deleted_at ? 'deleted-row' : ''
         }
       />

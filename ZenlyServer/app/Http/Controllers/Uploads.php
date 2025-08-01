@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class Uploads extends Controller
 {
@@ -40,5 +41,24 @@ class Uploads extends Controller
             'message' => 'Image uploaded successfully.',
             'path' => $filePath
         ], 201);
+    }
+
+    public function serveImage($path)
+    {
+        $fullPath = public_path('uploads/' . $path);
+        
+        // Log the request for debugging
+        Log::info('Image request', ['path' => $path, 'fullPath' => $fullPath, 'exists' => file_exists($fullPath)]);
+        
+        if (!file_exists($fullPath)) {
+            return response()->json(['message' => 'Image not found', 'path' => $path], 404);
+        }
+
+        $file = file_get_contents($fullPath);
+        $type = mime_content_type($fullPath);
+        
+        return response($file, 200)
+            ->header('Content-Type', $type)
+            ->header('Cache-Control', 'public, max-age=31536000');
     }
 }

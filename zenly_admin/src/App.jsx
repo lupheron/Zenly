@@ -3,6 +3,7 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import Login from "./Layouts/Authentication/Login";
 import Register from "./Layouts/Authentication/Register";
 import Dashboard from "./Pages/Dashboard";
+import DetailedUser from "./Pages/users/[id]/DetailedUser";
 import useLoginStore from "./hooks/Auth/useLogin";
 
 // Protected Route Component
@@ -33,6 +34,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/users/:id" 
+          element={
+            <ProtectedRoute>
+              <DetailedUser />
             </ProtectedRoute>
           } 
         />

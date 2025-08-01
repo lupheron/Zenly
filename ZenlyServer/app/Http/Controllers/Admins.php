@@ -41,4 +41,39 @@ class Admins extends Controller
             ], 401);
         }
     }
+
+    public function me(Request $request)
+    {
+        $admin = $request->user();
+        
+        if (!$admin) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Admin not found',
+                'status' => 404
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $admin
+        ]);
+    }
+
+    public function logout(Request $request)
+    {
+        $admin = $request->user();
+        
+        if ($admin) {
+            // Clear the remember token
+            DB::table('admins')
+                ->where('id', $admin->id)
+                ->update(['remember_token' => null]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Logged out successfully'
+        ]);
+    }
 }

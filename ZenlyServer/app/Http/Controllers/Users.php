@@ -17,28 +17,22 @@ class Users extends Controller
         $this->securityService = $securityService;
     }
 
-    public function index(Request $request)
+    public function index()
     {
-        $authUser = $request->user();
-
-        if (!$authUser || $authUser->type !== 'admin') {
-            // Log unauthorized admin access attempt
-            $this->securityService->logSuspiciousActivity(
-                $authUser->id ?? 0,
-                'Users',
-                'index',
-                'unauthorized_admin_access',
-                ['user_type' => $authUser->type ?? 'anonymous']
-            );
-
-            return response()->json([
-                "message" => "Only admins can access this",
-                "status" => 403
-            ], 403);
-        }
-
         $users = DB::table("users")->get();
-        return $users;
+        return response()->json([
+            "success" => true,
+            "data" => $users
+        ]);
+    }
+
+    public function getUserByIdAdmin($id)
+    {
+        $user = DB::table("users")->where("id", $id)->first();
+        return response()->json([
+            "success" => true,
+            "data" => $user
+        ]);
     }
 
     public function getUsersById(Request $request, $id)
@@ -432,5 +426,14 @@ class Users extends Controller
 
         // Use the register method logic for admin user creation
         return $this->register($request);
+    }
+
+    public function deleteUserAdmin(Request $request, $id)
+    {
+        $user = DB::table("users")->where("id", $id)->delete();
+        return response()->json([
+            "message" => "User deleted successfully",
+            "status" => 200
+        ]);
     }
 }

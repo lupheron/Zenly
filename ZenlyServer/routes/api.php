@@ -15,6 +15,7 @@ use App\Http\Controllers\AreaTypesController;
 use App\Http\Controllers\BookingRequest;
 use App\Http\Controllers\BookingChecking;
 use App\Http\Middleware\Cors;
+use App\Http\Middleware\AdminAuth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,7 +28,7 @@ Route::group(['middleware' => [Cors::class]], function () {
     // Admin authentication
     Route::post('/admin/register', [Admins::class, 'register']);
     Route::post('/admin/login', [Admins::class, 'login']);
-    Route::get('/admin/debug', [Admins::class, 'debug']);
+    Route::get("/users", [Users::class, 'index']);  
     
     // Public content
     Route::get('/posts', [Posts::class, 'index']);
@@ -43,14 +44,36 @@ Route::group(['middleware' => [Cors::class]], function () {
     Route::post('/area-types', [AreaTypesController::class, 'store']);
     Route::put('/area-types/{id}', [AreaTypesController::class, 'update']);
     Route::get('/posts/top-rated', [Posts::class, 'topRated']);
+    
+    // Public image serving
+    Route::get('/uploads/{path}', [Uploads::class, 'serveImage'])->where('path', '.*');
+    
+    // Direct file serving from public/uploads
+    Route::get('/files/{path}', function($path) {
+        $fullPath = public_path('uploads/' . $path);
+        
+        if (!file_exists($fullPath)) {
+            return response()->json(['message' => 'File not found'], 404);
+        }
+        
+        $file = file_get_contents($fullPath);
+        $type = mime_content_type($fullPath);
+        
+        return response($file, 200)
+            ->header('Content-Type', $type)
+            ->header('Cache-Control', 'public, max-age=31536000');
+    })->where('path', '.*');
 });
 
-// Admin routes (authenticated admins only)
-Route::middleware(['auth.admin', 'admin.security', Cors::class])->group(function () {
-    Route::post('/admin/logout', [Admins::class, 'logout']);
+// Admin routes (admin authentication required)
+Route::middleware(['auth.admin', Cors::class])->group(function () {
     Route::get('/admin/me', [Admins::class, 'me']);
-    Route::put('/admin/{id}', [Admins::class, 'update']);
-    Route::delete('/admin/{id}', [Admins::class, 'delete']);
+    Route::post('/admin/logout', [Admins::class, 'logout']);
+
+    // USERS
+    Route::get('/admin/users', [Users::class, 'index']);
+    Route::get('/admin/users/{id}', [Users::class, 'getUserByIdAdmin']);
+    Route::delete('/admin/users/{id}', [Users::class, 'deleteUserAdmin']);
 });
 
 // User routes (authenticated users only)
