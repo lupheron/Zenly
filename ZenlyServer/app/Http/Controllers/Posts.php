@@ -96,6 +96,40 @@ class Posts extends Controller
         ]);
     }
 
+    public function destroy($id)
+    {
+        try {
+            $post = DB::table('posts')->where('id', $id)->first();
+
+            if (!$post) {
+                return response()->json([
+                    "message" => "Post not found",
+                    "status" => 404
+                ], 404);
+            }
+
+            // Delete related data first
+            DB::table('rating')->where('post_id', $id)->delete();
+            DB::table('post_comments')->where('post_id', $id)->delete();
+            DB::table('post_views')->where('post_id', $id)->delete();
+            DB::table('features')->where('post_id', $id)->delete();
+            DB::table('gallery')->where('post_id', $id)->delete();
+
+            // Delete the post
+            DB::table('posts')->where('id', $id)->delete();
+
+            return response()->json([
+                "message" => "Post deleted successfully",
+                "status" => 200
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                "message" => "Error deleting post: " . $e->getMessage(),
+                "status" => 500
+            ], 500);
+        }
+    }
+
     public function getPostsByUserId(Request $request, $id)
     {
         $authUser = $request->user();

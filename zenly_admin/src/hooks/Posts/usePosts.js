@@ -1,13 +1,37 @@
 import { create } from "zustand";
 import api from "../axios";
+import React from "react";
 
 export const usePosts = create((set, get) => ({
     posts: [],
     userPosts: [],
+    post: null,
     loading: false,
     error: null,
 
-    // Get posts for a specific user (new method)
+    // Fetch single post by ID
+    getPostById: async (postId) => {
+        set({ loading: true, error: null });
+        try {
+            const response = await api.get(`/admin/posts/${postId}`);
+            if (response.data.status === 200 && response.data.data) {
+                set({ post: response.data.data, loading: false });
+            } else {
+                set({ error: 'Failed to fetch post', loading: false });
+                console.error('Failed to fetch post:', response.data.message);
+            }
+        } catch (error) {
+            set({ error: error.message || 'An error occurred', loading: false });
+            console.error('Error fetching post:', error);
+        }
+    },
+
+    // Clear single post
+    clearPost: () => {
+        set({ post: null, error: null });
+    },
+
+    // Existing methods
     getUserPosts: async (userId) => {
         set({ loading: true, error: null });
         try {
@@ -24,9 +48,35 @@ export const usePosts = create((set, get) => ({
         }
     },
 
-    // Clear user posts
+    deletePost: async (postId) => {
+        try {
+            const response = await api.delete(`/admin/posts/${postId}`);
+            if (response.data.status === 200) {
+                set({ post: null });
+                return response.data;
+            } else {
+                throw new Error('Failed to delete post');
+            }
+        } catch (error) {
+            throw error;
+        }
+    },
+
     clearUserPosts: () => {
         set({ userPosts: [], error: null });
     },
-
 }));
+
+
+export const usePostByIdHook = (postId) => {
+    const { post, loading, error, getPostById, deletePost, clearPost } = usePosts();
+
+    React.useEffect(() => {
+        if (postId) {
+            getPostById(postId);
+        }
+        return () => clearPost();
+    }, [postId, getPostById, clearPost]);
+
+    return { post, loading, error, deletePost };
+};

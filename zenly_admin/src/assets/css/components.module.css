@@ -736,4 +736,280 @@
   .star {
     stroke-width: 1;
   }
-} 
+}
+
+/* GALLERY */
+/* Gallery.module.css */
+
+.galleryContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.mainImageContainer {
+  width: 100%;
+  height: 300px;
+  position: relative;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background-color: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mainImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.mainImage:hover {
+  transform: scale(1.02);
+}
+
+.noImagePlaceholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  gap: 0.5rem;
+}
+
+.noImageIcon {
+  width: 3rem;
+  height: 3rem;
+  stroke-width: 1.5;
+}
+
+.thumbnailContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.thumbnailScroll {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding: 0.5rem;
+  scroll-behavior: smooth;
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.thumbnailScroll::-webkit-scrollbar {
+  height: 4px;
+}
+
+.thumbnailScroll::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 2px;
+}
+
+.thumbnailScroll::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 2px;
+}
+
+.thumbnailScroll::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+.thumbnailWrapper {
+  flex-shrink: 0;
+  width: 80px;
+  height: 60px;
+  position: relative;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.thumbnailWrapper:hover {
+  transform: scale(1.05);
+  border-color: #d1d5db;
+}
+
+.activeThumbnail {
+  border-color: #3b82f6 !important;
+  transform: scale(1.05);
+}
+
+.thumbnailImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+  font-size: 1rem;
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+  .mainImageContainer {
+    height: 400px;
+  }
+
+  .thumbnailWrapper {
+    width: 100px;
+    height: 80px;
+  }
+
+  .thumbnailScroll {
+    justify-content: center;
+  }
+}
+
+@media (min-width: 1024px) {
+  .mainImageContainer {
+    height: 450px;
+  }
+}
+
+/* FEATURES */
+/* Features.module.css */
+
+.featuresContainer {
+  width: 100%;
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.featureItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  background-color: #ffffff;
+  transition: all 0.2s ease;
+}
+
+.featureItem:hover {
+  background-color: #f9fafb;
+  border-color: #d1d5db;
+  transform: translateY(-1px);
+}
+
+.checkIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #10b981;
+  flex-shrink: 0;
+  stroke-width: 2;
+}
+
+.featureName {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  line-height: 1.4;
+}
+
+.additionalFeatures {
+  margin-top: 0.5rem;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.toggleButton {
+  color: #3b82f6;
+  text-decoration: underline;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.5rem 0;
+  transition: color 0.2s ease;
+}
+
+.toggleButton:hover {
+  color: #1d4ed8;
+}
+
+.toggleButton:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+.loading {
+  padding: 1rem;
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.error {
+  padding: 1rem;
+  text-align: center;
+  color: #dc2626;
+  font-size: 0.875rem;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 0.5rem;
+}
+
+.noFeatures {
+  padding: 1rem;
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-style: italic;
+}
+
+/* Responsive Design */
+@media (min-width: 640px) {
+  .featuresGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .featureName {
+    font-size: 0.9rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .featuresGrid {
+    gap: 1rem;
+  }
+
+  .featureItem {
+    padding: 1rem;
+  }
+
+  .featureName {
+    font-size: 1rem;
+  }
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

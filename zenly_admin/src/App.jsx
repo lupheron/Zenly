@@ -5,11 +5,12 @@ import Register from "./Layouts/Authentication/Register";
 import Dashboard from "./Pages/Dashboard";
 import DetailedUser from "./Pages/users/[id]/DetailedUser";
 import useLoginStore from "./hooks/Auth/useLogin";
+import DetailedPosts from './Components/Macro/Posts/[id]/DetailedPosts';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, checkAuth } = useLoginStore();
-  
+
   useEffect(() => {
     if (!isAuthenticated) {
       checkAuth();
@@ -29,21 +30,29 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route 
-          path="/dashboard" 
+        <Route
+          path="/dashboard"
           element={
             <ProtectedRoute>
               <Dashboard />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/users/:id" 
+        <Route
+          path="/users/:id"
           element={
             <ProtectedRoute>
               <DetailedUser />
             </ProtectedRoute>
-          } 
+          }
+        />
+        <Route
+          path="/posts/:id"
+          element={
+            <ProtectedRoute>
+              <DetailedPosts />
+            </ProtectedRoute>
+          }
         />
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
       </Routes>

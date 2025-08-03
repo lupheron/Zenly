@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from '../../../assets/css/index.module.css';
 import ButtonDefault from '../../Mircro/Button/ButtonDefault';
 import Rating from '../../Mircro/Rating/Rating';
@@ -10,10 +11,12 @@ const PostsCart = ({
     location = "Aspen, Colorado",
     rating = 4.5,
     price_daily = 299,
-    onClick = () => console.log('Post clicked'),
+    onClick = null,
     customClasses = '',
     postId = 1,
 }) => {
+    const navigate = useNavigate();
+
     const formatImageUrl = (imgPath) => {
         if (!imgPath) return '/no-image.jpg';
         if (imgPath.startsWith('http')) return imgPath;
@@ -24,16 +27,12 @@ const PostsCart = ({
     const formattedSrc = formatImageUrl(src);
 
     const handleReadMoreClick = async () => {
-        try {
-            if (postId) {
-                // API call would go here
-                console.log(`Increasing interest for post ${postId}`);
-            }
-        } catch (error) {
-            console.error("Error increasing post views:", error);
-        } finally {
+        if (onClick) {
+            navigate(`/posts/${postId}`);
+        } else {
             onClick();
         }
+
     };
 
     return (
