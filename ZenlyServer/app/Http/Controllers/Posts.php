@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Services\SecurityService;
+use Exception;
 
 class Posts extends Controller
 {
@@ -95,6 +96,52 @@ class Posts extends Controller
             "data" => $posts
         ]);
     }
+
+    public function getthefuck($id)
+    {
+        $post = DB::table("posts")
+            ->select(
+                "posts.*",
+                DB::raw("AVG(rating.rating) as avg_rating"),
+                DB::raw("COUNT(DISTINCT post_comments.id) as comment_count"),
+                DB::raw("COUNT(DISTINCT post_views.id) as view_count")
+            )
+            ->leftJoin('rating', 'rating.post_id', '=', 'posts.id')
+            ->leftJoin('post_comments', 'post_comments.post_id', '=', 'posts.id')
+            ->leftJoin('post_views', 'post_views.post_id', '=', 'posts.id')
+            ->where('posts.id', $id)
+            ->groupBy('posts.id')
+            ->first();
+
+        if (!$post) {
+            return response()->json([
+                'message' => 'Post not found',
+                'status' => 404,
+                'data' => null
+            ]);
+        }
+
+        // 🟢 Add features
+        $post->features = DB::table('features')->where('post_id', $post->id)->get();
+
+        // 🟢 Add gallery
+        $post->gallery = DB::table('gallery')->where('post_id', $post->id)->get()->map(function ($item) {
+            $item->img = asset($item->img); // format to full URL
+            return $item;
+        });
+
+        // 🟢 Add comments
+        $post->comments = DB::table('post_comments')
+            ->where('post_id', $post->id)
+            ->get();
+
+        return response()->json([
+            'message' => 'Post fetched successfully',
+            'status' => 200,
+            'data' => $post
+        ]);
+    }
+
 
     public function destroy($id)
     {

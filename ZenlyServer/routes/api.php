@@ -79,6 +79,22 @@ Route::middleware(['auth.admin', Cors::class])->group(function () {
     // POSTS
     Route::get('/admin/post/{id}', [Posts::class, 'index']);
     Route::get('/admin/posts/user/{userId}', [Posts::class, 'getUserPosts']);
+    Route::get('/admin/posts/users/{userId}', [Posts::class, 'getthefuck']);
+
+    // FEATURES
+    Route::get('/admin/features/{id}', [Features::class, 'getFeaturesByPostId']);
+
+    // POST VIEWS
+    Route::get('/admin/post-views/{post_id}', [PostViews::class, 'getViews']);
+
+    // POST COMMENTS
+    Route::get('/admin/comments/{post_id}', [PostComments::class, 'index']);
+
+    // RATING
+    Route::get('/admin/rating/{post_id}', [Rating::class, 'getUserAverageRating']);
+
+    // GALLERY
+    Route::get('/admin/gallery/{post_id}', [Gallery::class, 'getGalleryByPostId']);
 });
 
 // User routes (authenticated users only)

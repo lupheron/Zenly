@@ -13,16 +13,15 @@ export const usePosts = create((set, get) => ({
     getPostById: async (postId) => {
         set({ loading: true, error: null });
         try {
-            const response = await api.get(`/admin/posts/${postId}`);
+            const response = await api.get(`admin/posts/users/${postId}`);
+            console.log('Detailed post response:', response.data); // 👈 Add this for debugging
             if (response.data.status === 200 && response.data.data) {
                 set({ post: response.data.data, loading: false });
             } else {
                 set({ error: 'Failed to fetch post', loading: false });
-                console.error('Failed to fetch post:', response.data.message);
             }
         } catch (error) {
             set({ error: error.message || 'An error occurred', loading: false });
-            console.error('Error fetching post:', error);
         }
     },
 
