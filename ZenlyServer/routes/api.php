@@ -75,6 +75,10 @@ Route::middleware(['auth.admin', Cors::class])->group(function () {
     Route::get('/admin/users/{id}', [Users::class, 'getUserByIdAdmin']);
     Route::put('/admin/users/{id}', [Users::class, 'updateUserAdmin']);
     Route::delete('/admin/users/{id}', [Users::class, 'deleteUserAdmin']);
+
+    // POSTS
+    Route::get('/admin/post/{id}', [Posts::class, 'index']);
+    Route::get('/admin/posts/user/{userId}', [Posts::class, 'getUserPosts']);
 });
 
 // User routes (authenticated users only)

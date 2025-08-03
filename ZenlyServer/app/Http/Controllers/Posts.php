@@ -61,6 +61,41 @@ class Posts extends Controller
         ]);
     }
 
+    public function getUserPosts($userId)
+    {
+        $query = DB::table("posts")
+            ->select(
+                "posts.*",
+                DB::raw("AVG(rating.rating) as avg_rating"),
+                DB::raw("COUNT(DISTINCT post_comments.id) as comment_count"),
+                DB::raw("COUNT(DISTINCT post_views.id) as view_count")
+            )
+            ->leftJoin('rating', 'rating.post_id', '=', 'posts.id')
+            ->leftJoin('post_comments', 'post_comments.post_id', '=', 'posts.id')
+            ->leftJoin('post_views', 'post_views.post_id', '=', 'posts.id')
+            ->where('posts.user_id', $userId) // Filter by specific user
+            ->groupBy('posts.id')
+            ->orderBy('posts.created_at', 'desc');
+
+        $posts = $query->get();
+
+        foreach ($posts as $post) {
+            $post->img = $post->img ? asset($post->img) : null;
+
+            $post->features = DB::table('features')->where('post_id', $post->id)->get();
+            $post->gallery = DB::table('gallery')->where('post_id', $post->id)->get()->map(function ($item) {
+                $item->img = asset($item->img);
+                return $item;
+            });
+        }
+
+        return response()->json([
+            "message" => "User posts fetched successfully",
+            "status" => 200,
+            "data" => $posts
+        ]);
+    }
+
     public function getPostsByUserId(Request $request, $id)
     {
         $authUser = $request->user();
@@ -90,10 +125,10 @@ class Posts extends Controller
             ->leftJoin('post_comments', 'post_comments.post_id', '=', 'posts.id')
             ->leftJoin('post_views', 'post_views.post_id', '=', 'posts.id')
             ->where("posts.user_id", $id)
-            ->when($startDate, function($query) use ($startDate) {
+            ->when($startDate, function ($query) use ($startDate) {
                 $query->where('posts.created_at', '>=', $startDate);
             })
-            ->when($endDate, function($query) use ($endDate) {
+            ->when($endDate, function ($query) use ($endDate) {
                 $query->where('posts.created_at', '<=', $endDate);
             })
             ->groupBy('posts.id')

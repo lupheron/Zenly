@@ -7,6 +7,7 @@ import ButtonDefault from '../../../Components/Mircro/Button/ButtonDefault';
 import DelModal from '../../../Components/Macro/Modals/DelModal';
 import Modal from '../../../Components/Macro/Modals/Modal';
 import EditUserForm from '../../../Components/Macro/Forms/Users/EditUserForm';
+import UsersPosts from '../../../Components/Macro/Posts/UsersPosts';
 
 function DetailedUser() {
     const { id } = useParams();
@@ -22,7 +23,6 @@ function DetailedUser() {
             getUserById(id);
         }
 
-        // Cleanup function to clear user data when component unmounts
         return () => {
             clearUser();
         };
@@ -273,6 +273,8 @@ function DetailedUser() {
                                 <strong>Remember Token:</strong> {userData.remember_token ? 'Set' : 'Not set'}
                             </p>
                         </div>
+
+                        <UsersPosts />
                     </div>
                 ) : (
                     <div className={styles.noDataContainer}>
