@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styles from '../../../../assets/css/index.module.css';
-import { useComments } from '../../../../hooks/Comments/useComments';
 import { usePostByIdHook } from '../../../../hooks/Posts/usePosts';
 import Features from '../../../Mircro/Features/Features';
 import ButtonDefault from '../../../Mircro/Button/ButtonDefault';
@@ -26,7 +25,13 @@ const DetailedPosts = () => {
     ];
 
     const { post, loading, error, deletePost } = usePostByIdHook(postId);
-    const { comments, commentsLoading } = useComments(postId);
+
+    // Use comments from post data instead of separate API call
+    const comments = post?.comments || [];
+    const commentsLoading = loading;
+
+    console.log('Post data:', post); // Debug log
+    console.log('Comments from post:', comments); // Debug log
 
     const handleDelete = async () => {
         try {
@@ -131,7 +136,7 @@ const DetailedPosts = () => {
                                 variant="orange"
                                 customClasses={styles.commentsButton}
                             >
-                                Komentlarni ko'rish
+                                Komentlarni ko'rish ({comments.length})
                             </ButtonDefault>
 
                             {/* Action Buttons */}
@@ -179,9 +184,12 @@ const DetailedPosts = () => {
                         <div className={styles.commentsList}>
                             {Array.isArray(comments) && comments.length > 0 ? (
                                 comments.map((comment, index) => (
-                                    <div key={index} className={styles.commentItem}>
+                                    <div key={comment.id || index} className={styles.commentItem}>
                                         <div className={styles.commentHeader}>
                                             <h4 className={styles.commentAuthor}>{comment.name}</h4>
+                                            <span className={styles.commentDate}>
+                                                {comment.created_at ? new Date(comment.created_at).toLocaleDateString() : ''}
+                                            </span>
                                         </div>
                                         <p className={styles.commentText}>{comment.text}</p>
                                     </div>

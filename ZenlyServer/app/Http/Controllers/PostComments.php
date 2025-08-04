@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -10,17 +11,34 @@ class PostComments extends Controller
 {
     public function index($id, Request $request)
     {
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
-        $query = DB::table('post_comments')->where('post_id', $id);
-        if ($startDate) {
-            $query->where('created_at', '>=', $startDate);
+        try {
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+
+            $query = DB::table('post_comments')->where('post_id', $id);
+
+            if ($startDate) {
+                $query->where('created_at', '>=', $startDate);
+            }
+            if ($endDate) {
+                $query->where('created_at', '<=', $endDate);
+            }
+
+            $comments = $query->orderBy('created_at', 'desc')->get();
+
+            // Return in the expected format
+            return response()->json([
+                'message' => 'Comments fetched successfully',
+                'status' => 200,
+                'data' => $comments
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Error fetching comments: ' . $e->getMessage(),
+                'status' => 500,
+                'data' => []
+            ], 500);
         }
-        if ($endDate) {
-            $query->where('created_at', '<=', $endDate);
-        }
-        $comments = $query->get();
-        return response()->json($comments);
     }
 
     public function create(Request $request)

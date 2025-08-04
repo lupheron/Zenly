@@ -10,13 +10,22 @@ export const useCommentsStore = create((set, get) => ({
     getComments: async (postId) => {
         set({ loading: true, error: null });
         try {
+            console.log('Fetching comments for post:', postId); // Debug log
             const response = await api.get(`/admin/comments/${postId}`);
+            console.log('Comments response:', response.data); // Debug log
+
+            // Handle both response formats
             if (response.data.status === 200 && response.data.data) {
+                // New format with wrapper
                 set({ comments: response.data.data, loading: false });
+            } else if (Array.isArray(response.data)) {
+                // Old format - direct array
+                set({ comments: response.data, loading: false });
             } else {
                 set({ comments: [], loading: false });
             }
         } catch (error) {
+            console.error('Error fetching comments:', error);
             set({ error: error.message || 'An error occurred', loading: false, comments: [] });
         }
     },
