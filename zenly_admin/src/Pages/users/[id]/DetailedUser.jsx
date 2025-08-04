@@ -8,6 +8,7 @@ import DelModal from '../../../Components/Macro/Modals/DelModal';
 import Modal from '../../../Components/Macro/Modals/Modal';
 import EditUserForm from '../../../Components/Macro/Forms/Users/EditUserForm';
 import UsersPosts from '../../../Components/Macro/Posts/UsersPosts';
+import SelectSection from '../../../Components/Mircro/SelectSection/SelectSection';
 
 function DetailedUser() {
     const { id } = useParams();
@@ -273,7 +274,10 @@ function DetailedUser() {
                                 <strong>Remember Token:</strong> {userData.remember_token ? 'Set' : 'Not set'}
                             </p>
                         </div>
-
+                        <div>
+                            <h2>Foydalanuvchiga tegishli aktivlar :</h2>
+                            <SelectSection />
+                        </div>
                         <UsersPosts />
                     </div>
                 ) : (
