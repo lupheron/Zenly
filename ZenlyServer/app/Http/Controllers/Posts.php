@@ -142,11 +142,10 @@ class Posts extends Controller
         ]);
     }
 
-
-    public function destroy($id)
+    public function destroy($postId)
     {
         try {
-            $post = DB::table('posts')->where('id', $id)->first();
+            $post = DB::table('posts')->where('id', $postId)->first();
 
             if (!$post) {
                 return response()->json([
@@ -156,14 +155,14 @@ class Posts extends Controller
             }
 
             // Delete related data first
-            DB::table('rating')->where('post_id', $id)->delete();
-            DB::table('post_comments')->where('post_id', $id)->delete();
-            DB::table('post_views')->where('post_id', $id)->delete();
-            DB::table('features')->where('post_id', $id)->delete();
-            DB::table('gallery')->where('post_id', $id)->delete();
+            DB::table('rating')->where('post_id', $postId)->delete();
+            DB::table('post_comments')->where('post_id', $postId)->delete();
+            DB::table('post_views')->where('post_id', $postId)->delete();
+            DB::table('features')->where('post_id', $postId)->delete();
+            DB::table('gallery')->where('post_id', $postId)->delete();
 
             // Delete the post
-            DB::table('posts')->where('id', $id)->delete();
+            DB::table('posts')->where('id', $postId)->delete();
 
             return response()->json([
                 "message" => "Post deleted successfully",

@@ -24,12 +24,12 @@ Route::group(['middleware' => [Cors::class]], function () {
     // User authentication
     Route::post('/register', [Users::class, 'register']);
     Route::post('/login', [Users::class, 'login']);
-    
+
     // Admin authentication
     Route::post('/admin/register', [Admins::class, 'register']);
     Route::post('/admin/login', [Admins::class, 'login']);
-    Route::get("/users", [Users::class, 'index']);  
-    
+    Route::get("/users", [Users::class, 'index']);
+
     // Public content
     Route::get('/posts', [Posts::class, 'index']);
     Route::get('/post/{id}', [Posts::class, 'getPostById']);
@@ -44,21 +44,21 @@ Route::group(['middleware' => [Cors::class]], function () {
     Route::post('/area-types', [AreaTypesController::class, 'store']);
     Route::put('/area-types/{id}', [AreaTypesController::class, 'update']);
     Route::get('/posts/top-rated', [Posts::class, 'topRated']);
-    
+
     // Public image serving
     Route::get('/uploads/{path}', [Uploads::class, 'serveImage'])->where('path', '.*');
-    
+
     // Direct file serving from public/uploads
-    Route::get('/files/{path}', function($path) {
+    Route::get('/files/{path}', function ($path) {
         $fullPath = public_path('uploads/' . $path);
-        
+
         if (!file_exists($fullPath)) {
             return response()->json(['message' => 'File not found'], 404);
         }
-        
+
         $file = file_get_contents($fullPath);
         $type = mime_content_type($fullPath);
-        
+
         return response($file, 200)
             ->header('Content-Type', $type)
             ->header('Cache-Control', 'public, max-age=31536000');
@@ -78,8 +78,9 @@ Route::middleware(['auth.admin', Cors::class])->group(function () {
 
     // POSTS
     Route::get('/admin/post/{id}', [Posts::class, 'index']);
-    Route::get('/admin/posts/user/{userId}', [Posts::class, 'getUserPosts']);
-    Route::get('/admin/posts/users/{userId}', [Posts::class, 'getthefuck']);
+    Route::get('/admin/posts/{postId}', [Posts::class, 'getthefuck']); // For fetching single post
+    Route::delete('/admin/posts/{postId}', [Posts::class, 'destroy']); // For deleting post
+    Route::get('/admin/posts/user/{userId}', [Posts::class, 'getUserPosts']); // For getting user posts
 
     // FEATURES
     Route::get('/admin/features/{id}', [Features::class, 'getFeaturesByPostId']);

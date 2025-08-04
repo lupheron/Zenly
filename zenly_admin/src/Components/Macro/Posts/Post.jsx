@@ -17,6 +17,10 @@ const PostsCart = ({
 }) => {
     const navigate = useNavigate();
 
+    // Debug logs
+    console.log('PostsCart rendered with postId:', postId);
+    console.log('typeof postId:', typeof postId);
+
     const formatImageUrl = (imgPath) => {
         if (!imgPath) return '/no-image.jpg';
         if (imgPath.startsWith('http')) return imgPath;
@@ -26,13 +30,17 @@ const PostsCart = ({
 
     const formattedSrc = formatImageUrl(src);
 
-    const handleReadMoreClick = async () => {
-        if (onClick) {
-            navigate(`/posts/${postId}`);
-        } else {
-            onClick();
-        }
+    const handleReadMoreClick = () => {
+        console.log('handleReadMoreClick called');
+        console.log('postId before navigation:', postId);
+        console.log('Navigation path will be:', `/posts/${postId}`);
 
+        try {
+            navigate(`/posts/${postId}`);
+            console.log('Navigation called successfully');
+        } catch (error) {
+            console.error('Navigation error:', error);
+        }
     };
 
     return (

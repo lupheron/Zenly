@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styles from '../../../../assets/css/index.module.css';
-import { usePostViews } from '../../../../hooks/PostViews/usePostViews';
 import { useComments } from '../../../../hooks/Comments/useComments';
 import { usePostByIdHook } from '../../../../hooks/Posts/usePosts';
 import Features from '../../../Mircro/Features/Features';
@@ -27,7 +26,6 @@ const DetailedPosts = () => {
     ];
 
     const { post, loading, error, deletePost } = usePostByIdHook(postId);
-    const { totalViews } = usePostViews(postId);
     const { comments, commentsLoading } = useComments(postId);
 
     const handleDelete = async () => {
@@ -123,7 +121,7 @@ const DetailedPosts = () => {
                                 </div>
                                 <div className={styles.infoItem}>
                                     <span className={styles.infoLabel}>Ko'rilgan Soni:</span>
-                                    <span className={styles.infoValue}>{totalViews || 0}</span>
+                                    <span className={styles.infoValue}>{post.view_count}</span>
                                 </div>
                             </div>
 

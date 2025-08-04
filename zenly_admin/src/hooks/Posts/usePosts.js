@@ -9,18 +9,21 @@ export const usePosts = create((set, get) => ({
     loading: false,
     error: null,
 
-    // Fetch single post by ID
+    // Fetch single post by ID - FIXED ENDPOINT
     getPostById: async (postId) => {
         set({ loading: true, error: null });
         try {
-            const response = await api.get(`admin/posts/users/${postId}`);
-            console.log('Detailed post response:', response.data); // 👈 Add this for debugging
+            console.log('Fetching post with ID:', postId); // Debug log
+            const response = await api.get(`admin/posts/${postId}`); // Fixed endpoint
+            console.log('Detailed post response:', response.data);
+
             if (response.data.status === 200 && response.data.data) {
                 set({ post: response.data.data, loading: false });
             } else {
                 set({ error: 'Failed to fetch post', loading: false });
             }
         } catch (error) {
+            console.error('Error fetching post:', error);
             set({ error: error.message || 'An error occurred', loading: false });
         }
     },
@@ -30,7 +33,7 @@ export const usePosts = create((set, get) => ({
         set({ post: null, error: null });
     },
 
-    // Existing methods
+    // Get user posts
     getUserPosts: async (userId) => {
         set({ loading: true, error: null });
         try {
@@ -47,16 +50,20 @@ export const usePosts = create((set, get) => ({
         }
     },
 
+    // Delete post - FIXED to accept postId parameter
     deletePost: async (postId) => {
         try {
+            console.log('Deleting post with ID:', postId); // Debug log
             const response = await api.delete(`/admin/posts/${postId}`);
+
             if (response.data.status === 200) {
                 set({ post: null });
                 return response.data;
             } else {
-                throw new Error('Failed to delete post');
+                throw new Error(response.data.message || 'Failed to delete post');
             }
         } catch (error) {
+            console.error('Delete error:', error);
             throw error;
         }
     },
@@ -66,9 +73,17 @@ export const usePosts = create((set, get) => ({
     },
 }));
 
-
+// Fixed hook to pass postId to deletePost
 export const usePostByIdHook = (postId) => {
-    const { post, loading, error, getPostById, deletePost, clearPost } = usePosts();
+    const { post, loading, error, getPostById, deletePost: storeDeletePost, clearPost } = usePosts();
+
+    // Create a wrapper function that passes the postId
+    const deletePost = async () => {
+        if (!postId) {
+            throw new Error('Post ID is required for deletion');
+        }
+        return await storeDeletePost(postId);
+    };
 
     React.useEffect(() => {
         if (postId) {
