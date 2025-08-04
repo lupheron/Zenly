@@ -8,6 +8,7 @@ import Gallery from '../../../Mircro/Gallery/Gallery';
 import Rating from '../../../Mircro/Rating/Rating';
 import DelModal from '../../Modals/DelModal';
 import Modal from '../../Modals/Modal';
+import SwiperDefault from '../../../Mircro/Swiper/SwiperDefault';
 
 const DetailedPosts = () => {
     const { id } = useParams();
@@ -180,26 +181,27 @@ const DetailedPosts = () => {
                 <div className={styles.commentsContainer}>
                     {commentsLoading ? (
                         <p className={styles.loadingText}>Yuklanmoqda...</p>
-                    ) : (
-                        <div className={styles.commentsList}>
-                            {Array.isArray(comments) && comments.length > 0 ? (
-                                comments.map((comment, index) => (
-                                    <div key={comment.id || index} className={styles.commentItem}>
-                                        <div className={styles.commentHeader}>
-                                            <h4 className={styles.commentAuthor}>{comment.name}</h4>
-                                            <span className={styles.commentDate}>
-                                                {comment.created_at ? new Date(comment.created_at).toLocaleDateString() : ''}
-                                            </span>
-                                        </div>
-                                        <p className={styles.commentText}>{comment.text}</p>
+                    ) : Array.isArray(comments) && comments.length > 0 ? (
+                        <SwiperDefault
+                            slidesPerView={1}
+                            spaceBetween={20}
+                            pagination={{ clickable: true }}
+                            className={styles.commentsSwiper}
+                        >
+                            {comments.map((comment, index) => (
+                                <div key={comment.id || index} className={styles.commentItem}>
+                                    <div className={styles.commentHeader}>
+                                        <h4 className={styles.commentAuthor}>{comment.name}</h4>
+                                        <span className={styles.commentDate}>
+                                            {comment.created_at ? new Date(comment.created_at).toLocaleDateString() : ''}
+                                        </span>
                                     </div>
-                                ))
-                            ) : (
-                                <p className={styles.noCommentsText}>
-                                    Hozircha hech qanday fikr mavjud emas.
-                                </p>
-                            )}
-                        </div>
+                                    <p className={styles.commentText}>{comment.text}</p>
+                                </div>
+                            ))}
+                        </SwiperDefault>
+                    ) : (
+                        <p className={styles.noCommentsText}>Hozircha hech qanday fikr mavjud emas.</p>
                     )}
                 </div>
             </Modal>

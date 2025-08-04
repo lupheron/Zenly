@@ -1013,3 +1013,16 @@
     transform: translateY(0);
   }
 }
+
+
+/* SIWPER */
+
+.swiperWrapper {
+  width: 100%;
+  padding: 1rem 0;
+}
+
+.slide {
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
