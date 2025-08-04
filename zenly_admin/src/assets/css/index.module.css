@@ -16,7 +16,7 @@
 
 /* Main content wrapper */
 .mainContent {
-    max-width: 1200px;
+    max-width: 1500px;
     margin: 0 auto;
     background: white;
     border-radius: 8px;
@@ -338,7 +338,7 @@
 
 .postsGrid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
     margin-top: 20px;
 }
@@ -547,7 +547,6 @@
 /* Detailed Posts Container */
 .detailedPostContainer {
     width: 100%;
-    max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
     background-color: #f9fafb;
@@ -556,10 +555,7 @@
 }
 
 .postDetailsWrapper {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    align-items: start;
+    display: flex;
 }
 
 /* Gallery Section */
@@ -657,10 +653,10 @@
 
 /* Action Buttons */
 .actionButtons {
-    display: flex;
-    flex-direction: column;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
-    margin-top: 1rem;
 }
 
 /* Comments Modal Content */
