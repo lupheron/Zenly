@@ -24,10 +24,7 @@ const ReusableTable = ({ data, columns, onEdit, onDelete, getViewPath }) => {
     };
 
     const handleBulkDelete = () => {
-        if (window.confirm(`Delete ${selectedRows.length} items?`)) {
-            selectedRows.forEach((id) => onDelete(id));
-            setSelectedRows([]);
-        }
+        onDelete(selectedRows); // Open modal via parent
     };
 
     return (
@@ -63,21 +60,19 @@ const ReusableTable = ({ data, columns, onEdit, onDelete, getViewPath }) => {
                             ))}
                             <td className={styles.actions}>
                                 <VisibilityIcon
-                                    className={styles.icon}
+                                    className={styles.EyeIcon}
                                     titleAccess="View"
                                     onClick={() => navigate(getViewPath(row.id))}
                                 />
                                 <EditIcon
-                                    className={styles.icon}
+                                    className={styles.EditIcon}
                                     titleAccess="Edit"
                                     onClick={() => onEdit(row.id)}
                                 />
                                 <DeleteIcon
-                                    className={styles.icon}
+                                    className={styles.DelIcon}
                                     titleAccess="Delete"
-                                    onClick={() =>
-                                        window.confirm('Are you sure?') && onDelete(row.id)
-                                    }
+                                    onClick={() => onDelete(row.id)} // This now opens your DelModal
                                 />
                             </td>
                         </tr>

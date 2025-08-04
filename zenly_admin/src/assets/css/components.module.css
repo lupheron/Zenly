@@ -1032,6 +1032,8 @@
   width: 100%;
   overflow-x: auto;
   margin-top: 20px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
 }
 
 .table {
@@ -1044,7 +1046,10 @@
 .table td {
   padding: 12px 16px;
   text-align: left;
-  border-bottom: 1px solid #e0e0e0;
+  border: 1px solid #ccc;
+  /* Adds vertical and horizontal lines like | and — */
+  white-space: nowrap;
+  /* Optional: Prevents text from wrapping */
 }
 
 .table th {
@@ -1058,15 +1063,22 @@
   align-items: center;
 }
 
-.icon {
+.DelIcon {
   cursor: pointer;
   transition: color 0.2s ease;
-  color: #444;
+  color: red;
 }
 
-.icon:hover {
-  color: #1976d2;
-  /* MUI blue */
+.EditIcon {
+  cursor: pointer;
+  transition: color 0.2s ease;
+  color: blue;
+}
+
+.EyeIcon {
+  cursor: pointer;
+  transition: color 0.2s ease;
+  color: orange;
 }
 
 .bulkDeleteBtn {
