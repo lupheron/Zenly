@@ -1,23 +1,66 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styles from '../../../assets/css/index.module.css';
 import { usePosts } from '../../../hooks/Posts/usePosts';
 import PostsCart from './Post';
+import ReusableTable from '../../Mircro/Tables/ReusableTable';
+import DelModal from '../../Macro/Modals/DelModal';
 
 function UsersPosts() {
-    const { id } = useParams(); // Get user ID from URL params
-    const { userPosts, loading, error, getUserPosts, clearUserPosts } = usePosts();
+    const { id } = useParams();
+    const {
+        userPosts,
+        getUserPosts,
+        clearUserPosts,
+        deletePost,
+        loading,
+        error,
+    } = usePosts();
+
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [deleteIds, setDeleteIds] = useState([]);
 
     useEffect(() => {
         if (id) {
             getUserPosts(id);
         }
-
-        // Cleanup when component unmounts
-        return () => {
-            clearUserPosts();
-        };
+        return () => clearUserPosts();
     }, [id, getUserPosts, clearUserPosts]);
+
+    const handleEdit = (postId) => {
+        console.log('Edit Post ID:', postId);
+        // You can navigate to edit page here
+    };
+
+    const handleDelete = async () => {
+        try {
+            for (const id of deleteIds) {
+                await deletePost(id);
+            }
+            await getUserPosts(id);
+            setDeleteIds([]);
+            setDeleteModalOpen(false);
+        } catch (error) {
+            console.error('Error deleting post(s):', error);
+        }
+    };
+
+    const getViewPath = (postId) => `/posts/${postId}`;
+
+    const columns = [
+        { header: 'ID', key: 'id' },
+        { header: 'User_id', key: 'user_id' },
+        { header: 'Area_id', key: 'area_id' },
+        { header: 'Title', key: 'title' },
+        { header: 'Small_D', key: 'small_description' },
+        { header: 'Description', key: 'description' },
+        { header: 'Members', key: 'members' },
+        { header: 'Location', key: 'location' },
+        { header: 'Price (Daily)', key: 'price_daily' },
+        { header: 'Status', key: 'status' },
+        { header: 'Created At', key: 'created_at' },
+        { header: 'Updated At', key: 'updated_at' },
+    ];
 
     if (loading) {
         return (
@@ -49,6 +92,21 @@ function UsersPosts() {
             <h3 className={styles.sectionTitle}>
                 User Posts ({userPosts.length})
             </h3>
+
+            {/* 🟢 Table View */}
+            <ReusableTable
+                data={userPosts}
+                columns={columns}
+                onEdit={handleEdit}
+                onDelete={(ids) => {
+                    const selected = Array.isArray(ids) ? ids : [ids];
+                    setDeleteIds(selected);
+                    setDeleteModalOpen(true);
+                }}
+                getViewPath={getViewPath}
+            />
+
+            {/* 🟢 Grid View */}
             <div className={styles.postsGrid}>
                 {userPosts.map((post) => (
                     <PostsCart
@@ -61,12 +119,29 @@ function UsersPosts() {
                         rating={parseFloat(post.avg_rating) || 0}
                         price_daily={post.price_daily}
                         onClick={() => {
-                            // Handle post click - navigate to post detail
                             console.log('Post clicked:', post.id);
                         }}
                     />
                 ))}
             </div>
+
+            {/* Delete Modal */}
+            <DelModal
+                isOpen={deleteModalOpen}
+                onClose={() => {
+                    setDeleteModalOpen(false);
+                    setDeleteIds([]);
+                }}
+                onConfirm={handleDelete}
+                title="Postni o'chirish"
+                message={
+                    deleteIds.length > 1
+                        ? `Haqiqatan ham ushbu ${deleteIds.length} ta postni o'chirmoqchimisiz?`
+                        : "Haqiqatan ham ushbu postni o'chirmoqchimisiz?"
+                }
+                confirmText="O'chirish"
+                cancelText="Bekor qilish"
+            />
         </div>
     );
 }

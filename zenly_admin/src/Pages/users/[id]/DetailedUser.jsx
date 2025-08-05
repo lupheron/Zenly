@@ -9,8 +9,10 @@ import Modal from '../../../Components/Macro/Modals/Modal';
 import EditUserForm from '../../../Components/Macro/Forms/Users/EditUserForm';
 import UsersPosts from '../../../Components/Macro/Posts/UsersPosts';
 import SelectSection from '../../../Components/Mircro/SelectSection/SelectSection';
+import BookingRequest from '../../../Components/Macro/Bookings/BookingRequest';
 
 function DetailedUser() {
+    const [activeTab, setActiveTab] = useState('posts');
     const { id } = useParams();
     const navigate = useNavigate();
     const { user: currentUser, logout, loading } = useLoginStore();
@@ -276,9 +278,12 @@ function DetailedUser() {
                         </div>
                         <div>
                             <h2>Foydalanuvchiga tegishli aktivlar :</h2>
-                            <SelectSection />
+                            <SelectSection activeTab={activeTab} setActiveTab={setActiveTab} />
+
+                            {/* 🔽 Conditionally render based on tab */}
+                            {activeTab === 'posts' && <UsersPosts />}
+                            {activeTab === 'orders' && <BookingRequest />}
                         </div>
-                        <UsersPosts />
                     </div>
                 ) : (
                     <div className={styles.noDataContainer}>

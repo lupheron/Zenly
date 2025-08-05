@@ -92,10 +92,10 @@ class BookingRequest extends Controller
             ->join('users', 'booking_requests.user_id', '=', 'users.id')
             ->join('users as users_from_posts', 'posts.user_id', '=', 'users_from_posts.id')
             ->where('booking_requests.user_id', $user_id)
-            ->when($startDate, function($query) use ($startDate) {
+            ->when($startDate, function ($query) use ($startDate) {
                 $query->where('booking_requests.created_at', '>=', $startDate);
             })
-            ->when($endDate, function($query) use ($endDate) {
+            ->when($endDate, function ($query) use ($endDate) {
                 $query->where('booking_requests.created_at', '<=', $endDate);
             })
             ->select(
@@ -135,7 +135,7 @@ class BookingRequest extends Controller
             ->select(
                 'booking_requests.id',
                 'posts.title as post_title',
-                'posts.id as post_id',  
+                'posts.id as post_id',
                 'requesters.fullname as requester_fullname',
                 'requesters.phone as user_phone',
                 'booking_requests.send_date',
@@ -168,9 +168,9 @@ class BookingRequest extends Controller
         $endDate = $request->input('end_date');
 
         $counts = DB::table('posts')
-            ->leftJoin('booking_requests', function($join) use ($startDate, $endDate) {
+            ->leftJoin('booking_requests', function ($join) use ($startDate, $endDate) {
                 $join->on('posts.id', '=', 'booking_requests.post_id')
-                     ->where('booking_requests.status', '=', 'active');
+                    ->where('booking_requests.status', '=', 'active');
                 if ($startDate) {
                     $join->where('booking_requests.created_at', '>=', $startDate);
                 }
@@ -222,6 +222,33 @@ class BookingRequest extends Controller
         return response()->json([
             "message" => "Booking request status updated",
             "status" => 200
+        ]);
+    }
+
+    public function getUserBookingsForAdmin($user_id)
+    {
+        $bookings = DB::table('booking_requests')
+            ->join('posts', 'booking_requests.post_id', '=', 'posts.id')
+            ->join('users as requesters', 'booking_requests.user_id', '=', 'requesters.id')
+            ->join('users as post_owners', 'posts.user_id', '=', 'post_owners.id')
+            ->where('booking_requests.user_id', $user_id)
+            ->select(
+                'booking_requests.id',
+                'booking_requests.send_date',
+                'booking_requests.status',
+                'posts.id as post_id',
+                'posts.title as post_title',
+                'post_owners.fullname as post_owner_fullname',
+                'requesters.fullname as requester_fullname',
+                'requesters.phone as requester_phone'
+            )
+            ->orderByDesc('booking_requests.send_date')
+            ->get();
+
+        return response()->json([
+            'message' => 'User booking requests fetched successfully for admin.',
+            'status'  => 200,
+            'data'    => $bookings
         ]);
     }
 }

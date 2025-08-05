@@ -96,6 +96,9 @@ Route::middleware(['auth.admin', Cors::class])->group(function () {
 
     // GALLERY
     Route::get('/admin/gallery/{post_id}', [Gallery::class, 'getGalleryByPostId']);
+
+    // BOOKING REQUESTS
+    Route::get('/admin/booking-requests/user/{user_id}', [BookingRequest::class, 'getUserBookingsForAdmin']);
 });
 
 // User routes (authenticated users only)
