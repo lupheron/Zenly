@@ -6,6 +6,25 @@ export const usePostViewsStore = create((set, get) => ({
     totalViews: 0,
     loading: false,
     error: null,
+    views: [],
+
+    getViewsByUser: async (userId) => {
+        set({ loading: true, error: null });
+        try {
+            const res = await api.get(`/admin/views/user/${userId}`);
+            if (res.data.status === 200 && res.data.data) {
+                set({ views: res.data.data, loading: false });
+            } else {
+                set({ error: "Failed to fetch views", loading: false });
+            }
+        } catch (err) {
+            set({ error: err.message || "An error occurred", loading: false });
+        }
+    },
+
+    clearViews: () => {
+        set({ views: [], error: null });
+    },
 
     getPostViews: async (postId) => {
         set({ loading: true, error: null });
@@ -30,6 +49,7 @@ export const usePostViewsStore = create((set, get) => ({
             console.error('Error incrementing post view:', error);
         }
     }
+
 }));
 
 // Custom hook for component use

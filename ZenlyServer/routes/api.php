@@ -87,12 +87,14 @@ Route::middleware(['auth.admin', Cors::class])->group(function () {
 
     // POST VIEWS
     Route::get('/admin/post-views/{post_id}', [PostViews::class, 'getViews']);
+    Route::get('/admin/views/user/{user_id}', [PostViews::class, 'getUserViewsForAdmin']);
 
     // POST COMMENTS
     Route::get('/admin/comments/{post_id}', [PostComments::class, 'index']);
 
     // RATING
     Route::get('/admin/rating/{post_id}', [Rating::class, 'getUserAverageRating']);
+    Route::get('/admin/rating/user/{user_id}', [Rating::class, 'getUserRatingsForAdmin']);
 
     // GALLERY
     Route::get('/admin/gallery/{post_id}', [Gallery::class, 'getGalleryByPostId']);

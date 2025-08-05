@@ -10,6 +10,8 @@ import EditUserForm from '../../../Components/Macro/Forms/Users/EditUserForm';
 import UsersPosts from '../../../Components/Macro/Posts/UsersPosts';
 import SelectSection from '../../../Components/Mircro/SelectSection/SelectSection';
 import BookingRequest from '../../../Components/Macro/Bookings/BookingRequest';
+import Rating from '../../../Components/Macro/Ratings/Rating';
+import PostViews from '../../../Components/Macro/PostViews/PostViews';
 
 function DetailedUser() {
     const [activeTab, setActiveTab] = useState('posts');
@@ -283,6 +285,8 @@ function DetailedUser() {
                             {/* 🔽 Conditionally render based on tab */}
                             {activeTab === 'posts' && <UsersPosts />}
                             {activeTab === 'orders' && <BookingRequest />}
+                            {activeTab === 'ratings' && <Rating />}
+                            {activeTab === 'views' && <PostViews />}
                         </div>
                     </div>
                 ) : (

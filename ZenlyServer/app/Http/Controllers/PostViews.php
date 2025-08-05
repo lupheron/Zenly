@@ -77,4 +77,28 @@ class PostViews extends Controller
             ]);
         }
     }
+
+    public function getUserViewsForAdmin($user_id)
+    {
+        $views = DB::table('post_views')
+            ->join('posts', 'post_views.post_id', '=', 'posts.id')
+            ->join('users as viewer', 'post_views.user_id', '=', 'viewer.id')
+            ->where('post_views.user_id', $user_id)
+            ->select(
+                'post_views.id',
+                'posts.id as post_id',
+                'posts.title as post_title',
+                'viewer.fullname as viewer_fullname',
+                'post_views.clicked',
+                'post_views.created_at'
+            )
+            ->orderByDesc('post_views.created_at')
+            ->get();
+
+        return response()->json([
+            'message' => 'User viewss fetched successfully for admin.',
+            'status'  => 200,
+            'data'    => $views
+        ]);
+    }
 }

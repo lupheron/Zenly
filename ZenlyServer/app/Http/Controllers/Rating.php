@@ -29,7 +29,7 @@ class Rating extends Controller
     public function checkUserRating(Request $request, $postId)
     {
         $authUser = $request->user();
-        
+
         if (!$authUser) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
@@ -48,7 +48,7 @@ class Rating extends Controller
     public function create(Request $request)
     {
         $authUser = $request->user();
-        
+
         if (!$authUser) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
@@ -77,7 +77,31 @@ class Rating extends Controller
             "user_id" => $authUser->id,
             "rating" => $request["rating"],
         ]);
-        
+
         return response()->json(['message' => 'Rating created successfully'], 201);
+    }
+
+    public function getUserRatingsForAdmin($user_id)
+    {
+        $ratings = DB::table('rating')
+            ->join('posts', 'rating.post_id', '=', 'posts.id')
+            ->join('users as raters', 'rating.user_id', '=', 'raters.id')
+            ->where('rating.user_id', $user_id)
+            ->select(
+                'rating.id',
+                'posts.id as post_id',
+                'posts.title as post_title',
+                'raters.fullname as rater_fullname',
+                'rating.rating',
+                'rating.created_at'
+            )
+            ->orderByDesc('rating.created_at')
+            ->get();
+
+        return response()->json([
+            'message' => 'User ratings fetched successfully for admin.',
+            'status'  => 200,
+            'data'    => $ratings
+        ]);
     }
 }
