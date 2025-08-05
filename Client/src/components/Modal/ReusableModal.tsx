@@ -44,7 +44,7 @@ const ReusableModal: React.FC<ReusableModalProps> = ({
                 top: '5%'
             }}
             centered={false}
-            destroyOnClose={true}
+            destroyOnHidden={true}
         >
             <div className="w-full max-h-[80vh] overflow-y-auto">
                 {children}

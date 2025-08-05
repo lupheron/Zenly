@@ -43,7 +43,7 @@ const UserComments: React.FC<UserCommentsProps> = ({ postId, dateFilter }) => {
           {data?.length === 0 ? (
             <p className="text-sm sm:text-base text-gray-500">Sizda komentlar mavjud emas!</p>
           ) : (
-            data?.map((comment, index) => (
+            Array.isArray(data) && data.map((comment, index) => (
               <CommentCart
                 key={index}
                 comment={comment.text}
