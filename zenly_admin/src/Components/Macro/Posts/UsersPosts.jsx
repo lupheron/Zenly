@@ -56,6 +56,8 @@ function UsersPosts() {
         { header: 'Description', key: 'description' },
         { header: 'Members', key: 'members' },
         { header: 'Location', key: 'location' },
+        { header: 'Rating', key: 'avg_rating' },
+        { header: 'Views', key: 'view_count' },
         { header: 'Price (Daily)', key: 'price_daily' },
         { header: 'Status', key: 'status' },
         { header: 'Created At', key: 'created_at' },

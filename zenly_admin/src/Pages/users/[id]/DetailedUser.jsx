@@ -12,6 +12,7 @@ import SelectSection from '../../../Components/Mircro/SelectSection/SelectSectio
 import BookingRequest from '../../../Components/Macro/Bookings/BookingRequest';
 import Rating from '../../../Components/Macro/Ratings/Rating';
 import PostViews from '../../../Components/Macro/PostViews/PostViews';
+import Comments from '../../../Components/Macro/Comments/Comment';
 
 function DetailedUser() {
     const [activeTab, setActiveTab] = useState('posts');
@@ -287,6 +288,7 @@ function DetailedUser() {
                             {activeTab === 'orders' && <BookingRequest />}
                             {activeTab === 'ratings' && <Rating />}
                             {activeTab === 'views' && <PostViews />}
+                            {activeTab === 'comments' && <Comments />}
                         </div>
                     </div>
                 ) : (

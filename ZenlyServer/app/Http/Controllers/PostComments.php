@@ -71,4 +71,29 @@ class PostComments extends Controller
 
         return response()->json(['message' => 'Comment created successfully'], 201);
     }
+
+    public function getUserCommentsForAdmin($user_id)
+    {
+        $views = DB::table('post_comments')
+            ->join('posts', 'post_comments.post_id', '=', 'posts.id')
+            ->join('users as viewer', 'post_comments.user_id', '=', 'viewer.id')
+            ->where('post_comments.user_id', $user_id)
+            ->select(
+                'post_comments.id',
+                'posts.id as post_id',
+                'posts.title as post_title',
+                'viewer.fullname as viewer_fullname',
+                'post_comments.text',
+                'post_comments.status',
+                'post_comments.created_at'
+            )
+            ->orderByDesc('post_comments.created_at')
+            ->get();
+
+        return response()->json([
+            'message' => 'User viewss fetched successfully for admin.',
+            'status'  => 200,
+            'data'    => $views
+        ]);
+    }
 }

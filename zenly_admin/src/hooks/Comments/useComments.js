@@ -7,6 +7,20 @@ export const useCommentsStore = create((set, get) => ({
     loading: false,
     error: null,
 
+    getCommentsByUser: async (userId) => {
+        set({ loading: true, error: null });
+        try {
+            const res = await api.get(`/admin/comments/user/${userId}`);
+            if (res.data.status === 200 && res.data.data) {
+                set({ comments: res.data.data, loading: false });
+            } else {
+                set({ error: "Failed to fetch comments", loading: false });
+            }
+        } catch (err) {
+            set({ error: err.message || "An error occurred", loading: false });
+        }
+    },
+
     getComments: async (postId) => {
         set({ loading: true, error: null });
         try {
