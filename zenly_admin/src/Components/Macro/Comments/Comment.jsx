@@ -1,18 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styles from '../../../assets/css/index.module.css';
 import ReusableTable from '../../Mircro/Tables/ReusableTable';
 import { useCommentsStore } from '../../../hooks/Comments/useComments';
+import DelModal from '../../Macro/Modals/DelModal';
 
 function Comments() {
     const { id: userId } = useParams();
-    const {
-        comments,
-        loading,
-        error,
-        getCommentsByUser,
-        clearComments
-    } = useCommentsStore();
+    const { comments, loading, error, getCommentsByUser, clearComments, deleteComment } = useCommentsStore();
+
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [deleteIds, setDeleteIds] = useState([]);
 
     useEffect(() => {
         if (userId) {
@@ -20,6 +18,19 @@ function Comments() {
         }
         return () => clearComments();
     }, [userId]);
+
+    const handleDelete = async () => {
+        try {
+            for (const id of deleteIds) {
+                await deleteComment(id);
+            }
+            await getCommentsByUser(userId);
+            setDeleteIds([]);
+            setDeleteModalOpen(false);
+        } catch (err) {
+            console.error('Error deleting comment(s):', err);
+        }
+    };
 
     const columns = [
         { header: 'ID', key: 'id' },
@@ -57,8 +68,29 @@ function Comments() {
                 data={comments}
                 columns={columns}
                 onEdit={(id) => console.log("Edit comments", id)}
-                onDelete={(id) => console.log("Delete comments", id)}
-                getViewPath={(id) => `/admin/booking-requests/view/${id}`} // Optional
+                onDelete={(ids) => {
+                    const selected = Array.isArray(ids) ? ids : [ids];
+                    setDeleteIds(selected);
+                    setDeleteModalOpen(true);
+                }}
+                getViewPath={(id) => `/admin/booking-requests/view/${id}`}
+            />
+
+            <DelModal
+                isOpen={deleteModalOpen}
+                onClose={() => {
+                    setDeleteModalOpen(false);
+                    setDeleteIds([]);
+                }}
+                onConfirm={handleDelete}
+                title="Kommentariyani o'chirish"
+                message={
+                    deleteIds.length > 1
+                        ? `Haqiqatan ham ushbu ${deleteIds.length} ta kommentariyani o'chirmoqchimisiz?`
+                        : "Haqiqatan ham ushbu kommentariyani o'chirmoqchimisiz?"
+                }
+                confirmText="O'chirish"
+                cancelText="Bekor qilish"
             />
         </div>
     );

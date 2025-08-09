@@ -96,4 +96,15 @@ class PostComments extends Controller
             'data'    => $views
         ]);
     }
+
+    public function destroy($id)
+    {
+        $comment = DB::table("post_comments")->where("id", $id)->delete();
+
+        if ($comment) {
+            return response()->json(['message' => 'Comment deleted successfully'], 200);
+        } else {
+            return response()->json(['message' => 'Comment not found'], 404);
+        }
+    }
 }
