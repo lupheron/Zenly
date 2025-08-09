@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import api from "../axios";
-import React from "react";
 
 // hooks/PostViews/usePostViews.js
 export const usePostViewsStore = create((set, get) => ({

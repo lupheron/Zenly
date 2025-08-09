@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import api from "../axios";
-import React from "react";
 
 // hooks/Comments/useComments.js
 export const useCommentsStore = create((set, get) => ({

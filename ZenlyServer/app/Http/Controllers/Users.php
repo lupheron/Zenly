@@ -434,7 +434,7 @@ class Users extends Controller
     public function updateUserAdmin(Request $request, $id)
     {
         try {
-            // Get the current user
+            // Get existing user
             $currentUser = DB::table("users")->where("id", $id)->first();
             if (!$currentUser) {
                 return response()->json([
@@ -443,82 +443,51 @@ class Users extends Controller
                 ], 404);
             }
 
-            // Check if username is being changed and if it already exists
-            if ($request->has('username') && $request['username'] !== $currentUser->username) {
-                $existingUser = DB::table('users')
-                    ->where('username', $request['username'])
-                    ->where('id', '!=', $id)
-                    ->first();
+            // Validate only provided fields
+            $rules = [
+                'username' => 'sometimes|string|max:255|unique:users,username,' . $id,
+                'fullname' => 'sometimes|string|max:255',
+                'phone'    => 'sometimes|string|max:50',
+                'address'  => 'sometimes|string|max:255',
+                'vip_status' => 'sometimes|string|max:50',
+                'type'     => 'sometimes|integer|in:0,1',
+                'img'      => 'sometimes|file|image|max:2048'
+            ];
+            $request->validate($rules);
 
-                if ($existingUser) {
-                    return response()->json([
-                        "message" => "Username already exists",
-                        "status" => 409
-                    ], 409);
+            $updateData = ['updated_at' => now()];
+
+            // Only update fields that were sent in the request
+            foreach (['fullname', 'username', 'phone', 'address', 'vip_status', 'type'] as $field) {
+                if ($request->filled($field)) {
+                    $updateData[$field] = $request->$field;
                 }
             }
 
-            // Prepare update data - only include fields that are provided
-            $updateData = ['updated_at' => Carbon::now()];
-
-            // Only update fields that are provided in the request
-            if ($request->has('fullname')) {
-                $updateData['fullname'] = $request['fullname'];
-            }
-
-            if ($request->has('username')) {
-                $updateData['username'] = $request['username'];
-            }
-
-            if ($request->has('phone')) {
-                $updateData['phone'] = $request['phone'];
-            }
-
-            if ($request->has('address')) {
-                $updateData['address'] = $request['address'];
-            }
-
-            if ($request->has('vip_status')) {
-                $updateData['vip_status'] = $request['vip_status'];
-            }
-
-            if ($request->has('type')) {
-                $updateData['type'] = $request['type'];
-            }
-
-            // Handle image upload
+            // Handle image upload if provided
             if ($request->hasFile('img')) {
-                try {
-                    $username = $request->has('username') ? $request['username'] : $currentUser->username;
-                    $uploadPath = public_path('uploads/' . $username);
+                $usernameForFolder = $request->input('username', $currentUser->username);
+                $uploadPath = public_path('uploads/' . $usernameForFolder);
 
-                    // Create directory if it doesn't exist
-                    if (!file_exists($uploadPath)) {
-                        mkdir($uploadPath, 0777, true);
-                    }
-
-                    // Delete old image if it exists
-                    if ($currentUser->img && file_exists(public_path($currentUser->img))) {
-                        unlink(public_path($currentUser->img));
-                    }
-
-                    $file = $request->file('img');
-                    $filename = $username . '_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-                    $file->move($uploadPath, $filename);
-                    $updateData['img'] = 'uploads/' . $username . '/' . $filename;
-                } catch (\Exception $e) {
-                    Log::error('Image upload failed: ' . $e->getMessage());
-                    return response()->json([
-                        "message" => "Failed to upload image: " . $e->getMessage(),
-                        "status" => 500
-                    ], 500);
+                if (!file_exists($uploadPath)) {
+                    mkdir($uploadPath, 0777, true);
                 }
+
+                // Delete old image
+                if ($currentUser->img && file_exists(public_path($currentUser->img))) {
+                    unlink(public_path($currentUser->img));
+                }
+
+                $file = $request->file('img');
+                $filename = $usernameForFolder . '_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $file->move($uploadPath, $filename);
+                $updateData['img'] = 'uploads/' . $usernameForFolder . '/' . $filename;
             }
 
-            // Update user data
-            $updated = DB::table("users")->where("id", $id)->update($updateData);
+            // Apply updates
+            DB::table("users")->where("id", $id)->update($updateData);
 
-            // Get the updated user data
+            // Fetch updated user
             $updatedUser = DB::table("users")->where("id", $id)->first();
 
             return response()->json([
@@ -529,8 +498,9 @@ class Users extends Controller
         } catch (\Exception $e) {
             Log::error('User update failed: ' . $e->getMessage());
             return response()->json([
-                "message" => "Failed to update user: " . $e->getMessage(),
-                "status" => 500
+                "message" => "Failed to update user",
+                "status" => 500,
+                "error" => $e->getMessage()
             ], 500);
         }
     }

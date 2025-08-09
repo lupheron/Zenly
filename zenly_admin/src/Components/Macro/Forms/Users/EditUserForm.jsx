@@ -26,9 +26,12 @@ function EditUserForm({ userData, onSubmit, onCancel, loading = false }) {
                 vip_status: userData.vip_status || '',
                 type: userData.type || 1
             });
-            setImagePreview(userData.img ? getImageUrl(userData.img) : null);
+            if (userData.img) {
+                setImagePreview(getImageUrl(userData.img));
+            }
         }
     }, [userData]);
+
 
     const getImageUrl = (imagePath) => {
         if (!imagePath) return null;
@@ -103,32 +106,23 @@ function EditUserForm({ userData, onSubmit, onCancel, loading = false }) {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        if (!validateForm()) {
-            return;
-        }
-
         const submitData = new FormData();
 
-        // Always append all fields - let backend decide what to update
-        submitData.append('fullname', formData.fullname || '');
-        submitData.append('username', formData.username || '');
-        submitData.append('phone', formData.phone || '');
-        submitData.append('address', formData.address || '');
-        submitData.append('vip_status', formData.vip_status || '');
-        submitData.append('type', formData.type || 1);
+        // Append only changed values
+        if (formData.fullname !== userData.fullname) submitData.append('fullname', formData.fullname);
+        if (formData.username !== userData.username) submitData.append('username', formData.username);
+        if (formData.phone !== userData.phone) submitData.append('phone', formData.phone);
+        if (formData.address !== userData.address) submitData.append('address', formData.address);
+        if (formData.vip_status !== userData.vip_status) submitData.append('vip_status', formData.vip_status);
+        if (formData.type !== userData.type) submitData.append('type', formData.type);
 
         if (imageFile) {
             submitData.append('img', imageFile);
         }
 
-        // Debug: Log FormData contents
-        console.log('FormData contents:');
-        for (let [key, value] of submitData.entries()) {
-            console.log(`${key}:`, value);
-        }
-
         onSubmit(submitData);
     };
+
 
     return (
         <form onSubmit={handleSubmit} className={styles.editUserForm}>
@@ -216,7 +210,6 @@ function EditUserForm({ userData, onSubmit, onCancel, loading = false }) {
                         value={formData.vip_status}
                         onChange={handleChange}
                         options={[
-                            { value: '', label: 'Select VIP status' },
                             { value: 'VIP', label: 'VIP' },
                             { value: 'Regular', label: 'Regular' }
                         ]}

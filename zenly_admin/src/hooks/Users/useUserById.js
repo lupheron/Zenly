@@ -37,40 +37,33 @@ export const useUserByIdStore = create((set, get) => ({
             });
     },
 
-    updateUser: (id, formData) => {
+    updateUser: async (id, formData) => {
         set({ updateLoading: true, error: null });
-
-        return api.put(`/admin/users/${id}`, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        })
-            .then((response) => {
-                if (response.data.status === 200) {
-                    // Update the user data in store with the returned data
-                    set(state => ({
-                        user: response.data.data || { ...state.user, ...response.data },
-                        updateLoading: false,
-                        error: null
-                    }));
-                    return response.data;
-                } else {
-                    set({
-                        error: response.data.message || 'Failed to update user',
-                        updateLoading: false
-                    });
-                    throw new Error(response.data.message || 'Failed to update user');
-                }
-            })
-            .catch((error) => {
-                const errorMessage = error.response?.data?.message || 'Failed to update user';
-                set({
-                    error: errorMessage,
-                    updateLoading: false
-                });
-                throw error;
+        try {
+            const response = await api.post(`/admin/users/${id}?_method=PUT`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
             });
+
+            if (response.data.status === 200) {
+                set({
+                    user: response.data.data,
+                    updateLoading: false,
+                    error: null
+                });
+                return response.data.data;
+            } else {
+                throw new Error(response.data.message || 'Failed to update user');
+            }
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || 'Failed to update user';
+            set({
+                error: errorMessage,
+                updateLoading: false
+            });
+            throw error;
+        }
     },
+
 
     deleteUser: (id) => {
         set({ loading: true, error: null });
