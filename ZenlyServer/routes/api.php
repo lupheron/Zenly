@@ -105,6 +105,7 @@ Route::middleware(['auth.admin', Cors::class])->group(function () {
 
     // BOOKING REQUESTS
     Route::get('/admin/booking-requests/user/{user_id}', [BookingRequest::class, 'getUserBookingsForAdmin']);
+    Route::delete('/admin/booking-requests/{id}', [BookingRequest::class, 'destroy']);
 });
 
 // User routes (authenticated users only)

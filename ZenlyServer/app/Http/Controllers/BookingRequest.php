@@ -251,4 +251,28 @@ class BookingRequest extends Controller
             'data'    => $bookings
         ]);
     }
+
+    public function destroy($id)
+    {
+        $postId = DB::table('booking_requests')->where('id', $id)->value('post_id');
+        if (!$postId) {
+            return response()->json(['message' => 'Booking request not found'], 404);
+        }
+
+        $booking = DB::table('booking_requests')->where('id', $id)->delete();
+
+        $post = DB::table('posts')->where('id', $postId)->update([
+            "status" => 1
+        ]);
+
+        if (!$post) {
+            return response()->json(['message' => 'Post not found or already updated'], 404);
+        }
+
+        if ($booking) {
+            return response()->json(['message' => 'Booking request deleted successfully'], 200);
+        } else {
+            return response()->json(['message' => 'Booking request not found'], 404);
+        }
+    }
 }

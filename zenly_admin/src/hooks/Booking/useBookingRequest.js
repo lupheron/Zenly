@@ -1,4 +1,4 @@
-// src/hooks/useBookingRequest.js
+// src/hooks/Booking/useBookingRequest.js
 import { create } from "zustand";
 import api from "../axios";
 
@@ -18,6 +18,23 @@ export const useBookingRequest = create((set) => ({
             }
         } catch (err) {
             set({ error: err.message || "An error occurred", loading: false });
+        }
+    },
+
+    deleteBookingRequest: async (id) => {
+        try {
+            const res = await api.delete(`/admin/booking-requests/${id}`);
+            if (res.status === 200) {
+                set((state) => ({
+                    bookingRequests: state.bookingRequests.filter((br) => br.id !== id)
+                }));
+                return res.data;
+            } else {
+                throw new Error(res.data.message || "Failed to delete booking request");
+            }
+        } catch (error) {
+            console.error("Delete booking request error:", error);
+            throw error;
         }
     },
 

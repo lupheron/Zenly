@@ -1,9 +1,10 @@
 // src/pages/Admin/BookingRequest.js
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ReusableTable from '../../Mircro/Tables/ReusableTable';
 import styles from '../../../assets/css/index.module.css';
 import { useBookingRequest } from '../../../hooks/Booking/useBookingRequest';
+import DelModal from '../../Macro/Modals/DelModal';
 
 function BookingRequest() {
     const { id: userId } = useParams();
@@ -12,8 +13,12 @@ function BookingRequest() {
         loading,
         error,
         getBookingRequestsByUser,
-        clearBookingRequests
+        clearBookingRequests,
+        deleteBookingRequest
     } = useBookingRequest();
+
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [deleteIds, setDeleteIds] = useState([]);
 
     useEffect(() => {
         if (userId) {
@@ -21,6 +26,19 @@ function BookingRequest() {
         }
         return () => clearBookingRequests();
     }, [userId]);
+
+    const handleDelete = async () => {
+        try {
+            for (const id of deleteIds) {
+                await deleteBookingRequest(id);
+            }
+            await getBookingRequestsByUser(userId);
+            setDeleteIds([]);
+            setDeleteModalOpen(false);
+        } catch (err) {
+            console.error('Error deleting booking request(s):', err);
+        }
+    };
 
     const columns = [
         { header: 'ID', key: 'id' },
@@ -59,8 +77,29 @@ function BookingRequest() {
                 data={bookingRequests}
                 columns={columns}
                 onEdit={(id) => console.log("Edit booking request", id)}
-                onDelete={(id) => console.log("Delete booking request", id)}
-                getViewPath={(id) => `/admin/booking-requests/view/${id}`} // Optional
+                onDelete={(ids) => {
+                    const selected = Array.isArray(ids) ? ids : [ids];
+                    setDeleteIds(selected);
+                    setDeleteModalOpen(true);
+                }}
+                getViewPath={(id) => `/admin/booking-requests/view/${id}`}
+            />
+
+            <DelModal
+                isOpen={deleteModalOpen}
+                onClose={() => {
+                    setDeleteModalOpen(false);
+                    setDeleteIds([]);
+                }}
+                onConfirm={handleDelete}
+                title="Booking so'rovini o'chirish"
+                message={
+                    deleteIds.length > 1
+                        ? `Haqiqatan ham ushbu ${deleteIds.length} ta booking so'rovini o'chirmoqchimisiz?`
+                        : "Haqiqatan ham ushbu booking so'rovini o'chirmoqchimisiz?"
+                }
+                confirmText="O'chirish"
+                cancelText="Bekor qilish"
             />
         </div>
     );
