@@ -9,50 +9,53 @@ export const useUserByIdStore = create((set, get) => ({
 
     getUserById: (id) => {
         set({ loading: true, error: null });
-        
-        api.get(`/admin/users/${id}`)
+
+        return api.get(`/admin/users/${id}`)
             .then((response) => {
                 if (response.data.success && response.data.data) {
-                    set({ 
+                    set({
                         user: response.data.data,
                         loading: false,
                         error: null
                     });
+                    return response.data.data;
                 } else {
-                    set({ 
+                    set({
                         error: response.data.message || 'Failed to fetch user',
                         loading: false
                     });
+                    throw new Error(response.data.message || 'Failed to fetch user');
                 }
             })
             .catch((error) => {
                 const errorMessage = error.response?.data?.message || 'Failed to fetch user';
-                set({ 
+                set({
                     error: errorMessage,
                     loading: false
                 });
+                throw error;
             });
     },
 
     updateUser: (id, formData) => {
         set({ updateLoading: true, error: null });
-        
-        api.put(`/admin/users/${id}`, formData, {
+
+        return api.put(`/admin/users/${id}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
         })
             .then((response) => {
                 if (response.data.status === 200) {
-                    // Update the user data in store
-                    set(state => ({ 
-                        user: { ...state.user, ...response.data.data },
+                    // Update the user data in store with the returned data
+                    set(state => ({
+                        user: response.data.data || { ...state.user, ...response.data },
                         updateLoading: false,
                         error: null
                     }));
                     return response.data;
                 } else {
-                    set({ 
+                    set({
                         error: response.data.message || 'Failed to update user',
                         updateLoading: false
                     });
@@ -61,7 +64,7 @@ export const useUserByIdStore = create((set, get) => ({
             })
             .catch((error) => {
                 const errorMessage = error.response?.data?.message || 'Failed to update user';
-                set({ 
+                set({
                     error: errorMessage,
                     updateLoading: false
                 });
@@ -71,18 +74,18 @@ export const useUserByIdStore = create((set, get) => ({
 
     deleteUser: (id) => {
         set({ loading: true, error: null });
-        
-        api.delete(`/admin/users/${id}`)
+
+        return api.delete(`/admin/users/${id}`)
             .then((response) => {
                 if (response.data.status === 200) {
-                    set({ 
+                    set({
                         user: null,
                         loading: false,
                         error: null
                     });
                     return response.data;
                 } else {
-                    set({ 
+                    set({
                         error: response.data.message || 'Failed to delete user',
                         loading: false
                     });
@@ -91,7 +94,7 @@ export const useUserByIdStore = create((set, get) => ({
             })
             .catch((error) => {
                 const errorMessage = error.response?.data?.message || 'Failed to delete user';
-                set({ 
+                set({
                     error: errorMessage,
                     loading: false
                 });
@@ -102,4 +105,4 @@ export const useUserByIdStore = create((set, get) => ({
     clearUser: () => {
         set({ user: null, loading: false, error: null, updateLoading: false });
     }
-})); 
+}));

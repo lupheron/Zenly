@@ -104,4 +104,15 @@ class Rating extends Controller
             'data'    => $ratings
         ]);
     }
+
+    public function destroy($id)
+    {
+        $rating = DB::table("rating")->where("id", $id)->delete();
+
+        if ($rating) {
+            return response()->json(['message' => 'Rating deleted successfully'], 200);
+        } else {
+            return response()->json(['message' => 'Rating not found'], 404);
+        }
+    }
 }

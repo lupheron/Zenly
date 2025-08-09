@@ -109,18 +109,22 @@ function EditUserForm({ userData, onSubmit, onCancel, loading = false }) {
 
         const submitData = new FormData();
 
-        // Only append fields that have values
-        if (formData.fullname) submitData.append('fullname', formData.fullname);
-        if (formData.username) submitData.append('username', formData.username);
-        if (formData.phone) submitData.append('phone', formData.phone);
-        if (formData.address) submitData.append('address', formData.address);
-
-        // Always append these as they can be empty/false
-        submitData.append('vip_status', formData.vip_status);
-        submitData.append('type', formData.type);
+        // Always append all fields - let backend decide what to update
+        submitData.append('fullname', formData.fullname || '');
+        submitData.append('username', formData.username || '');
+        submitData.append('phone', formData.phone || '');
+        submitData.append('address', formData.address || '');
+        submitData.append('vip_status', formData.vip_status || '');
+        submitData.append('type', formData.type || 1);
 
         if (imageFile) {
             submitData.append('img', imageFile);
+        }
+
+        // Debug: Log FormData contents
+        console.log('FormData contents:');
+        for (let [key, value] of submitData.entries()) {
+            console.log(`${key}:`, value);
         }
 
         onSubmit(submitData);

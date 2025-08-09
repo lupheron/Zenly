@@ -433,111 +433,149 @@ class Users extends Controller
 
     public function updateUserAdmin(Request $request, $id)
     {
-        // Get the current user
-        $currentUser = DB::table("users")->where("id", $id)->first();
-        if (!$currentUser) {
-            return response()->json([
-                "message" => "User not found",
-                "status" => 404
-            ], 404);
-        }
-
-        // Check if username is being changed and if it already exists
-        if ($request->filled('username') && $request['username'] !== $currentUser->username) {
-            $existingUser = DB::table('users')
-                ->where('username', $request['username'])
-                ->where('id', '!=', $id)
-                ->first();
-
-            if ($existingUser) {
+        try {
+            // Get the current user
+            $currentUser = DB::table("users")->where("id", $id)->first();
+            if (!$currentUser) {
                 return response()->json([
-                    "message" => "Username already exists",
-                    "status" => 409
-                ], 409);
+                    "message" => "User not found",
+                    "status" => 404
+                ], 404);
             }
-        }
 
-        // Prepare update data - only include fields that are provided
-        $updateData = ['updated_at' => Carbon::now()];
+            // Check if username is being changed and if it already exists
+            if ($request->has('username') && $request['username'] !== $currentUser->username) {
+                $existingUser = DB::table('users')
+                    ->where('username', $request['username'])
+                    ->where('id', '!=', $id)
+                    ->first();
 
-        // Only update fields that are provided in the request
-        if ($request->filled('fullname')) {
-            $updateData['fullname'] = $request['fullname'];
-        }
-
-        if ($request->filled('username')) {
-            $updateData['username'] = $request['username'];
-        }
-
-        if ($request->filled('phone')) {
-            $updateData['phone'] = $request['phone'];
-        }
-
-        if ($request->filled('address')) {
-            $updateData['address'] = $request['address'];
-        }
-
-        if ($request->has('vip_status')) {
-            $updateData['vip_status'] = $request['vip_status'];
-        }
-
-        if ($request->has('type')) {
-            $updateData['type'] = $request['type'];
-        }
-
-        // Handle image upload
-        if ($request->hasFile('img')) {
-            try {
-                $username = $request->filled('username') ? $request['username'] : $currentUser->username;
-                $uploadPath = public_path('uploads/' . $username);
-
-                // Create directory if it doesn't exist
-                if (!file_exists($uploadPath)) {
-                    mkdir($uploadPath, 0777, true);
+                if ($existingUser) {
+                    return response()->json([
+                        "message" => "Username already exists",
+                        "status" => 409
+                    ], 409);
                 }
-
-                // Delete old image if it exists
-                if ($currentUser->img && file_exists(public_path($currentUser->img))) {
-                    unlink(public_path($currentUser->img));
-                }
-
-                $file = $request->file('img');
-                $filename = $username . '_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-                $file->move($uploadPath, $filename);
-                $updateData['img'] = 'uploads/' . $username . '/' . $filename;
-            } catch (\Exception $e) {
-                return response()->json([
-                    "message" => "Failed to upload image",
-                    "status" => 500
-                ], 500);
             }
-        }
 
-        // Update user data
-        $updated = DB::table("users")->where("id", $id)->update($updateData);
+            // Prepare update data - only include fields that are provided
+            $updateData = ['updated_at' => Carbon::now()];
 
-        if ($updated || !empty($updateData)) {
+            // Only update fields that are provided in the request
+            if ($request->has('fullname')) {
+                $updateData['fullname'] = $request['fullname'];
+            }
+
+            if ($request->has('username')) {
+                $updateData['username'] = $request['username'];
+            }
+
+            if ($request->has('phone')) {
+                $updateData['phone'] = $request['phone'];
+            }
+
+            if ($request->has('address')) {
+                $updateData['address'] = $request['address'];
+            }
+
+            if ($request->has('vip_status')) {
+                $updateData['vip_status'] = $request['vip_status'];
+            }
+
+            if ($request->has('type')) {
+                $updateData['type'] = $request['type'];
+            }
+
+            // Handle image upload
+            if ($request->hasFile('img')) {
+                try {
+                    $username = $request->has('username') ? $request['username'] : $currentUser->username;
+                    $uploadPath = public_path('uploads/' . $username);
+
+                    // Create directory if it doesn't exist
+                    if (!file_exists($uploadPath)) {
+                        mkdir($uploadPath, 0777, true);
+                    }
+
+                    // Delete old image if it exists
+                    if ($currentUser->img && file_exists(public_path($currentUser->img))) {
+                        unlink(public_path($currentUser->img));
+                    }
+
+                    $file = $request->file('img');
+                    $filename = $username . '_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                    $file->move($uploadPath, $filename);
+                    $updateData['img'] = 'uploads/' . $username . '/' . $filename;
+                } catch (\Exception $e) {
+                    Log::error('Image upload failed: ' . $e->getMessage());
+                    return response()->json([
+                        "message" => "Failed to upload image: " . $e->getMessage(),
+                        "status" => 500
+                    ], 500);
+                }
+            }
+
+            // Update user data
+            $updated = DB::table("users")->where("id", $id)->update($updateData);
+
+            // Get the updated user data
             $updatedUser = DB::table("users")->where("id", $id)->first();
+
             return response()->json([
                 "message" => "User updated successfully",
                 "status" => 200,
                 "data" => $updatedUser
             ]);
-        } else {
+        } catch (\Exception $e) {
+            Log::error('User update failed: ' . $e->getMessage());
             return response()->json([
-                "message" => "No changes made",
-                "status" => 200,
-                "data" => $currentUser
-            ]);
+                "message" => "Failed to update user: " . $e->getMessage(),
+                "status" => 500
+            ], 500);
         }
     }
 
     public function deleteUserAdmin($id)
     {
-        $user = DB::table("users")->where("id", $id)->delete();
-        return response()->json([
-            "message" => "User deleted successfully",
-            "status" => 200
-        ]);
+        try {
+            // Check if user exists
+            $user = DB::table("users")->where("id", $id)->first();
+            if (!$user) {
+                return response()->json([
+                    "message" => "User not found",
+                    "status" => 404
+                ], 404);
+            }
+
+            // Soft delete related data
+            DB::table("posts")->where("user_id", $id)->update(['deleted_at' => Carbon::now()]);
+            DB::table("rating")->where("user_id", $id)->update(['deleted_at' => Carbon::now()]);
+            DB::table("gallery")->where("user_id", $id)->update(['deleted_at' => Carbon::now()]);
+            DB::table("features")->where("user_id", $id)->update(['deleted_at' => Carbon::now()]);
+            DB::table("post_comments")->where("user_id", $id)->update(['deleted_at' => Carbon::now()]);
+
+            // Soft delete the user
+            $deleted = DB::table("users")->where("id", $id)->update([
+                'deleted_at' => Carbon::now()
+            ]);
+
+            if ($deleted) {
+                return response()->json([
+                    "message" => "User deleted successfully",
+                    "status" => 200
+                ]);
+            } else {
+                return response()->json([
+                    "message" => "Failed to delete user",
+                    "status" => 500
+                ], 500);
+            }
+        } catch (\Exception $e) {
+            Log::error('User deletion failed: ' . $e->getMessage());
+            return response()->json([
+                "message" => "Failed to delete user: " . $e->getMessage(),
+                "status" => 500
+            ], 500);
+        }
     }
 }

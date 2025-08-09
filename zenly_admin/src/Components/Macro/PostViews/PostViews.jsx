@@ -1,18 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styles from '../../../assets/css/index.module.css';
 import ReusableTable from '../../Mircro/Tables/ReusableTable';
 import { usePostViewsStore } from '../../../hooks/PostViews/usePostViews';
+import DelModal from '../../Macro/Modals/DelModal';
 
 function PostViews() {
     const { id: userId } = useParams();
-    const {
-        views,
-        loading,
-        error,
-        getViewsByUser,
-        clearViews
-    } = usePostViewsStore();
+    const { views, loading, error, getViewsByUser, clearViews, deleteView } = usePostViewsStore();
+
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [deleteIds, setDeleteIds] = useState([]);
 
     useEffect(() => {
         if (userId) {
@@ -20,6 +18,19 @@ function PostViews() {
         }
         return () => clearViews();
     }, [userId]);
+
+    const handleDelete = async () => {
+        try {
+            for (const id of deleteIds) {
+                await deleteView(id);
+            }
+            await getViewsByUser(userId);
+            setDeleteIds([]);
+            setDeleteModalOpen(false);
+        } catch (err) {
+            console.error('Error deleting view(s):', err);
+        }
+    };
 
     const columns = [
         { header: 'ID', key: 'id' },
@@ -56,8 +67,30 @@ function PostViews() {
                 data={views}
                 columns={columns}
                 onEdit={(id) => console.log("Edit views", id)}
-                onDelete={(id) => console.log("Delete views", id)}
-                getViewPath={(id) => `/admin/booking-requests/view/${id}`} // Optional
+                onDelete={(ids) => {
+                    const selected = Array.isArray(ids) ? ids : [ids];
+                    setDeleteIds(selected);
+                    setDeleteModalOpen(true);
+                }}
+                getViewPath={(id) => `/admin/booking-requests/view/${id}`}
+            />
+
+            {/* Delete Modal */}
+            <DelModal
+                isOpen={deleteModalOpen}
+                onClose={() => {
+                    setDeleteModalOpen(false);
+                    setDeleteIds([]);
+                }}
+                onConfirm={handleDelete}
+                title="Ko'rish yozuvini o'chirish"
+                message={
+                    deleteIds.length > 1
+                        ? `Haqiqatan ham ushbu ${deleteIds.length} ta yozuvni o'chirmoqchimisiz?`
+                        : "Haqiqatan ham ushbu yozuvni o'chirmoqchimisiz?"
+                }
+                confirmText="O'chirish"
+                cancelText="Bekor qilish"
             />
         </div>
     );

@@ -88,6 +88,7 @@ Route::middleware(['auth.admin', Cors::class])->group(function () {
     // POST VIEWS
     Route::get('/admin/post-views/{post_id}', [PostViews::class, 'getViews']);
     Route::get('/admin/views/user/{user_id}', [PostViews::class, 'getUserViewsForAdmin']);
+    Route::delete('/admin/views/{id}', [PostViews::class, 'destroy']);
 
     // POST COMMENTS
     Route::get('/admin/comments/{post_id}', [PostComments::class, 'index']);
@@ -96,6 +97,7 @@ Route::middleware(['auth.admin', Cors::class])->group(function () {
     // RATING
     Route::get('/admin/rating/{post_id}', [Rating::class, 'getUserAverageRating']);
     Route::get('/admin/rating/user/{user_id}', [Rating::class, 'getUserRatingsForAdmin']);
+    Route::delete('/admin/rating/{id}', [Rating::class, 'destroy']);
 
     // GALLERY
     Route::get('/admin/gallery/{post_id}', [Gallery::class, 'getGalleryByPostId']);

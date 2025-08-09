@@ -2,6 +2,7 @@ import { create } from "zustand";
 import api from "../axios";
 import React from "react";
 
+// hooks/PostViews/usePostViews.js
 export const usePostViewsStore = create((set, get) => ({
     totalViews: 0,
     loading: false,
@@ -26,6 +27,23 @@ export const usePostViewsStore = create((set, get) => ({
         set({ views: [], error: null });
     },
 
+    deleteView: async (id) => {
+        try {
+            const res = await api.delete(`/admin/views/${id}`);
+            if (res.status === 200) {
+                set((state) => ({
+                    views: state.views.filter((v) => v.id !== id)
+                }));
+                return res.data;
+            } else {
+                throw new Error(res.data.message || "Failed to delete view");
+            }
+        } catch (error) {
+            console.error("Delete view error:", error);
+            throw error;
+        }
+    },
+
     getPostViews: async (postId) => {
         set({ loading: true, error: null });
         try {
@@ -43,24 +61,9 @@ export const usePostViewsStore = create((set, get) => ({
     incrementPostView: async (postId) => {
         try {
             await api.post(`/admin/post-views/${postId}`);
-            // Refresh views count after incrementing
             get().getPostViews(postId);
         } catch (error) {
             console.error('Error incrementing post view:', error);
         }
     }
-
 }));
-
-// Custom hook for component use
-export const usePostViews = (postId) => {
-    const { totalViews, loading, error, getPostViews, incrementPostView } = usePostViewsStore();
-
-    React.useEffect(() => {
-        if (postId) {
-            getPostViews(postId);
-        }
-    }, [postId, getPostViews]);
-
-    return { totalViews, loading, error, incrementPostView };
-};

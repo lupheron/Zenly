@@ -101,4 +101,15 @@ class PostViews extends Controller
             'data'    => $views
         ]);
     }
+
+    public function destroy($id)
+    {
+        $view = DB::table("post_views")->where("id", $id)->delete();
+
+        if ($view) {
+            return response()->json(['message' => 'View deleted successfully'], 200);
+        } else {
+            return response()->json(['message' => 'View not found'], 404);
+        }
+    }
 }

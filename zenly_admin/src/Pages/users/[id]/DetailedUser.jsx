@@ -69,13 +69,28 @@ function DetailedUser() {
 
     const handleEditSubmit = async (formData) => {
         try {
+            console.log('Submitting form data:', formData);
+
+            // Log FormData contents
+            for (let [key, value] of formData.entries()) {
+                console.log(key, value);
+            }
+
             await updateUser(userData.id, formData);
             setShowEditModal(false);
-            // Show success message or refresh data
+
+            // Refresh user data after successful update
+            await getUserById(userData.id);
+
+            // Show success message
             alert('User updated successfully!');
+
         } catch (error) {
             console.error('Update failed:', error);
-            alert('Failed to update user. Please try again.');
+
+            // Show more detailed error message
+            const errorMessage = error.response?.data?.message || error.message || 'Failed to update user. Please try again.';
+            alert(`Update failed: ${errorMessage}`);
         }
     };
 
