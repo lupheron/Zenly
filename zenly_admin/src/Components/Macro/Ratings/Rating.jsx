@@ -4,13 +4,17 @@ import styles from '../../../assets/css/index.module.css';
 import ReusableTable from '../../Mircro/Tables/ReusableTable';
 import { useRating } from '../../../hooks/Rating/useRating';
 import DelModal from '../../Macro/Modals/DelModal';
+import Modal from '../../Macro/Modals/Modal';
+import EditRatingForm from '../Forms/Rating/EditRatingForm';
 
 function Rating() {
     const { id: userId } = useParams();
-    const { rating, loading, error, getRatingsByUser, clearRatings, deleteRating } = useRating();
+    const { rating, loading, error, getRatingsByUser, clearRatings, deleteRating, updateRating } = useRating();
 
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [deleteIds, setDeleteIds] = useState([]);
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [selectedRating, setSelectedRating] = useState(null);
 
     useEffect(() => {
         if (userId) getRatingsByUser(userId);
@@ -28,6 +32,19 @@ function Rating() {
         } catch (err) {
             console.error('Error deleting rating(s):', err);
         }
+    };
+
+    const handleEdit = (id) => {
+        const ratingToEdit = rating.find(r => r.id === id);
+        setSelectedRating(ratingToEdit);
+        setEditModalOpen(true);
+    };
+
+    const handleUpdate = async (data) => {
+        await updateRating(selectedRating.id, data);
+        await getRatingsByUser(userId);
+        setEditModalOpen(false);
+        setSelectedRating(null);
     };
 
     const columns = [
@@ -56,7 +73,7 @@ function Rating() {
             <ReusableTable
                 data={rating}
                 columns={columns}
-                onEdit={(id) => console.log('Edit rating', id)}
+                onEdit={handleEdit}
                 onDelete={(ids) => {
                     const selected = Array.isArray(ids) ? ids : [ids];
                     setDeleteIds(selected);
@@ -82,6 +99,22 @@ function Rating() {
                 confirmText="O'chirish"
                 cancelText="Bekor qilish"
             />
+
+            {/* Edit Modal */}
+            <Modal
+                isOpen={editModalOpen}
+                onClose={() => setEditModalOpen(false)}
+                title="Edit Rating"
+                size="medium"
+            >
+                {selectedRating && (
+                    <EditRatingForm
+                        initialData={selectedRating}
+                        onSubmit={handleUpdate}
+                        onCancel={() => setEditModalOpen(false)}
+                    />
+                )}
+            </Modal>
         </div>
     );
 }

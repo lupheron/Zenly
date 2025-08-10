@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -102,6 +103,27 @@ class Rating extends Controller
             'message' => 'User ratings fetched successfully for admin.',
             'status'  => 200,
             'data'    => $ratings
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'post_id' => 'required|exists:posts,id',
+            'user_id' => 'required|exists:users,id',
+            'rating'  => 'required|numeric|min:1|max:5',
+        ]);
+
+        DB::table('rating')->where('id', $id)->update([
+            'post_id'    => $request->post_id,
+            'user_id'    => $request->user_id,
+            'rating'     => $request->rating,
+            'updated_at' => Carbon::now()
+        ]);
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Rating updated successfully'
         ]);
     }
 

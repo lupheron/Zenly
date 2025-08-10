@@ -62,6 +62,49 @@ class Posts extends Controller
         ]);
     }
 
+    public function getAllPosts()
+    {
+        $posts = DB::table("posts")
+            ->select(
+                "posts.*",
+                DB::raw("AVG(rating.rating) as avg_rating"),
+                DB::raw("COUNT(DISTINCT post_comments.id) as comment_count"),
+                DB::raw("COUNT(DISTINCT post_views.id) as view_count")
+            )
+            ->leftJoin('rating', 'rating.post_id', '=', 'posts.id')
+            ->leftJoin('post_comments', 'post_comments.post_id', '=', 'posts.id')
+            ->leftJoin('post_views', 'post_views.post_id', '=', 'posts.id')
+            ->groupBy('posts.id')
+            ->orderBy('posts.created_at', 'desc')
+            ->get();
+
+        foreach ($posts as $post) {
+            // Full image URL
+            $post->img = $post->img ? asset($post->img) : null;
+
+            // Add features
+            $post->features = DB::table('features')
+                ->where('post_id', $post->id)
+                ->get();
+
+            // Add gallery with full image URLs
+            $post->gallery = DB::table('gallery')
+                ->where('post_id', $post->id)
+                ->get()
+                ->map(function ($item) {
+                    $item->img = asset($item->img);
+                    return $item;
+                });
+        }
+
+        return response()->json([
+            "message" => "All posts fetched successfully",
+            "status" => 200,
+            "data" => $posts
+        ]);
+    }
+
+
     public function getUserPosts($userId)
     {
         $query = DB::table("posts")

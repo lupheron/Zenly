@@ -77,6 +77,7 @@ Route::middleware(['auth.admin', Cors::class])->group(function () {
     Route::delete('/admin/users/{id}', [Users::class, 'deleteUserAdmin']);
 
     // POSTS
+    Route::get('/admin/posts', [Posts::class, 'getAllPosts']);
     Route::get('/admin/post/{id}', [Posts::class, 'index']);
     Route::get('/admin/posts/{postId}', [Posts::class, 'getthefuck']); // For fetching single post
     Route::delete('/admin/posts/{postId}', [Posts::class, 'destroy']); // For deleting post
@@ -98,6 +99,7 @@ Route::middleware(['auth.admin', Cors::class])->group(function () {
     // RATING
     Route::get('/admin/rating/{post_id}', [Rating::class, 'getUserAverageRating']);
     Route::get('/admin/rating/user/{user_id}', [Rating::class, 'getUserRatingsForAdmin']);
+    Route::put('/admin/rating/{id}', [Rating::class, 'update']);
     Route::delete('/admin/rating/{id}', [Rating::class, 'destroy']);
 
     // GALLERY

@@ -28,6 +28,20 @@ export const usePosts = create((set, get) => ({
         }
     },
 
+    getAllPosts: async () => {
+        set({ loading: true, error: null });
+        try {
+            const res = await api.get("/admin/posts");
+            if (res.data.status === 200 && res.data.data) {
+                set({ posts: res.data.data, loading: false });
+            } else {
+                set({ posts: [], loading: false });
+            }
+        } catch (error) {
+            set({ error: error.message || "Error fetching posts", loading: false });
+        }
+    },
+
     // Clear single post
     clearPost: () => {
         set({ post: null, error: null });

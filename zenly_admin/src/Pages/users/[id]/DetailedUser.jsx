@@ -69,13 +69,6 @@ function DetailedUser() {
 
     const handleEditSubmit = async (formData) => {
         try {
-            console.log('Submitting form data:', formData);
-
-            // Log FormData contents
-            for (let [key, value] of formData.entries()) {
-                console.log(key, value);
-            }
-
             await updateUser(userData.id, formData);
             setShowEditModal(false);
 
@@ -105,8 +98,6 @@ function DetailedUser() {
         if (!imagePath) return null;
         const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
-        console.log('getImageUrl called with:', imagePath);
-
         // If it's already a full URL, return as is
         if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
             return imagePath;
@@ -116,20 +107,17 @@ function DetailedUser() {
         if (imagePath.startsWith('uploads/')) {
             const pathWithoutUploads = imagePath.replace('uploads/', '');
             const fullUrl = `${baseUrl}/files/${pathWithoutUploads}`;
-            console.log('Image URL:', fullUrl, 'Original path:', imagePath);
             return fullUrl;
         }
 
         // Otherwise, assume it's just the filename and construct the path
         const cleanPath = imagePath.startsWith('/') ? imagePath.slice(1) : imagePath;
         const fullUrl = `${baseUrl}/files/${cleanPath}`;
-        console.log('Image URL:', fullUrl, 'Original path:', imagePath);
         return fullUrl;
     };
 
     // Function to handle image error
     const handleImageError = (e) => {
-        console.log('Image failed to load:', e.target.src);
         setImageError(true);
     };
 
@@ -199,8 +187,6 @@ function DetailedUser() {
 
                 {userData ? (
                     <div className={styles.userDetailsContainer}>
-                        {console.log('User data:', userData)}
-                        {console.log('User image path:', userData.img)}
                         <h2 className={styles.userDetailsTitle}>
                             User Information
                         </h2>

@@ -1095,3 +1095,16 @@
 .bulkDeleteBtn:hover {
   background-color: #9a0007;
 }
+
+.ratingFormContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 15px;
+}
+
+.ratingButtonGroup {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}

@@ -21,6 +21,25 @@ export const useRatingStore = create((set, get) => ({
         }
     },
 
+    updateRating: async (id, data) => {
+        try {
+            const res = await api.put(`/admin/rating/${id}`, data);
+            if (res.status === 200) {
+                set((state) => ({
+                    rating: state.rating.map(r =>
+                        r.id === id ? { ...r, ...data } : r
+                    )
+                }));
+                return res.data;
+            } else {
+                throw new Error(res.data.message || "Failed to update rating");
+            }
+        } catch (error) {
+            console.error("Update rating error:", error);
+            throw error;
+        }
+    },
+
     deleteRating: async (id) => {
         try {
             const res = await api.delete(`/admin/rating/${id}`);
