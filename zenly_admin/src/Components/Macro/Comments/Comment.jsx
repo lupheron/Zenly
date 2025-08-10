@@ -4,13 +4,17 @@ import styles from '../../../assets/css/index.module.css';
 import ReusableTable from '../../Mircro/Tables/ReusableTable';
 import { useCommentsStore } from '../../../hooks/Comments/useComments';
 import DelModal from '../../Macro/Modals/DelModal';
+import Modal from '../Modals/Modal';
+import PostCommentsForm from '../Forms/Comments/PostCommentsForm';
 
 function Comments() {
     const { id: userId } = useParams();
-    const { comments, loading, error, getCommentsByUser, clearComments, deleteComment } = useCommentsStore();
+    const { comments, loading, error, getCommentsByUser, clearComments, deleteComment, updateComments } = useCommentsStore();
 
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [deleteIds, setDeleteIds] = useState([]);
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [selectedComment, setSelectedComment] = useState(null);
 
     useEffect(() => {
         if (userId) {
@@ -32,6 +36,17 @@ function Comments() {
         }
     };
 
+    const handleUpdate = async (data) => {
+        try {
+            await updateComments(selectedComment.id, data);
+            await getCommentsByUser(userId);
+            setEditModalOpen(false);
+            setSelectedComment(null);
+        } catch (err) {
+            console.error("Error updating comment:", err);
+        }
+    };
+
     const columns = [
         { header: 'ID', key: 'id' },
         { header: 'Post Title', key: 'post_title' },
@@ -41,14 +56,8 @@ function Comments() {
         { header: 'Created At', key: 'created_at' },
     ];
 
-    if (loading) {
-        return <div className={styles.loadingContainer}>Loading comments...</div>;
-    }
-
-    if (error) {
-        return <div className={styles.errorContainer}>Error: {error}</div>;
-    }
-
+    if (loading) return <div className={styles.loadingContainer}>Loading comments...</div>;
+    if (error) return <div className={styles.errorContainer}>Error: {error}</div>;
     if (!comments || comments.length === 0) {
         return (
             <div className={styles.noPostsContainer}>
@@ -67,7 +76,11 @@ function Comments() {
             <ReusableTable
                 data={comments}
                 columns={columns}
-                onEdit={(id) => console.log("Edit comments", id)}
+                onEdit={(id) => {
+                    const comment = comments.find(c => c.id === id);
+                    setSelectedComment(comment);
+                    setEditModalOpen(true);
+                }}
                 onDelete={(ids) => {
                     const selected = Array.isArray(ids) ? ids : [ids];
                     setDeleteIds(selected);
@@ -76,6 +89,7 @@ function Comments() {
                 getViewPath={(id) => `/admin/booking-requests/view/${id}`}
             />
 
+            {/* Delete Modal */}
             <DelModal
                 isOpen={deleteModalOpen}
                 onClose={() => {
@@ -92,6 +106,22 @@ function Comments() {
                 confirmText="O'chirish"
                 cancelText="Bekor qilish"
             />
+
+            {/* Edit Modal */}
+            <Modal
+                isOpen={editModalOpen}
+                onClose={() => setEditModalOpen(false)}
+                title="Edit Comment"
+                size="medium"
+            >
+                {selectedComment && (
+                    <PostCommentsForm
+                        initialData={selectedComment}
+                        onSubmit={handleUpdate}
+                        onCancel={() => setEditModalOpen(false)}
+                    />
+                )}
+            </Modal>
         </div>
     );
 }

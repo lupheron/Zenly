@@ -97,6 +97,31 @@ class PostComments extends Controller
         ]);
     }
 
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'post_id' => 'required|exists:posts,id',
+            'user_id' => 'required|exists:users,id',
+            "name" => 'required|string|max:255',
+            'text' => 'required|string',
+            "status" => 'required|integer|in:0,1',
+        ]);
+
+        DB::table('post_comments')->where('id', $id)->update([
+            'post_id'    => $request->post_id,
+            'user_id'    => $request->user_id,
+            'name'       => $request->name,
+            'text'       => $request->text,
+            'status'     => $request->status,
+            'updated_at' => Carbon::now()
+        ]);
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Post Comment updated successfully'
+        ]);
+    }
+
     public function destroy($id)
     {
         $comment = DB::table("post_comments")->where("id", $id)->delete();

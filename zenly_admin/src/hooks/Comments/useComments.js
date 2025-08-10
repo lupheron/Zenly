@@ -1,8 +1,7 @@
 import { create } from "zustand";
 import api from "../axios";
 
-// hooks/Comments/useComments.js
-export const useCommentsStore = create((set, get) => ({
+export const useCommentsStore = create((set) => ({
     comments: [],
     loading: false,
     error: null,
@@ -25,7 +24,6 @@ export const useCommentsStore = create((set, get) => ({
         set({ loading: true, error: null });
         try {
             const response = await api.get(`/admin/comments/${postId}`);
-
             if (response.data.status === 200 && response.data.data) {
                 set({ comments: response.data.data, loading: false });
             } else if (Array.isArray(response.data)) {
@@ -35,6 +33,25 @@ export const useCommentsStore = create((set, get) => ({
             }
         } catch (error) {
             set({ error: error.message || 'An error occurred', loading: false, comments: [] });
+        }
+    },
+
+    updateComments: async (id, data) => {
+        try {
+            const res = await api.put(`/admin/post-comments/${id}`, data);
+            if (res.status === 200) {
+                set((state) => ({
+                    comments: state.comments.map(c =>
+                        c.id === id ? { ...c, ...data } : c
+                    )
+                }));
+                return res.data;
+            } else {
+                throw new Error(res.data.message || "Failed to update comment");
+            }
+        } catch (error) {
+            console.error("Update comment error:", error);
+            throw error;
         }
     },
 

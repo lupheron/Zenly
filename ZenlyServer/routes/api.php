@@ -94,6 +94,7 @@ Route::middleware(['auth.admin', Cors::class])->group(function () {
     // POST COMMENTS
     Route::get('/admin/comments/{post_id}', [PostComments::class, 'index']);
     Route::get('/admin/comments/user/{user_id}', [PostComments::class, 'getUserCommentsForAdmin']);
+    Route::put('/admin/post-comments/{id}', [PostComments::class, 'update']);
     Route::delete('/admin/comments/{id}', [PostComments::class, 'destroy']);
 
     // RATING
