@@ -4,13 +4,17 @@ import styles from '../../../assets/css/index.module.css';
 import ReusableTable from '../../Mircro/Tables/ReusableTable';
 import { usePostViewsStore } from '../../../hooks/PostViews/usePostViews';
 import DelModal from '../../Macro/Modals/DelModal';
+import Modal from '../Modals/Modal';
+import EditPostViewsForm from '../Forms/PostViews/EditPostViewsForm';
 
 function PostViews() {
     const { id: userId } = useParams();
-    const { views, loading, error, getViewsByUser, clearViews, deleteView } = usePostViewsStore();
+    const { views, loading, error, getViewsByUser, clearViews, deleteView, updateView } = usePostViewsStore();
 
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [deleteIds, setDeleteIds] = useState([]);
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [selectedView, setSelectedView] = useState(null);
 
     useEffect(() => {
         if (userId) {
@@ -32,11 +36,24 @@ function PostViews() {
         }
     };
 
+    const handleEdit = (id) => {
+        const viewToEdit = views.find(v => v.id === id);
+        setSelectedView(viewToEdit);
+        setEditModalOpen(true);
+    };
+
+    const handleUpdate = async (data) => {
+        await updateView(selectedView.id, data);
+        await getViewsByUser(userId);
+        setEditModalOpen(false);
+        setSelectedView(null);
+    };
+
     const columns = [
         { header: 'ID', key: 'id' },
         { header: 'Post Title', key: 'post_title' },
-        { header: 'Rate Owner', key: 'viewer_fullname' },
-        { header: 'View', key: 'clicked' },
+        { header: 'Viewer', key: 'viewer_fullname' },
+        { header: 'Clicked', key: 'clicked' },
         { header: 'Created At', key: 'created_at' },
     ];
 
@@ -66,13 +83,13 @@ function PostViews() {
             <ReusableTable
                 data={views}
                 columns={columns}
-                onEdit={(id) => console.log("Edit views", id)}
+                onEdit={handleEdit}
                 onDelete={(ids) => {
                     const selected = Array.isArray(ids) ? ids : [ids];
                     setDeleteIds(selected);
                     setDeleteModalOpen(true);
                 }}
-                getViewPath={(id) => `/admin/booking-requests/view/${id}`}
+                getViewPath={(id) => `/admin/post-views/view/${id}`}
             />
 
             {/* Delete Modal */}
@@ -92,6 +109,22 @@ function PostViews() {
                 confirmText="O'chirish"
                 cancelText="Bekor qilish"
             />
+
+            {/* Edit Modal */}
+            <Modal
+                isOpen={editModalOpen}
+                onClose={() => setEditModalOpen(false)}
+                title="Edit View"
+                size="medium"
+            >
+                {selectedView && (
+                    <EditPostViewsForm
+                        initialData={selectedView}
+                        onSubmit={handleUpdate}
+                        onCancel={() => setEditModalOpen(false)}
+                    />
+                )}
+            </Modal>
         </div>
     );
 }

@@ -43,6 +43,25 @@ export const usePostViewsStore = create((set, get) => ({
         }
     },
 
+    updateView: async (id, data) => {
+        try {
+            const res = await api.put(`/admin/views/${id}`, data);
+            if (res.status === 200) {
+                set((state) => ({
+                    views: state.views.map(r =>
+                        r.id === id ? { ...r, ...data } : r
+                    )
+                }));
+                return res.data;
+            } else {
+                throw new Error(res.data.message || "Failed to update clicked");
+            }
+        } catch (error) {
+            console.error("Update clicked error:", error);
+            throw error;
+        }
+    },
+
     getPostViews: async (postId) => {
         set({ loading: true, error: null });
         try {

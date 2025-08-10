@@ -102,6 +102,28 @@ class PostViews extends Controller
         ]);
     }
 
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'post_id' => 'required|exists:posts,id',
+            'user_id' => 'required|exists:users,id',
+            'clicked'  => 'required|numeric|min:1|max:5',
+        ]);
+
+        DB::table('post_views')->where('id', $id)->update([
+            'post_id'    => $request->post_id,
+            'user_id'    => $request->user_id,
+            'clicked'     => $request->clicked,
+            'updated_at' => Carbon::now()
+        ]);
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Clicked updated successfully'
+        ]);
+    }
+
+
     public function destroy($id)
     {
         $view = DB::table("post_views")->where("id", $id)->delete();

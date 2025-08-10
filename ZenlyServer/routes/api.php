@@ -89,6 +89,7 @@ Route::middleware(['auth.admin', Cors::class])->group(function () {
     // POST VIEWS
     Route::get('/admin/post-views/{post_id}', [PostViews::class, 'getViews']);
     Route::get('/admin/views/user/{user_id}', [PostViews::class, 'getUserViewsForAdmin']);
+    Route::put('/admin/views/{id}', [PostViews::class, 'update']);
     Route::delete('/admin/views/{id}', [PostViews::class, 'destroy']);
 
     // POST COMMENTS
