@@ -5,6 +5,8 @@ import ReusableTable from '../../Mircro/Tables/ReusableTable';
 import styles from '../../../assets/css/index.module.css';
 import { useBookingRequest } from '../../../hooks/Booking/useBookingRequest';
 import DelModal from '../../Macro/Modals/DelModal';
+import Modal from '../Modals/Modal';
+import BookingEditForm from '../Forms/Booking/BookingEditForm';
 
 function BookingRequest() {
     const { id: userId } = useParams();
@@ -14,11 +16,15 @@ function BookingRequest() {
         error,
         getBookingRequestsByUser,
         clearBookingRequests,
-        deleteBookingRequest
+        deleteBookingRequest,
+        updateBookingRequest // Make sure this is in your zustand hook
     } = useBookingRequest();
 
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [deleteIds, setDeleteIds] = useState([]);
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [selectedBooking, setSelectedBooking] = useState(null);
+    const [saving, setSaving] = useState(false);
 
     useEffect(() => {
         if (userId) {
@@ -40,6 +46,27 @@ function BookingRequest() {
         }
     };
 
+    const handleEdit = (id) => {
+        const booking = bookingRequests.find(b => b.id === id);
+        if (booking) {
+            setSelectedBooking(booking);
+            setEditModalOpen(true);
+        }
+    };
+
+    const handleUpdate = async (data) => {
+        try {
+            setSaving(true);
+            await updateBookingRequest(selectedBooking.id, data);
+            await getBookingRequestsByUser(userId);
+            setEditModalOpen(false);
+        } catch (err) {
+            console.error("Error updating booking:", err);
+        } finally {
+            setSaving(false);
+        }
+    };
+
     const columns = [
         { header: 'ID', key: 'id' },
         { header: 'Post Title', key: 'post_title' },
@@ -58,15 +85,6 @@ function BookingRequest() {
         return <div className={styles.errorContainer}>Error: {error}</div>;
     }
 
-    if (!bookingRequests || bookingRequests.length === 0) {
-        return (
-            <div className={styles.noPostsContainer}>
-                <h3>Booking Requests</h3>
-                <p>No booking requests found for this user.</p>
-            </div>
-        );
-    }
-
     return (
         <div className={styles.userPostsSection}>
             <h3 className={styles.sectionTitle}>
@@ -76,7 +94,7 @@ function BookingRequest() {
             <ReusableTable
                 data={bookingRequests}
                 columns={columns}
-                onEdit={(id) => console.log("Edit booking request", id)}
+                onEdit={handleEdit}
                 onDelete={(ids) => {
                     const selected = Array.isArray(ids) ? ids : [ids];
                     setDeleteIds(selected);
@@ -85,6 +103,7 @@ function BookingRequest() {
                 getViewPath={(id) => `/admin/booking-requests/view/${id}`}
             />
 
+            {/* Delete Modal */}
             <DelModal
                 isOpen={deleteModalOpen}
                 onClose={() => {
@@ -101,8 +120,26 @@ function BookingRequest() {
                 confirmText="O'chirish"
                 cancelText="Bekor qilish"
             />
+
+            {/* Edit Modal */}
+            <Modal
+                isOpen={editModalOpen}
+                onClose={() => setEditModalOpen(false)}
+                title="Edit Booking Request"
+                size="medium"
+            >
+                {selectedBooking && (
+                    <BookingEditForm
+                        initialData={selectedBooking}
+                        onSubmit={handleUpdate}
+                        onCancel={() => setEditModalOpen(false)}
+                        loading={saving}
+                    />
+                )}
+            </Modal>
         </div>
     );
 }
+
 
 export default BookingRequest;

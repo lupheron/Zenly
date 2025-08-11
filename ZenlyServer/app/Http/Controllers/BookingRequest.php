@@ -252,6 +252,34 @@ class BookingRequest extends Controller
         ]);
     }
 
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'post_id' => 'required|exists:posts,id',
+            'user_id' => 'required|exists:users,id',
+            'send_date' => 'required|date',
+            'status' => 'required|string|in:pending,active,cancelled',
+            'book_status' => 'required|integer|min:0|max:1',
+        ]);
+
+        DB::table('booking_requests')->where('id', $id)->update([
+            'post_id'     => $request->post_id,
+            'user_id'     => $request->user_id,
+            'send_date'   => $request->send_date,
+            'status'      => $request->status,
+            'book_status' => $request->book_status,
+            'updated_at'  => Carbon::now()
+        ]);
+
+        $updated = DB::table('booking_requests')->where('id', $id)->first();
+
+        return response()->json([
+            'status'  => 200,
+            'message' => 'Booking Request updated successfully',
+            'data'    => $updated
+        ]);
+    }
+    
     public function destroy($id)
     {
         $postId = DB::table('booking_requests')->where('id', $id)->value('post_id');

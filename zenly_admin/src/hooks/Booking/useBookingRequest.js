@@ -21,6 +21,27 @@ export const useBookingRequest = create((set) => ({
         }
     },
 
+    updateBookingRequest: async (id, data) => {
+        set({ loading: true, error: null });
+        try {
+            const res = await api.put(`/admin/booking-requests/${id}`, data);
+            if (res.data.status === 200 && res.data.data) {
+                set((state) => ({
+                    bookingRequests: state.bookingRequests.map((br) =>
+                        br.id === id ? res.data.data : br
+                    ),
+                    loading: false
+                }));
+                return res.data;
+            } else {
+                throw new Error(res.data.message || "Failed to update booking request");
+            }
+        } catch (err) {
+            set({ error: err.message || "An error occurred", loading: false });
+            throw err;
+        }
+    },
+
     deleteBookingRequest: async (id) => {
         try {
             const res = await api.delete(`/admin/booking-requests/${id}`);
