@@ -6,6 +6,7 @@ import Dashboard from "./Pages/Dashboard";
 import DetailedUser from "./Pages/users/[id]/DetailedUser";
 import useLoginStore from "./hooks/Auth/useLogin";
 import DetailedPosts from './Components/Macro/Posts/[id]/DetailedPosts';
+import PostEditForm from './Components/Macro/Forms/Post/PostEditForm';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -51,6 +52,14 @@ function App() {
           element={
             <ProtectedRoute>
               <DetailedPosts />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/posts/:id/edit"
+          element={
+            <ProtectedRoute>
+              <PostEditForm />
             </ProtectedRoute>
           }
         />

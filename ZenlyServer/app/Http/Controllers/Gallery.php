@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -158,5 +159,101 @@ class Gallery extends Controller
             'status' => 404,
             'message' => 'Gallery not found'
         ], 404);
+    }
+
+    /**
+     * Admin method to create gallery item without security checks
+     */
+    public function adminCreate(Request $request)
+    {
+        try {
+            $request->validate([
+                'post_id' => 'required|exists:posts,id',
+                'user_id' => 'required|exists:users,id',
+                'img' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+            ]);
+
+            $post = DB::table('posts')->where('id', $request['post_id'])->first();
+            if (!$post) {
+                return response()->json(['message' => 'Post not found'], 404);
+            }
+
+            $user = DB::table('users')->where('id', $request['user_id'])->first();
+            if (!$user) {
+                return response()->json(['message' => 'User not found'], 404);
+            }
+
+            $username = $user->username;
+            $uploadPath = public_path('uploads/' . $username);
+
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0777, true);
+            }
+
+            $file = $request->file('img');
+            $filename = $username . '_' . time() . '_' . uniqid() . '_gallery_' . $file->getClientOriginalName();
+            $file->move($uploadPath, $filename);
+            $filePath = 'uploads/' . $username . '/' . $filename;
+
+            $galleryId = DB::table('gallery')->insertGetId([
+                "post_id" => $request['post_id'],
+                "user_id" => $request['user_id'],
+                "img" => $filePath,
+                "created_at" => now(),
+            ]);
+
+            $galleryItem = DB::table('gallery')->where('id', $galleryId)->first();
+
+            return response()->json([
+                'message' => 'Image uploaded successfully',
+                'status' => 201,
+                'data' => $galleryItem
+            ], 201);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Error creating gallery item: ' . $e->getMessage(),
+                'status' => 500
+            ], 500);
+        }
+    }
+
+    /**
+     * Admin method to delete gallery item without security checks
+     */
+    public function adminDelete($id)
+    {
+        try {
+            $gallery = DB::table('gallery')->where('id', $id)->first();
+
+            if (!$gallery) {
+                return response()->json([
+                    'message' => 'Gallery item not found',
+                    'status' => 404
+                ], 404);
+            }
+
+            if ($gallery->img && file_exists(public_path($gallery->img))) {
+                unlink(public_path($gallery->img));
+            }
+
+            $deleted = DB::table('gallery')->where('id', $id)->delete();
+
+            if ($deleted) {
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Gallery deleted successfully'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 500,
+                    'message' => 'Failed to delete gallery'
+                ], 500);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Error deleting gallery item: ' . $e->getMessage(),
+                'status' => 500
+            ], 500);
+        }
     }
 }

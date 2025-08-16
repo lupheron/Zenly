@@ -629,4 +629,82 @@ class Posts extends Controller
             'data' => $posts
         ]);
     }
+
+    /**
+     * Admin method to update post without security checks
+     */
+    public function adminUpdate(Request $request, $postId)
+    {
+        try {
+            $post = DB::table('posts')->where('id', $postId)->first();
+
+            if (!$post) {
+                return response()->json([
+                    'message' => 'Post not found',
+                    'status' => 404
+                ], 404);
+            }
+
+            $updateData = [
+                'title' => $request->input('title'),
+                'small_description' => $request->input('small_description'),
+                'description' => $request->input('description'),
+                'location' => $request->input('location'),
+                'members' => $request->input('members'),
+                'price_daily' => $request->input('price_daily'),
+                'area_id' => $request->input('area_id'),
+                'status' => $request->input('status'),
+                'updated_at' => Carbon::now()
+            ];
+
+            // Handle main image update if provided
+            if ($request->has('img') && $request->input('img')) {
+                $base64Image = $request->input('img');
+                
+                // Get username from the post's user_id
+                $user = DB::table('users')->where('id', $post->user_id)->first();
+                if ($user) {
+                    $username = $user->username;
+                    $uploadPath = public_path('uploads/' . $username);
+
+                    if (!file_exists($uploadPath)) {
+                        mkdir($uploadPath, 0777, true);
+                    }
+
+                    // Delete old image if exists
+                    if ($post->img && file_exists(public_path($post->img))) {
+                        unlink(public_path($post->img));
+                    }
+
+                    $filename = $username . '_' . time() . '_' . uniqid() . '_post.jpg';
+                    $filePath = 'uploads/' . $username . '/' . $filename;
+
+                    $imageData = base64_decode($base64Image);
+                    file_put_contents(public_path($filePath), $imageData);
+                    $updateData['img'] = $filePath;
+                }
+            }
+
+            $updated = DB::table('posts')
+                ->where('id', $postId)
+                ->update($updateData);
+
+            if ($updated) {
+                return response()->json([
+                    'message' => 'Post updated successfully',
+                    'status' => 200
+                ]);
+            } else {
+                return response()->json([
+                    'message' => 'Post update failed or no changes made',
+                    'status' => 500
+                ], 500);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Error updating post: ' . $e->getMessage(),
+                'status' => 500
+            ], 500);
+        }
+    }
 }

@@ -80,11 +80,14 @@ Route::middleware(['auth.admin', Cors::class])->group(function () {
     Route::get('/admin/posts', [Posts::class, 'getAllPosts']);
     Route::get('/admin/post/{id}', [Posts::class, 'index']);
     Route::get('/admin/posts/{postId}', [Posts::class, 'getthefuck']); // For fetching single post
+    Route::put('/admin/posts/{postId}', [Posts::class, 'adminUpdate']); // For updating post (admin)
     Route::delete('/admin/posts/{postId}', [Posts::class, 'destroy']); // For deleting post
     Route::get('/admin/posts/user/{userId}', [Posts::class, 'getUserPosts']); // For getting user posts
 
     // FEATURES
     Route::get('/admin/features/{id}', [Features::class, 'getFeaturesByPostId']);
+    Route::post('/admin/features', [Features::class, 'adminCreate']);
+    Route::delete('/admin/features/{id}', [Features::class, 'adminDelete']);
 
     // POST VIEWS
     Route::get('/admin/post-views/{post_id}', [PostViews::class, 'getViews']);
@@ -106,6 +109,8 @@ Route::middleware(['auth.admin', Cors::class])->group(function () {
 
     // GALLERY
     Route::get('/admin/gallery/{post_id}', [Gallery::class, 'getGalleryByPostId']);
+    Route::post('/admin/gallery', [Gallery::class, 'adminCreate']);
+    Route::delete('/admin/gallery/{id}', [Gallery::class, 'adminDelete']);
 
     // BOOKING REQUESTS
     Route::get('/admin/booking-requests/user/{user_id}', [BookingRequest::class, 'getUserBookingsForAdmin']);

@@ -1108,3 +1108,356 @@
   gap: 10px;
   margin-top: 15px;
 }
+
+/* FEATURES FORM STYLES */
+.featuresForm {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.featuresForm h3 {
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.featuresList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.featureItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f5f5f5;
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 1px solid #e0e0e0;
+}
+
+.featureName {
+  font-size: 14px;
+  color: #333;
+}
+
+.deleteButton {
+  background: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+.deleteButton:hover {
+  background: #cc0000;
+}
+
+.addFeatureButton {
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+.addFeatureButton:hover {
+  background: #388e3c;
+}
+
+.addFeatureForm {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.modalActions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+/* GALLERY FORM STYLES */
+.galleryForm {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.galleryForm h3 {
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.galleryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.galleryItem {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid #e0e0e0;
+}
+
+.galleryImage {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  display: block;
+}
+
+.deleteImageButton {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+.deleteImageButton:hover {
+  background: #cc0000;
+}
+
+.addImageButton {
+  background: #4caf50;
+  color: white;
+  border: 2px dashed #4caf50;
+  border-radius: 8px;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 30px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.addImageButton:hover {
+  background: #388e3c;
+  border-color: #388e3c;
+}
+
+.addImageForm {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.fileInputContainer {
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+}
+
+.fileInput {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.selectedFile {
+  margin-top: 10px;
+  color: #666;
+  font-size: 14px;
+}
+
+/* POST EDIT FORM STYLES */
+.postEditForm {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.formHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.formHeader h1 {
+  color: #333;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.editForm {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  padding: 30px;
+}
+
+.formColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.formColumn h2 {
+  color: #333;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.componentSection {
+  margin-bottom: 20px;
+}
+
+.textareaContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.formActions {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+/* Main Image Section Styles */
+.mainImageSection {
+  margin-bottom: 20px;
+}
+
+.mainImageContainer {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.currentImage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.mainImagePreview {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid #e0e0e0;
+}
+
+.currentImageLabel {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+}
+
+.imageUploadSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.imageFileInput {
+  width: 100%;
+  padding: 10px;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.imageFileInput:hover {
+  border-color: #4caf50;
+}
+
+.selectedImageFile {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+  font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  .galleryGrid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+  
+  .addImageButton {
+    width: 100px;
+    height: 100px;
+    font-size: 24px;
+  }
+  
+  .mainImageContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .mainImagePreview {
+    width: 120px;
+    height: 120px;
+  }
+}

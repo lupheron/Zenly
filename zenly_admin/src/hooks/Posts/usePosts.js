@@ -28,6 +28,25 @@ export const usePosts = create((set, get) => ({
         }
     },
 
+    // Update post
+    updatePost: async (postId, postData) => {
+        set({ loading: true, error: null });
+        try {
+            const response = await api.put(`admin/posts/${postId}`, postData);
+            if (response.data.status === 200) {
+                // Refresh the post data
+                await get().getPostById(postId);
+                return response.data;
+            } else {
+                throw new Error(response.data.message || 'Failed to update post');
+            }
+        } catch (error) {
+            console.error('Error updating post:', error);
+            set({ error: error.message || 'An error occurred', loading: false });
+            throw error;
+        }
+    },
+
     getAllPosts: async () => {
         set({ loading: true, error: null });
         try {
@@ -89,7 +108,7 @@ export const usePosts = create((set, get) => ({
 
 // Fixed hook to pass postId to deletePost
 export const usePostByIdHook = (postId) => {
-    const { post, loading, error, getPostById, deletePost: storeDeletePost, clearPost } = usePosts();
+    const { post, loading, error, getPostById, updatePost, deletePost: storeDeletePost, clearPost } = usePosts();
 
     // Create a wrapper function that passes the postId
     const deletePost = async () => {
@@ -99,6 +118,14 @@ export const usePostByIdHook = (postId) => {
         return await storeDeletePost(postId);
     };
 
+    // Create a wrapper function that passes the postId
+    const updatePostById = async (postData) => {
+        if (!postId) {
+            throw new Error('Post ID is required for update');
+        }
+        return await updatePost(postId, postData);
+    };
+
     React.useEffect(() => {
         if (postId) {
             getPostById(postId);
@@ -106,5 +133,5 @@ export const usePostByIdHook = (postId) => {
         return () => clearPost();
     }, [postId, getPostById, clearPost]);
 
-    return { post, loading, error, deletePost };
+    return { post, loading, error, getPostById, updatePost: updatePostById, deletePost };
 };
