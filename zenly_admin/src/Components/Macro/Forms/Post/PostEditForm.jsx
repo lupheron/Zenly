@@ -7,6 +7,7 @@ import InputDefault from '../../../Mircro/FormElements/Input/InputDefault';
 import SelectDefault from '../../../Mircro/FormElements/Select/SelectDefault';
 import ButtonDefault from '../../../Mircro/Button/ButtonDefault';
 import Modal from '../../Modals/Modal';
+import AlertDefault from '../../../Mircro/Alert/AlertDefault';
 import styles from '../../../../assets/css/components.module.css';
 
 function PostEditForm() {
@@ -80,13 +81,13 @@ function PostEditForm() {
         if (file) {
             // Check file size (max 5MB)
             if (file.size > 5 * 1024 * 1024) {
-                alert('File size must be less than 5MB');
+                AlertDefault.warning('File size must be less than 5MB');
                 return;
             }
             
             // Check file type
             if (!file.type.startsWith('image/')) {
-                alert('Please select an image file');
+                AlertDefault.warning('Please select an image file');
                 return;
             }
             
@@ -119,7 +120,7 @@ function PostEditForm() {
         e.preventDefault();
         
         if (!formData.title || !formData.description || !formData.location) {
-            alert('Please fill in all required fields');
+            AlertDefault.warning('Please fill in all required fields');
             return;
         }
 
@@ -140,7 +141,7 @@ function PostEditForm() {
             }
 
             await updatePost(postData);
-            alert('Post updated successfully!');
+            AlertDefault.success('Post updated successfully!');
             
             // Reset image states
             setMainImageFile(null);
@@ -149,7 +150,7 @@ function PostEditForm() {
             }
         } catch (error) {
             console.error('Error updating post:', error);
-            alert(`Failed to update post: ${error.message || 'Unknown error'}`);
+            AlertDefault.error(`Failed to update post: ${error.message || 'Unknown error'}`);
         } finally {
             setIsSubmitting(false);
         }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import styles from '../../../assets/css/index.module.css';
 import { usePosts } from '../../../hooks/Posts/usePosts';
 import PostsCart from './Post';
@@ -8,6 +8,7 @@ import DelModal from '../../Macro/Modals/DelModal';
 
 function UsersPosts() {
     const { id } = useParams();
+    const navigate = useNavigate();
     const {
         userPosts,
         getUserPosts,
@@ -28,8 +29,7 @@ function UsersPosts() {
     }, [id, getUserPosts, clearUserPosts]);
 
     const handleEdit = (postId) => {
-        console.log('Edit Post ID:', postId);
-        // You can navigate to edit page here
+        navigate(`/posts/${postId}/edit`);
     };
 
     const handleDelete = async () => {

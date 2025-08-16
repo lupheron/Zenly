@@ -3,38 +3,52 @@ import { useFeatures } from '../../../../hooks/Features/useFeatures';
 import Modal from '../../Modals/Modal';
 import InputDefault from '../../../Mircro/FormElements/Input/InputDefault';
 import ButtonDefault from '../../../Mircro/Button/ButtonDefault';
+import DelModal from '../../Modals/DelModal';
+import AlertDefault from '../../../Mircro/Alert/AlertDefault';
 import api from '../../../../hooks/axios';
 import styles from '../../../../assets/css/components.module.css';
 
 function FeaturesForm({ postId, onFeatureChange }) {
     const { features, loading, error } = useFeatures(postId);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [featureToDelete, setFeatureToDelete] = useState(null);
     const [newFeatureName, setNewFeatureName] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-        const handleDeleteFeature = async (featureId) => {
-        if (window.confirm('Are you sure you want to delete this feature?')) {
-            try {
-                const response = await api.delete(`/admin/features/${featureId}`);
+    const handleDeleteFeature = async (featureId) => {
+        const feature = features.find(f => f.id === featureId);
+        setFeatureToDelete(feature);
+        setIsDeleteModalOpen(true);
+    };
 
-                if (response.data.status === 200) {
-                    // Trigger refresh of features
-                    if (onFeatureChange) {
-                        onFeatureChange();
-                    }
-                } else {
-                    alert('Failed to delete feature');
+    const confirmDeleteFeature = async () => {
+        if (!featureToDelete) return;
+        
+        try {
+            const response = await api.delete(`/admin/features/${featureToDelete.id}`);
+
+            if (response.data.status === 200) {
+                AlertDefault.success('Feature deleted successfully');
+                // Trigger refresh of features
+                if (onFeatureChange) {
+                    onFeatureChange();
                 }
-            } catch (error) {
-                console.error('Error deleting feature:', error);
-                alert('Error deleting feature');
+            } else {
+                AlertDefault.error('Failed to delete feature');
             }
+        } catch (error) {
+            console.error('Error deleting feature:', error);
+            AlertDefault.error('Error deleting feature');
+        } finally {
+            setIsDeleteModalOpen(false);
+            setFeatureToDelete(null);
         }
     };
 
     const handleAddFeature = async () => {
         if (!newFeatureName.trim()) {
-            alert('Please enter a feature name');
+            AlertDefault.warning('Please enter a feature name');
             return;
         }
 
@@ -47,6 +61,7 @@ function FeaturesForm({ postId, onFeatureChange }) {
             });
 
             if (response.data.status === 201) {
+                AlertDefault.success('Feature added successfully');
                 setNewFeatureName('');
                 setIsAddModalOpen(false);
                 // Trigger refresh of features
@@ -54,11 +69,11 @@ function FeaturesForm({ postId, onFeatureChange }) {
                     onFeatureChange();
                 }
             } else {
-                alert('Failed to add feature');
+                AlertDefault.error('Failed to add feature');
             }
         } catch (error) {
             console.error('Error adding feature:', error);
-            alert('Error adding feature');
+            AlertDefault.error('Error adding feature');
         } finally {
             setIsSubmitting(false);
         }
@@ -139,6 +154,20 @@ function FeaturesForm({ postId, onFeatureChange }) {
                     </div>
                 </div>
             </Modal>
+
+            {/* Delete Feature Modal */}
+            <DelModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => {
+                    setIsDeleteModalOpen(false);
+                    setFeatureToDelete(null);
+                }}
+                onConfirm={confirmDeleteFeature}
+                title="Delete Feature"
+                message={`Are you sure you want to delete the feature "${featureToDelete?.name}"?`}
+                confirmText="Delete"
+                cancelText="Cancel"
+            />
         </div>
     );
 }
