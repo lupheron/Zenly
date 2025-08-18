@@ -8,6 +8,8 @@ export const useGalleryByPostIdStore = create((set, get) => ({
     error: null,
 
     getGalleryByPostId: async (postId) => {
+        if (!postId) return;
+        
         set({ loading: true, error: null });
         try {
             const response = await api.get(`/admin/gallery/${postId}`);
@@ -26,7 +28,7 @@ export const useGalleryByPostIdStore = create((set, get) => ({
     }
 }));
 
-export const useGalleryByPostId = (postId) => {
+export const useGalleryByPostId = (postId, refreshTrigger = 0) => {
     const { galleryImages, loading, error, getGalleryByPostId, clearGallery } = useGalleryByPostIdStore();
 
     React.useEffect(() => {
@@ -34,7 +36,7 @@ export const useGalleryByPostId = (postId) => {
             getGalleryByPostId(postId);
         }
         return () => clearGallery();
-    }, [postId, getGalleryByPostId, clearGallery]);
+    }, [postId, getGalleryByPostId, clearGallery, refreshTrigger]);
 
-    return { galleryImages, loading, error };
+    return { galleryImages, loading, error, getGalleryByPostId };
 };

@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import { useGalleryByPostId } from '../../../../hooks/Gallery/useGallery';
-import Modal from '../../Modals/Modal';
 import ButtonDefault from '../../../Mircro/Button/ButtonDefault';
 import DelModal from '../../Modals/DelModal';
 import AlertDefault from '../../../Mircro/Alert/AlertDefault';
@@ -8,7 +7,7 @@ import api from '../../../../hooks/axios';
 import styles from '../../../../assets/css/components.module.css';
 
 function GalleryForm({ postId, onGalleryChange }) {
-    const { galleryImages, loading, error } = useGalleryByPostId(postId);
+    const { galleryImages, loading, error, getGalleryByPostId } = useGalleryByPostId(postId);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [imageToDelete, setImageToDelete] = useState(null);
@@ -24,16 +23,15 @@ function GalleryForm({ postId, onGalleryChange }) {
 
     const confirmDeleteImage = async () => {
         if (!imageToDelete) return;
-        
+
         try {
             const response = await api.delete(`/admin/gallery/${imageToDelete.id}`);
 
             if (response.data.status === 200) {
                 AlertDefault.success('Image deleted successfully');
-                // Trigger refresh of gallery
-                if (onGalleryChange) {
-                    onGalleryChange();
-                }
+                // Refresh gallery
+                await getGalleryByPostId(postId);
+                if (onGalleryChange) onGalleryChange();
             } else {
                 AlertDefault.error('Failed to delete image');
             }
@@ -49,18 +47,16 @@ function GalleryForm({ postId, onGalleryChange }) {
     const handleFileSelect = (e) => {
         const file = e.target.files[0];
         if (file) {
-            // Check file size (max 5MB)
             if (file.size > 5 * 1024 * 1024) {
                 AlertDefault.warning('File size must be less than 5MB');
                 return;
             }
-            
-            // Check file type
+
             if (!file.type.startsWith('image/')) {
                 AlertDefault.warning('Please select an image file');
                 return;
             }
-            
+
             setSelectedFile(file);
         }
     };
@@ -76,7 +72,7 @@ function GalleryForm({ postId, onGalleryChange }) {
             return;
         }
 
-                setIsSubmitting(true);
+        setIsSubmitting(true);
         try {
             const formData = new FormData();
             formData.append('img', selectedFile);
@@ -85,17 +81,15 @@ function GalleryForm({ postId, onGalleryChange }) {
 
             const response = await api.post('/admin/gallery', formData);
 
-            if (response.data.status === 201) {
+            if (response.status === 201) {
                 AlertDefault.success('Image added successfully');
                 setSelectedFile(null);
                 setIsAddModalOpen(false);
                 if (fileInputRef.current) {
                     fileInputRef.current.value = '';
                 }
-                // Trigger refresh of gallery
-                if (onGalleryChange) {
-                    onGalleryChange();
-                }
+                await getGalleryByPostId(postId);
+                if (onGalleryChange) onGalleryChange();
             } else {
                 AlertDefault.error('Failed to add image');
             }
@@ -120,21 +114,21 @@ function GalleryForm({ postId, onGalleryChange }) {
     return (
         <div className={styles.galleryForm}>
             <h3>Gallery Images ({galleryImages ? galleryImages.length : 0}/5)</h3>
-            
-            {/* Gallery Images Grid */}
-            <div className={styles.galleryGrid}>
+
+            <div className={styles.galleryFormGrid}>
                 {galleryImages && galleryImages.length > 0 ? (
                     galleryImages.map((image) => (
-                        <div key={image.id} className={styles.galleryItem}>
-                            <img 
-                                src={image.img} 
-                                alt="Gallery" 
-                                className={styles.galleryImage}
+                        <div key={image.id} className={styles.galleryFormItem}>
+                            <img
+                                src={image.img}
+                                alt="Gallery"
+                                className={styles.galleryFormImage}
                             />
                             <button
                                 onClick={() => handleDeleteImage(image.id)}
-                                className={styles.deleteImageButton}
+                                className={styles.deleteGalleryButton}
                                 title="Delete image"
+                                type='button'
                             >
                                 ×
                             </button>
@@ -143,13 +137,13 @@ function GalleryForm({ postId, onGalleryChange }) {
                 ) : (
                     <p>No images added yet.</p>
                 )}
-                
-                {/* Add Image Button */}
+
                 {canAddMore && (
                     <button
                         onClick={() => setIsAddModalOpen(true)}
-                        className={styles.addImageButton}
+                        className={styles.addGalleryButton}
                         title="Add new image"
+                        type='button'
                     >
                         +
                     </button>
@@ -157,45 +151,61 @@ function GalleryForm({ postId, onGalleryChange }) {
             </div>
 
             {/* Add Image Modal */}
-            <Modal
-                isOpen={isAddModalOpen}
-                onClose={() => setIsAddModalOpen(false)}
-                title="Add New Image"
-                size="small"
-            >
-                <div className={styles.addImageForm}>
-                    <div className={styles.fileInputContainer}>
-                        <input
-                            ref={fileInputRef}
-                            type="file"
-                            accept="image/*"
-                            onChange={handleFileSelect}
-                            className={styles.fileInput}
-                        />
-                        {selectedFile && (
-                            <p className={styles.selectedFile}>
-                                Selected: {selectedFile.name}
-                            </p>
-                        )}
-                    </div>
-                    
-                    <div className={styles.modalActions}>
-                        <ButtonDefault
-                            onClick={handleAddImage}
-                            disabled={isSubmitting || !selectedFile}
-                            variant="blue"
-                        >
-                            {isSubmitting ? 'Adding...' : 'Add Image'}
-                        </ButtonDefault>
-                        <ButtonDefault
-                            onClick={() => setIsAddModalOpen(false)}
-                            variant="gray"
-                        >
-                            Cancel
-                        </ButtonDefault>
+            {isAddModalOpen && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: 'rgba(0,0,0,0.5)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 1000
+                }}>
+                    <div style={{
+                        backgroundColor: 'white',
+                        padding: '20px',
+                        borderRadius: '8px',
+                        minWidth: '400px'
+                    }}>
+                        <h3>Add New Image</h3>
+                        <div className={styles.addGalleryForm}>
+                            <div className={styles.galleryFileInputContainer}>
+                                <input
+                                    ref={fileInputRef}
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleFileSelect}
+                                    className={styles.galleryFileInput}
+                                />
+                                {selectedFile && (
+                                    <p className={styles.gallerySelectedFile}>
+                                        Selected: {selectedFile.name}
+                                    </p>
+                                )}
+                            </div>
+
+                            <div className={styles.modalActions}>
+                                <ButtonDefault
+                                    onClick={handleAddImage}
+                                    disabled={isSubmitting || !selectedFile}
+                                    variant="blue"
+                                >
+                                    {isSubmitting ? 'Adding...' : 'Add Image'}
+                                </ButtonDefault>
+                                <ButtonDefault
+                                    onClick={() => setIsAddModalOpen(false)}
+                                    variant="gray"
+                                >
+                                    Cancel
+                                </ButtonDefault>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </Modal>
+            )}
 
             {/* Delete Image Modal */}
             <DelModal

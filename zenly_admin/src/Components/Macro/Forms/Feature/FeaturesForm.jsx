@@ -95,12 +95,13 @@ function FeaturesForm({ postId, onFeatureChange }) {
             <div className={styles.featuresList}>
                 {features && features.length > 0 ? (
                     features.map((feature) => (
-                        <div key={feature.id} className={styles.featureItem}>
-                            <span className={styles.featureName}>{feature.name}</span>
+                        <div key={feature.id} className={styles.featureFormItem}>
+                            <span className={styles.featureFormName}>{feature.name}</span>
                             <button
                                 onClick={() => handleDeleteFeature(feature.id)}
-                                className={styles.deleteButton}
+                                className={styles.deleteFeatureButton}
                                 title="Delete feature"
+                                type='button'
                             >
                                 ×
                             </button>
@@ -115,45 +116,62 @@ function FeaturesForm({ postId, onFeatureChange }) {
                     onClick={() => setIsAddModalOpen(true)}
                     className={styles.addFeatureButton}
                     title="Add new feature"
+                    type='button'
                 >
                     +
                 </button>
             </div>
 
             {/* Add Feature Modal */}
-            <Modal
-                isOpen={isAddModalOpen}
-                onClose={() => setIsAddModalOpen(false)}
-                title="Add New Feature"
-                size="small"
-            >
-                <div className={styles.addFeatureForm}>
-                    <InputDefault
-                        label="Feature Name"
-                        placeholder="Enter feature name"
-                        value={newFeatureName}
-                        onChange={(e) => setNewFeatureName(e.target.value)}
-                        showLabel={true}
-                        required={true}
-                    />
-                    
-                    <div className={styles.modalActions}>
-                        <ButtonDefault
-                            onClick={handleAddFeature}
-                            disabled={isSubmitting}
-                            variant="blue"
-                        >
-                            {isSubmitting ? 'Adding...' : 'Add Feature'}
-                        </ButtonDefault>
-                        <ButtonDefault
-                            onClick={() => setIsAddModalOpen(false)}
-                            variant="gray"
-                        >
-                            Cancel
-                        </ButtonDefault>
+            {isAddModalOpen && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: 'rgba(0,0,0,0.5)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 1000
+                }}>
+                    <div style={{
+                        backgroundColor: 'white',
+                        padding: '20px',
+                        borderRadius: '8px',
+                        minWidth: '400px'
+                    }}>
+                        <h3>Add New Feature</h3>
+                        <div className={styles.addFeatureForm}>
+                            <InputDefault
+                                label="Feature Name"
+                                placeholder="Enter feature name"
+                                value={newFeatureName}
+                                onChange={(e) => setNewFeatureName(e.target.value)}
+                                showLabel={true}
+                                required={true}
+                            />
+                            
+                            <div className={styles.modalActions}>
+                                <ButtonDefault
+                                    onClick={handleAddFeature}
+                                    disabled={isSubmitting}
+                                    variant="blue"
+                                >
+                                    {isSubmitting ? 'Adding...' : 'Add Feature'}
+                                </ButtonDefault>
+                                <ButtonDefault
+                                    onClick={() => setIsAddModalOpen(false)}
+                                    variant="gray"
+                                >
+                                    Cancel
+                                </ButtonDefault>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </Modal>
+            )}
 
             {/* Delete Feature Modal */}
             <DelModal

@@ -31,7 +31,7 @@ export const useFeaturesStore = create((set, get) => ({
 }));
 
 // Custom hook for component use
-export const useFeatures = (postId) => {
+export const useFeatures = (postId, refreshTrigger = 0) => {
     const { features, loading, error, getFeatures, clearFeatures } = useFeaturesStore();
 
     React.useEffect(() => {
@@ -39,7 +39,7 @@ export const useFeatures = (postId) => {
             getFeatures(postId);
         }
         return () => clearFeatures();
-    }, [postId, getFeatures, clearFeatures]);
+    }, [postId, getFeatures, clearFeatures, refreshTrigger]);
 
     return { features, loading, error };
 };

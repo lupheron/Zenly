@@ -79,7 +79,6 @@ class Gallery extends Controller
         ], 201);
     }
 
-
     public function update(Request $request, $id)
     {
         $existing = DB::table('gallery')->where('id', $id)->first();
@@ -166,55 +165,52 @@ class Gallery extends Controller
      */
     public function adminCreate(Request $request)
     {
-        try {
-            $request->validate([
-                'post_id' => 'required|exists:posts,id',
-                'user_id' => 'required|exists:users,id',
-                'img' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
-            ]);
-
-            $post = DB::table('posts')->where('id', $request['post_id'])->first();
-            if (!$post) {
-                return response()->json(['message' => 'Post not found'], 404);
-            }
-
-            $user = DB::table('users')->where('id', $request['user_id'])->first();
-            if (!$user) {
-                return response()->json(['message' => 'User not found'], 404);
-            }
-
-            $username = $user->username;
-            $uploadPath = public_path('uploads/' . $username);
-
-            if (!file_exists($uploadPath)) {
-                mkdir($uploadPath, 0777, true);
-            }
-
-            $file = $request->file('img');
-            $filename = $username . '_' . time() . '_' . uniqid() . '_gallery_' . $file->getClientOriginalName();
-            $file->move($uploadPath, $filename);
-            $filePath = 'uploads/' . $username . '/' . $filename;
-
-            $galleryId = DB::table('gallery')->insertGetId([
-                "post_id" => $request['post_id'],
-                "user_id" => $request['user_id'],
-                "img" => $filePath,
-                "created_at" => now(),
-            ]);
-
-            $galleryItem = DB::table('gallery')->where('id', $galleryId)->first();
-
-            return response()->json([
-                'message' => 'Image uploaded successfully',
-                'status' => 201,
-                'data' => $galleryItem
-            ], 201);
-        } catch (Exception $e) {
-            return response()->json([
-                'message' => 'Error creating gallery item: ' . $e->getMessage(),
-                'status' => 500
-            ], 500);
+        $authAdmin = $request->user('admin'); // if you have admin guard
+        if (!$authAdmin || $authAdmin->id != $request['user_id']) {
+            return response()->json(['message' => 'Unauthorized admin'], 403);
         }
+
+        $request->validate([
+            'post_id' => 'required|exists:posts,id',
+            'user_id' => 'required|exists:admins,id',
+            'img' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120'
+        ]);
+
+        $post = DB::table('posts')->where('id', $request['post_id'])->first();
+        if (!$post) {
+            return response()->json(['message' => 'Post not found'], 404);
+        }
+
+        $admin = DB::table('admins')->where('id', $request['user_id'])->first();
+        if (!$admin) {
+            return response()->json(['message' => 'Admin not found'], 404);
+        }
+
+        $username = $admin->username ?? 'admin_' . $admin->id;
+        $uploadPath = public_path('uploads/' . $username);
+
+        if (!file_exists($uploadPath)) {
+            mkdir($uploadPath, 0777, true);
+        }
+
+        $file = $request->file('img');
+        $filename = $username . '_' . time() . '_' . uniqid() . '_gallery_' . $file->getClientOriginalName();
+        $file->move($uploadPath, $filename);
+        $filePath = 'uploads/' . $username . '/' . $filename;
+
+        $galleryId = DB::table('gallery')->insertGetId([
+            "post_id" => $request['post_id'],
+            "user_id" => $request['user_id'], // ⚠️ might rename to admin_id if needed
+            "img" => $filePath,
+            "created_at" => now(),
+        ]);
+
+        $galleryItem = DB::table('gallery')->where('id', $galleryId)->first();
+
+        return response()->json([
+            'message' => 'Image uploaded successfully',
+            'data' => $galleryItem
+        ], 201);
     }
 
     /**
