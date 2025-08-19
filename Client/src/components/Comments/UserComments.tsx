@@ -41,7 +41,7 @@ const UserComments: React.FC<UserCommentsProps> = ({ postId, dateFilter }) => {
           pagination={false}
         >
           {data?.length === 0 ? (
-            <p className="text-sm sm:text-base text-gray-500">Sizda komentlar mavjud emas!</p>
+            <p className="text-sm sm:text-base text-gray-500">Komentlar mavjud emas</p>
           ) : (
             Array.isArray(data) && data.map((comment, index) => (
               <CommentCart
