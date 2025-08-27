@@ -21,6 +21,7 @@ const NavbarSection = () => {
         setHasToken(!!token);
     }, []);
 
+
     const navLinks = [
         { label: "Biz haqimizda", link: "about-us" },
         { label: "Mashxur maskanlar", link: "activities" },
@@ -69,7 +70,7 @@ const NavbarSection = () => {
                                 onClick={handleProfileClick}
                             >
                                 <Image
-                                    src={data?.img ?? ""}
+                                    src={data?.img && data.img.trim() !== "" ? data.img : "/logo/profile-default.png"}
                                     alt="Profile"
                                     width={60}
                                     height={60}
@@ -149,7 +150,7 @@ const NavbarSection = () => {
                                 }}
                             >
                                 <Image
-                                    src={data?.img ?? ""}
+                                    src={data?.img && data.img.trim() !== "" ? data.img : "/logo/profile-default.png"}
                                     alt="Profile"
                                     width={50}
                                     height={50}
