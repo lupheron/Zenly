@@ -127,7 +127,7 @@ const RegisterClientForm = () => {
                     value={form.address}
                     onChange={handleChange}
                     options={uzbekistanProvinces}
-                    customClassesSelect="w-full h-[40px] sm:h-[45px] md:h-[50px] border border-gray-300 rounded px-3 sm:px-4 md:px-5 py-2 sm:py-3 md:py-4 text-sm sm:text-base"
+                    customClassesSelect="w-full"
                 />
             </div>
 

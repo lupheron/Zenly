@@ -37,19 +37,18 @@ const SelectDefault: React.FC<SelectDefaultProps> = ({
                 id={htmlFor}
                 value={value}
                 onChange={onChange}
-                className={`${customClassesSelect}`}
+                className={`h-[40px] sm:h-[45px] md:h-[50px] border border-gray-300 rounded px-3 sm:px-4 md:px-5 py-2 sm:py-3 md:py-0 text-sm sm:text-base bg-white focus:outline-none focus:ring-2 focus:ring-light-green focus:border-transparent ${customClassesSelect}`}
             >
-                <option value="">Tanlang</option>
                 {options.map((opt, index) => {
                     if (typeof opt === 'string') {
                         return (
-                            <option key={index} value={opt} className={`${customClassesOptions}`}>
+                            <option key={index} value={opt} className={`py-2 ${customClassesOptions}`}>
                                 {opt}
                             </option>
                         )
                     } else {
                         return (
-                            <option key={index} value={opt.value} className={`${customClassesOptions}`}>
+                            <option key={index} value={opt.value} className={`py-2 ${customClassesOptions}`}>
                                 {opt.label}
                             </option>
                         )
