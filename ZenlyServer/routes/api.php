@@ -44,6 +44,7 @@ Route::group(['middleware' => [Cors::class]], function () {
     Route::post('/area-types', [AreaTypesController::class, 'store']);
     Route::put('/area-types/{id}', [AreaTypesController::class, 'update']);
     Route::get('/posts/top-rated', [Posts::class, 'topRated']);
+    Route::get('/users/{id}/basic', [Users::class, 'getBasicUserInfo']);
 
     // Public image serving
     Route::get('/uploads/{path}', [Uploads::class, 'serveImage'])->where('path', '.*');

@@ -49,6 +49,28 @@ class Users extends Controller
         }
     }
 
+    public function getBasicUserInfo($id)
+    {
+        $user = DB::table("users")->where("id", $id)->first();
+        
+        if (!$user) {
+            return response()->json([
+                "message" => "User not found",
+                "status" => 404
+            ], 404);
+        }
+
+        // Return only basic, non-sensitive information
+        return response()->json([
+            "id" => $user->id,
+            "fullname" => $user->fullname,
+            "username" => $user->username,
+            "img" => $user->img,
+            "vip_status" => $user->vip_status,
+            "type" => $user->type
+        ]);
+    }
+
     public function register(Request $request)
     {
         $existingUser = DB::table('users')->where('username', $request['username'])->first();

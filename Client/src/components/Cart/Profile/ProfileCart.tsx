@@ -1,6 +1,5 @@
-import { useUserById } from '@/src/hooks/users/useUser'
+import { useBasicUserInfo } from '@/src/hooks/users/useBasicUserInfo'
 import Image from 'next/image'
-import Link from 'next/link'
 import React from 'react'
 
 interface ProfileCartProps {
@@ -8,7 +7,7 @@ interface ProfileCartProps {
 }
 
 const ProfileCart: React.FC<ProfileCartProps> = ({ user_id }) => {
-    const { data } = useUserById(user_id)
+    const { data } = useBasicUserInfo(user_id)
 
     if (!data) return null
 
@@ -22,15 +21,10 @@ const ProfileCart: React.FC<ProfileCartProps> = ({ user_id }) => {
                 className='rounded-[50%]'
             />
 
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-y-3 gap-x-7'>
+            <div className='grid grid-cols-1 gap-y-3'>
                 <div>
                     <h2 className='text-lg font-bold tracking-[1px]'>{data.fullname}</h2>
                     <p className='text-gray-500'>{data.username}</p>
-                </div>
-
-                <div>
-                    <Link href={`tel:${data.phone}`} className='text-blue-700'>{data.phone}</Link>
-                    <h2>{data.address}</h2>
                 </div>
             </div>
         </div>

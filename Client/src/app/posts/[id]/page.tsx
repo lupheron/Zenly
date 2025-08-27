@@ -8,7 +8,7 @@ import ButtonDefault from '@/src/components/Button/ButtonDefault'
 import Features from '@/src/components/Features/Features'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { usePostById } from '@/src/hooks/posts/usePostsById'
-import { useUserComments } from '@/src/hooks/comments/useUserComments'
+import { usePostComments } from '@/src/hooks/comments/useUserComments'
 import ProfileCart from '@/src/components/Cart/Profile/ProfileCart'
 import LargeContainer from '@/src/components/Containers/LargeContainer'
 import ReusableModal from '@/src/components/Modal/ReusableModal'
@@ -39,7 +39,7 @@ const PostInfo = () => {
     }
 
     const { data: post, isLoading, error } = usePostById(postId)
-    const { data: comments, isLoading: commentsLoading } = useUserComments(postId.toString())
+    const { data: comments, isLoading: commentsLoading } = usePostComments(postId.toString())
     const resolvedPostId = post?.id
 
     const { data: totalViews = 0 } = usePostViews(resolvedPostId ?? 0)
