@@ -37,7 +37,7 @@ const CreatePostForm = () => {
     const [galleryFileList, setGalleryFileList] = useState<GalleryFile[]>([])
     const [createdPostId, setCreatedPostId] = useState<number | null>(null)
     const [createModalOpen, setCreateModalOpen] = useState(false)
-    const { data: features = [], createFeature, deleteFeature } = useFeatures(createdPostId ?? undefined)
+    const { data: features = [], createMultipleFeatures, deleteFeature } = useFeatures(createdPostId ?? undefined)
     const { data: areaTypes, isLoading: isAreaTypesLoading } = useAreaTypes();
 
 
@@ -129,14 +129,13 @@ const CreatePostForm = () => {
                 "Suzish havzasi"
             ];
 
-            await Promise.all(
-                staticFeatures.map((feature: string) =>
-                    createFeature.mutateAsync({
-                        post_id: response.post_id,
-                        user_id: userId,
-                        name: feature
-                    })
-                )
+            // Create all static features in batch to show only one success alert
+            await createMultipleFeatures.mutateAsync(
+                staticFeatures.map((feature: string) => ({
+                    post_id: response.post_id,
+                    user_id: userId,
+                    name: feature
+                }))
             )
         } catch (error) {
             console.log(error)

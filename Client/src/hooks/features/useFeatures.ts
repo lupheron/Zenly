@@ -25,6 +25,11 @@ const createFeature = async (data: FeaturePayload): Promise<Feature> => {
     return res.data
 }
 
+const createMultipleFeatures = async (features: FeaturePayload[]): Promise<Feature[]> => {
+    const promises = features.map(feature => createFeature(feature))
+    return Promise.all(promises)
+}
+
 const deleteFeature = async (featureId: number) => {
     const res = await api.delete(`/features/${featureId}`)
     return res.data
@@ -68,13 +73,46 @@ export const useFeatures = (post_id?: number) => {
         }
     })
 
+    const batchMutation = useMutation({
+        mutationFn: createMultipleFeatures,
+        onMutate: async (newFeatures: FeaturePayload[]) => {
+            await queryClient.cancelQueries({ queryKey: ['features', post_id] })
+
+            const previousFeatures = queryClient.getQueryData<Feature[]>(['features', post_id])
+
+            queryClient.setQueryData<Feature[]>(['features', post_id], (old = []) => [
+                ...old,
+                ...newFeatures.map(feature => ({ id: Date.now() + Math.random(), ...feature }))
+            ])
+
+            return { previousFeatures }
+        },
+        onError: (_err, _newFeatures, context) => {
+            if (context?.previousFeatures) {
+                queryClient.setQueryData(['features', post_id], context.previousFeatures)
+            }
+            AlertDefault.error('Xatolik yuz berdi.')
+        },
+        onSuccess: () => {
+            AlertDefault.success('Imkoniyatlar muvaffaqiyatli yaratildi.')
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ['features', post_id] })
+        }
+    })
+
     const deleteMutation = useMutation({
         mutationFn: deleteFeature,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['features', post_id] })
-            AlertDefault.success('Imkoniyat o‘chirildi.')
+            AlertDefault.success('Imkoniyat o\'chirildi.')
         },
     })
 
-    return { ...query, createFeature: mutation, deleteFeature: deleteMutation }
+    return { 
+        ...query, 
+        createFeature: mutation, 
+        createMultipleFeatures: batchMutation,
+        deleteFeature: deleteMutation 
+    }
 }
