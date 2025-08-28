@@ -138,7 +138,7 @@ const CreatePostForm = () => {
                 }))
             )
         } catch (error) {
-            console.log(error)
+            console.log('Xatolik:', error)
             message.error('Post yaratishda xatolik yuz berdi.')
         } finally {
             setIsSubmitting(false)

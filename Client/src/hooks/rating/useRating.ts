@@ -27,7 +27,7 @@ const createRating = async (data: { post_id: number; rating: number }) => {
     } catch (error) {
         const axiosError = error as AxiosError<{ message?: string }>
         AlertDefault.error(axiosError.response?.data?.message || 'Reyting yuborishda xatolik yuz berdi.')
-        throw new Error(axiosError.response?.data?.message || 'Failed to submit rating.')
+        throw new Error(axiosError.response?.data?.message || 'Reyting yuborishda xatolik yuz berdi.')
     }
 }
 

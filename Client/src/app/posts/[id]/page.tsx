@@ -112,7 +112,7 @@ const PostInfo = () => {
                                 label={bookingMutation.isPending ? 'Yuborilmoqda...' : 'Bron qilish'}
                                 customClasses='h-10 sm:h-12 !rounded-lg !cursor-pointer !text-xs sm:!text-sm mt-0 w-full'
                                 onClick={() => {
-                                    console.log('Bron qilish clicked', { isCurrentUserOwner, postId: post.id });
+                                    console.log('Bron qilish bosildi', { isCurrentUserOwner, postId: post.id });
                                     if (isCurrentUserOwner) {
                                         AlertDefault.error("Siz o'z postlaringizni bron qila olmaysiz")
                                     } else {

@@ -42,7 +42,7 @@ const PostsCart: React.FC<PostsCartProps> = ({
                 await api.put(`/posts/${postId}/increase-interest`)
             }
         } catch (error) {
-            console.error("Error increasing post views:", error)
+            console.error("Post ko'rishlarini oshirishda xatolik:", error)
         } finally {
             onClick()
         }
@@ -79,7 +79,7 @@ const PostsCart: React.FC<PostsCartProps> = ({
 
                 <div className='flex flex-col gap-4 bg-blue-50 rounded-lg px-4 py-3 mt-4'>
                     <div>
-                        <p className='text-xs sm:text-sm text-gray-500'>From</p>
+                        <p className='text-xs sm:text-sm text-gray-500'>Narxdan</p>
                         <h2 className='text-xl sm:text-2xl font-bold text-blue-800'>${price_daily}</h2>
                     </div>
                     <ButtonDefault

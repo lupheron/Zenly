@@ -23,7 +23,7 @@ const createBookingRequest = async (data: BookingRequestInput) => {
     } catch (error) {
         const axiosError = error as AxiosError<{ message?: string }>
         AlertDefault.error(axiosError.response?.data?.message || 'Bron qilishda xatolik yuz berdi.')
-        throw new Error(axiosError.response?.data?.message || 'Failed to submit booking request.')
+        throw new Error(axiosError.response?.data?.message || 'Bron qilish so\'rovini yuborishda xatolik yuz berdi.')
     }
 }
 

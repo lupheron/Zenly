@@ -45,7 +45,7 @@ const Rating: React.FC<RatingProps> = ({
             await createRating.mutateAsync({ post_id: postId, rating: userRating })
             setShowModal(false)
         } catch (error) {
-            console.error('Error submitting rating:', error)
+            console.error('Reyting yuborishda xatolik:', error)
         } finally {
             setIsSubmitting(false)
         }

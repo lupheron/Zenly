@@ -109,7 +109,7 @@ export const useDashboard = (): DashboardData => {
                             : 0
                         return { postId: post.id, views }
                     } catch (error) {
-                        console.error(`Error fetching views for post ${post.id}:`, error)
+                        console.error(`Post ${post.id} uchun ko'rishlar sonini olishda xatolik:`, error)
                         return { postId: post.id, views: 0 }
                     }
                 })
@@ -132,7 +132,7 @@ export const useDashboard = (): DashboardData => {
                         const res = await api.get(`/rating/${post.id}`, { params: { start_date: '2023-01-01', end_date: '2023-12-31' } })
                         return { postId: post.id, rating: res.data.average_rating || 0 }
                     } catch (error) {
-                        console.error(`Error fetching rating for post ${post.id}:`, error)
+                        console.error(`Post ${post.id} uchun reytingni olishda xatolik:`, error)
                         return { postId: post.id, rating: 0 }
                     }
                 })
@@ -280,7 +280,7 @@ export const useDashboardWithDateFilter = (dateFilter: DateFilterValue): Dashboa
                             : 0
                         return { postId: post.id, views }
                     } catch (error) {
-                        console.error(`Error fetching views for post ${post.id}:`, error)
+                        console.error(`Post ${post.id} uchun ko'rishlar sonini olishda xatolik:`, error)
                         return { postId: post.id, views: 0 }
                     }
                 })
@@ -303,7 +303,7 @@ export const useDashboardWithDateFilter = (dateFilter: DateFilterValue): Dashboa
                         const res = await api.get(`/rating/${post.id}`, { params: { start_date: dateFilter.startDate, end_date: dateFilter.endDate } })
                         return { postId: post.id, rating: res.data.average_rating || 0 }
                     } catch (error) {
-                        console.error(`Error fetching rating for post ${post.id}:`, error)
+                        console.error(`Post ${post.id} uchun reytingni olishda xatolik:`, error)
                         return { postId: post.id, rating: 0 }
                     }
                 })

@@ -54,7 +54,7 @@ const EditGalleryForm: React.FC<EditGalleryFormProps> = ({
             refetch()
         } catch (error: unknown) {
             AlertDefault.error("O'chirishda xatolik yuz berdi.")
-            console.error("Delete error:", error)
+            console.error("O'chirishda xatolik:", error)
         }
     }
 
@@ -80,7 +80,7 @@ const EditGalleryForm: React.FC<EditGalleryFormProps> = ({
                 body: formData,
             })
 
-            if (!res.ok) throw new Error('Upload failed')
+            if (!res.ok) throw new Error('Yuklash muvaffaqiyatsiz')
 
             AlertDefault.success('Rasm muvaffaqiyatli yuklandi!')
             refetch()

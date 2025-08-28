@@ -13,14 +13,14 @@ const Features: React.FC<FeatureProps> = ({ postId }) => {
     const { data: features, isLoading, error } = useFeatures(postId)
     const [showAll, setShowAll] = useState(false)
 
-    if (isLoading) return <div>Loading...</div>
+    if (isLoading) return <div>Yuklanmoqda...</div>
 
     if (error instanceof ApiError && error.status === 404) {
         return <div>{error.message}</div>
     }
 
-    if (error) return <div>Error loading features.</div>
-    if (!features || features.length === 0) return <div>No features available.</div>
+    if (error) return <div>Sharoitlarni yuklashda xatolik yuz berdi.</div>
+    if (!features || features.length === 0) return <div>Hech qanday sharoit mavjud emas.</div>
 
     const firstSix = features.slice(0, 6)   
     const remaining = features.slice(6)

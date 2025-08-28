@@ -24,10 +24,10 @@ const fetchAreaTypes = async (): Promise<AreaType[]> => {
     if (typeof error === 'object' && error !== null && 'response' in error) {
       const err = error as { response?: { data?: { message?: string } } };
       AlertDefault.error(err.response?.data?.message || 'Area turlarini olishda xatolik yuz berdi.');
-      throw new Error(err.response?.data?.message || 'Failed to fetch area types.');
+      throw new Error(err.response?.data?.message || 'Area turlarini olishda xatolik yuz berdi.');
     }
     AlertDefault.error('Area turlarini olishda xatolik yuz berdi.');
-    throw new Error('Failed to fetch area types.');
+    throw new Error('Area turlarini olishda xatolik yuz berdi.');
   }
 };
 
@@ -40,10 +40,10 @@ const createAreaType = async (data: CreateAreaTypePayload): Promise<AreaType> =>
     if (typeof error === 'object' && error !== null && 'response' in error) {
       const err = error as { response?: { data?: { message?: string } } };
       AlertDefault.error(err.response?.data?.message || 'Area turini yaratishda xatolik yuz berdi.');
-      throw new Error(err.response?.data?.message || 'Failed to create area type.');
+      throw new Error(err.response?.data?.message || 'Area turini yaratishda xatolik yuz berdi.');
     }
     AlertDefault.error('Area turini yaratishda xatolik yuz berdi.');
-    throw new Error('Failed to create area type.');
+    throw new Error('Area turini yaratishda xatolik yuz berdi.');
   }
 };
 
@@ -56,10 +56,10 @@ const updateAreaType = async ({ id, data }: { id: number; data: UpdateAreaTypePa
     if (typeof error === 'object' && error !== null && 'response' in error) {
       const err = error as { response?: { data?: { message?: string } } };
       AlertDefault.error(err.response?.data?.message || 'Area turini yangilashda xatolik yuz berdi.');
-      throw new Error(err.response?.data?.message || 'Failed to update area type.');
+      throw new Error(err.response?.data?.message || 'Area turini yangilashda xatolik yuz berdi.');
     }
     AlertDefault.error('Area turini yangilashda xatolik yuz berdi.');
-    throw new Error('Failed to update area type.');
+    throw new Error('Area turini yangilashda xatolik yuz berdi.');
   }
 };
 

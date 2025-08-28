@@ -17,7 +17,7 @@ const fetchUsersPosts = async (user_id: number): Promise<Post[]> => {
         AlertDefault.error(
             axiosError.response?.data?.message ?? "Foydalanuvchi postlarini olishda xatolik yuz berdi."
         )
-        throw new Error(axiosError.response?.data?.message || "Failed to fetch user's posts.")
+        throw new Error(axiosError.response?.data?.message || "Foydalanuvchi postlarini olishda xatolik yuz berdi.")
     }
 }
 
@@ -28,7 +28,7 @@ const createPost = async (data: CreatePostPayload): Promise<CreatePostResponse> 
     } catch (error) {
         const axiosError = error as AxiosError<{ message?: string }>
         AlertDefault.error(axiosError.response?.data?.message || "Post yaratishda xatolik yuz berdi.")
-        throw new Error(axiosError.response?.data?.message || "Failed to create post.")
+        throw new Error(axiosError.response?.data?.message || "Post yaratishda xatolik yuz berdi.")
     }
 }
 
@@ -45,7 +45,7 @@ const updatePost = async ({
     } catch (error) {
         const axiosError = error as AxiosError<{ message?: string }>
         AlertDefault.error(axiosError.response?.data?.message || "Postni yangilashda xatolik yuz berdi.")
-        throw new Error(axiosError.response?.data?.message || "Failed to update post.")
+        throw new Error(axiosError.response?.data?.message || "Postni yangilashda xatolik yuz berdi.")
     }
 }
 

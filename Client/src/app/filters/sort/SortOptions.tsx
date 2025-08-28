@@ -10,7 +10,7 @@ const sortOptions = [
 
 const SortOptions = () => {
     const onChange = (value: string) => {
-        console.log("Selected sort:", value)
+        console.log("Tanlangan saralash:", value)
     }
 
     return (

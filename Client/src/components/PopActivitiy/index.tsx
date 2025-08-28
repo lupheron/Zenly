@@ -18,7 +18,7 @@ const PopularActivity = () => {
 
             <div data-aos="fade-down">
                 {isLoading ? (
-                    <div className="text-center py-10">Loading top rated posts...</div>
+                    <div className="text-center py-10">Eng yaxshi postlar yuklanmoqda...</div>
                 ) : (
                     <SwiperDefault
                         pagination={false}

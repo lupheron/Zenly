@@ -69,7 +69,7 @@ const PostsSection = () => {
             const data = await res.json()
             setPosts(data.data || [])
         } catch (error) {
-            console.error('Error fetching posts:', error)
+            console.error('Postlarni olishda xatolik:', error)
             setPosts([])
         }
     }, [selectedAmenities, areaId, searchFilters])

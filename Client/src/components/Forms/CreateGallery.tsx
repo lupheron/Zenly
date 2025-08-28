@@ -51,7 +51,7 @@ const CreateGalleryForm: React.FC<CreateGalleryFormProps> = ({
                     }
                 })
 
-                if (!res.ok) throw new Error('Upload failed')
+                if (!res.ok) throw new Error('Yuklash muvaffaqiyatsiz')
 
                 const result = await res.json()
                 setGalleryFileList(prev => [
@@ -68,7 +68,7 @@ const CreateGalleryForm: React.FC<CreateGalleryFormProps> = ({
             AlertDefault.success('Rasm(lar) muvaffaqiyatli yuklandi!')
         } catch (error) {
             AlertDefault.error('Yuklashda xatolik yuz berdi')
-            console.log(error)
+            console.log('Xatolik:', error)
         } finally {
             setUploading(false)
             if (galleryFileInputRef.current) {
@@ -89,7 +89,7 @@ const CreateGalleryForm: React.FC<CreateGalleryFormProps> = ({
             AlertDefault.success('Rasm o‘chirildi.')
             setGalleryFileList(prev => prev.filter(file => file.id !== fileId))
         } catch (err) {
-            console.log(err)
+            console.log('Xatolik:', err)
             AlertDefault.error("O'chirishda xatolik yuz berdi.")
         }
     }

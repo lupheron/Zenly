@@ -26,7 +26,7 @@ const fetchWebComments = async (): Promise<WebComment[]> => {
         return res.data.data
     } catch (error) {
         AlertDefault.error("Kommentlarni olishda xatolik yuz berdi.")
-        throw new Error((error as Error).message || "Failed to fetch comments")
+        throw new Error((error as Error).message || "Kommentlarni olishda xatolik yuz berdi")
     }
 }
 
@@ -37,7 +37,7 @@ const submitWebComment = async (data: WebComment): Promise<CommentResponse> => {
     } catch (error) {
         const axiosError = error as AxiosError<{ message: string }>
         const status = axiosError.response?.status ?? 500
-        const message = axiosError.response?.data?.message ?? 'An unexpected error occurred'
+        const message = axiosError.response?.data?.message ?? 'Kutilmagan xatolik yuz berdi'
         throw new CommentError(message, status)
     }
 }
