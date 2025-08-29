@@ -68,12 +68,6 @@ const WebComment = ({ onSuccess, closeModal }: WebCommentProps) => {
 
             AlertDefault.success("Sizning fikringiz muvaffaqiyatli yuborildi!")
 
-            // Strategy: Optimistic update + invalidation + refetch for immediate UI update
-            // 1. Optimistic update shows comment immediately
-            // 2. Invalidation ensures cache consistency
-            // 3. Refetch ensures server data is fresh
-            
-            // Optimistically update the cache with the new comment
             const newComment: WebComment = {
                 user_id: formData.user_id,
                 fullname: formData.fullname,
@@ -81,7 +75,6 @@ const WebComment = ({ onSuccess, closeModal }: WebCommentProps) => {
                 comment: formData.comment,
             }
             
-            // Update the cache immediately for better UX
             queryClient.setQueryData(['webComments'], (oldData: WebComment[] | undefined) => {
                 if (Array.isArray(oldData)) {
                     return [...oldData, newComment]
@@ -89,10 +82,8 @@ const WebComment = ({ onSuccess, closeModal }: WebCommentProps) => {
                 return [newComment]
             })
 
-            // Invalidate the webComments query cache to refresh the comments list
             queryClient.invalidateQueries({ queryKey: ['webComments'] })
             
-            // Refetch the comments immediately to show the new comment
             queryClient.refetchQueries({ queryKey: ['webComments'] })
 
             setFormData({
@@ -102,12 +93,10 @@ const WebComment = ({ onSuccess, closeModal }: WebCommentProps) => {
                 comment: '',
             })
 
-            // Small delay to ensure the user sees the success message and comment appears
             setTimeout(() => {
                 onSuccess()
             }, 500)
         } catch (error: unknown) {
-            // Rollback optimistic update on error
             queryClient.setQueryData(['webComments'], (oldData: WebComment[] | undefined) => {
                 if (Array.isArray(oldData)) {
                     return oldData.filter(comment => 
