@@ -6,6 +6,8 @@ import InputDefault from '../../FormElements/Input/InputDefault'
 import ButtonDefault from '../../Button/ButtonDefault'
 import AlertDefault from '../../Alert/AlertDefault'
 import { useWebComments } from '@/src/hooks/comments/useWebComments'
+import { useQueryClient } from '@tanstack/react-query'
+import type { WebComment } from '@/src/utils/Comment'
 
 interface FormData {
     user_id: number
@@ -21,6 +23,7 @@ interface WebCommentProps {
 
 const WebComment = ({ onSuccess, closeModal }: WebCommentProps) => {
     const { submitComment } = useWebComments()
+    const queryClient = useQueryClient()
 
     const [formData, setFormData] = useState<FormData>({
         user_id: 0,
@@ -65,6 +68,33 @@ const WebComment = ({ onSuccess, closeModal }: WebCommentProps) => {
 
             AlertDefault.success("Sizning fikringiz muvaffaqiyatli yuborildi!")
 
+            // Strategy: Optimistic update + invalidation + refetch for immediate UI update
+            // 1. Optimistic update shows comment immediately
+            // 2. Invalidation ensures cache consistency
+            // 3. Refetch ensures server data is fresh
+            
+            // Optimistically update the cache with the new comment
+            const newComment: WebComment = {
+                user_id: formData.user_id,
+                fullname: formData.fullname,
+                title: formData.title,
+                comment: formData.comment,
+            }
+            
+            // Update the cache immediately for better UX
+            queryClient.setQueryData(['webComments'], (oldData: WebComment[] | undefined) => {
+                if (Array.isArray(oldData)) {
+                    return [...oldData, newComment]
+                }
+                return [newComment]
+            })
+
+            // Invalidate the webComments query cache to refresh the comments list
+            queryClient.invalidateQueries({ queryKey: ['webComments'] })
+            
+            // Refetch the comments immediately to show the new comment
+            queryClient.refetchQueries({ queryKey: ['webComments'] })
+
             setFormData({
                 user_id: formData.user_id,
                 fullname: '',
@@ -72,8 +102,23 @@ const WebComment = ({ onSuccess, closeModal }: WebCommentProps) => {
                 comment: '',
             })
 
-            onSuccess()
+            // Small delay to ensure the user sees the success message and comment appears
+            setTimeout(() => {
+                onSuccess()
+            }, 500)
         } catch (error: unknown) {
+            // Rollback optimistic update on error
+            queryClient.setQueryData(['webComments'], (oldData: WebComment[] | undefined) => {
+                if (Array.isArray(oldData)) {
+                    return oldData.filter(comment => 
+                        !(comment.user_id === formData.user_id && 
+                          comment.title === formData.title && 
+                          comment.comment === formData.comment)
+                    )
+                }
+                return oldData
+            })
+            
             if (typeof error === 'object' && error !== null && 'status' in error && 'message' in error) {
                 const { status, message } = error as { status: number; message: string }
 
