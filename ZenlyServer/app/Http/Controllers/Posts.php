@@ -19,6 +19,9 @@ class Posts extends Controller
 
     public function index(Request $request)
     {
+        // Update expired bookings before fetching posts
+        $this->updateExpiredBookings();
+        
         $query = DB::table("posts")
             ->select(
                 "posts.*",
@@ -29,6 +32,7 @@ class Posts extends Controller
             ->leftJoin('rating', 'rating.post_id', '=', 'posts.id')
             ->leftJoin('post_comments', 'post_comments.post_id', '=', 'posts.id')
             ->leftJoin('post_views', 'post_views.post_id', '=', 'posts.id')
+            ->where('posts.status', 1) // Only show available posts (status = 1)
             ->groupBy('posts.id');
 
         if ($request->has('area_id')) {
@@ -346,7 +350,7 @@ class Posts extends Controller
             ->leftJoin('post_comments', 'post_comments.post_id', '=', 'posts.id')
             ->leftJoin('post_views', 'post_views.post_id', '=', 'posts.id')
             ->leftJoin('features', 'posts.id', '=', 'features.post_id')
-            ->where('posts.status', 1)
+            ->where('posts.status', 1) // Only show available posts (status = 1)
             ->groupBy('posts.id');
         if ($areaId) {
             $query->where('posts.area_id', $areaId);
@@ -605,6 +609,7 @@ class Posts extends Controller
             ->leftJoin('rating', 'rating.post_id', '=', 'posts.id')
             ->leftJoin('post_comments', 'post_comments.post_id', '=', 'posts.id')
             ->leftJoin('post_views', 'post_views.post_id', '=', 'posts.id')
+            ->where('posts.status', 1) // Only show available posts (status = 1)
             ->groupBy('posts.id');
         if ($startDate) {
             $query->where('posts.created_at', '>=', $startDate);
@@ -705,6 +710,32 @@ class Posts extends Controller
                 'message' => 'Error updating post: ' . $e->getMessage(),
                 'status' => 500
             ], 500);
+        }
+    }
+
+    /**
+     * Update expired bookings and reactivate posts
+     */
+    private function updateExpiredBookings()
+    {
+        $now = Carbon::now();
+        // Get all booking_checking where end_date < now and status is active
+        $expired = DB::table('booking_checking')
+            ->where('end_date', '<', $now)
+            ->where('status', 'active')
+            ->get();
+        foreach ($expired as $check) {
+            // Set book_status=0 for the related booking_request
+            DB::table('booking_requests')
+                ->where('id', $check->request_id)
+                ->where('book_status', '!=', 0)
+                ->update(['book_status' => 0]);
+            // Set the related post status to 1 (available)
+            DB::table('posts')->where('id', $check->post_id)->update(['status' => 1]);
+            // Update booking checking status to expired
+            DB::table('booking_checking')
+                ->where('id', $check->id)
+                ->update(['status' => 'expired']);
         }
     }
 }

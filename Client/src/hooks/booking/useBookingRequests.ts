@@ -138,10 +138,45 @@ export const useBookingCheckingByRequestId = (request_id: number | null) => {
 }
 
 export const useCustomerConfirmBookingChecking = () => {
+  const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async ({ id, start_date, end_date, price }: { id: number, start_date: string, end_date: string, price: number }) => {
       const res = await api.post(`/booking-checking/${id}/customer-confirm`, { start_date, end_date, price })
       return res.data
+    },
+    onSuccess: (data, variables) => {
+      // Invalidate both booking requests and booking checking queries
+      queryClient.invalidateQueries({ queryKey: ['user-booking-requests'] })
+      queryClient.invalidateQueries({ queryKey: ['booking-checking'] })
+      AlertDefault.success('Bron tasdiqlandi va faollashtirildi!')
+    },
+    onError: (error: unknown) => {
+      const axiosError = error as AxiosError<{ message?: string }>
+      if (axiosError?.response?.status === 422) {
+        AlertDefault.error('Ma&apos;lumotlar mos emas!')
+      } else {
+        AlertDefault.error(axiosError.response?.data?.message || 'Bron tasdiqlashda xatolik yuz berdi.')
+      }
+    }
+  })
+}
+
+export const useCustomerRejectBookingChecking = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ id }: { id: number }) => {
+      const res = await api.post(`/booking-requests/${id}/customer-reject`)
+      return res.data
+    },
+    onSuccess: () => {
+      // Invalidate both booking requests and booking checking queries
+      queryClient.invalidateQueries({ queryKey: ['user-booking-requests'] })
+      queryClient.invalidateQueries({ queryKey: ['booking-checking'] })
+      AlertDefault.success('Bron bekor qilindi va joy qayta mavjud bo\'ldi.')
+    },
+    onError: (error: unknown) => {
+      const axiosError = error as AxiosError<{ message?: string }>
+      AlertDefault.error(axiosError.response?.data?.message || 'Bron bekor qilishda xatolik yuz berdi.')
     }
   })
 }

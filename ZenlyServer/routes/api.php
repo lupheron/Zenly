@@ -173,7 +173,9 @@ Route::middleware(['auth.custom', 'security', Cors::class])->group(function () {
     // BOOKING CHECKING
     Route::post('/booking-checking', [BookingChecking::class, 'create']);
     Route::post('/booking-checking/{id}/customer-confirm', [BookingChecking::class, 'customerConfirm']);
+    Route::post('/booking-requests/{id}/customer-reject', [BookingChecking::class, 'customerReject']);
     Route::get('/booking-checking/by-request/{request_id}', [BookingChecking::class, 'getByRequestId']);
+    Route::post('/booking-checking/update-expired', [BookingChecking::class, 'updateExpiredBookingsPublic']);
 
     // USER PROFILE
     Route::get('/user/{id}', [Users::class, 'getUsersById']);

@@ -96,8 +96,15 @@ class BookingChecking extends Controller
                     'customer_data' => json_encode($customerData),
                     'status' => 'active',
                 ]);
-            // Set the related post status to 0 (booked)
+            
+            // Update booking request status to active
+            DB::table('booking_requests')
+                ->where('id', $checking->request_id)
+                ->update(['status' => 'active']);
+            
+            // Set the related post status to 0 (booked) - post will not appear in posts page
             DB::table('posts')->where('id', $checking->post_id)->update(['status' => 0]);
+            
             $checking = DB::table('booking_checking')->where('id', $id)->first();
             return response()->json([
                 'message' => 'Customer confirmation received. Data matches. Booking is now active.',
@@ -111,6 +118,34 @@ class BookingChecking extends Controller
                 'status' => 422
             ], 422);
         }
+    }
+
+    public function customerReject(Request $request, $id)
+    {
+        // Find booking checking by request_id (booking_id)
+        $checking = DB::table('booking_checking')->where('request_id', $id)->first();
+        if (!$checking) {
+            return response()->json([
+                'message' => 'Booking checking not found.',
+                'status' => 404
+            ], 404);
+        }
+
+        // Cancel the booking request
+        DB::table('booking_requests')
+            ->where('id', $id)
+            ->update(['status' => 'cancelled']);
+
+        // Set the related post status to 1 (available)
+        DB::table('posts')->where('id', $checking->post_id)->update(['status' => 1]);
+
+        // Delete the booking checking record
+        DB::table('booking_checking')->where('request_id', $id)->delete();
+
+        return response()->json([
+            'message' => 'Booking rejected by customer. Post is now available again.',
+            'status' => 200
+        ]);
     }
 
     public function getByRequestId($request_id)
@@ -136,9 +171,10 @@ class BookingChecking extends Controller
     private function updateExpiredBookings()
     {
         $now = Carbon::now();
-        // Get all booking_checking where end_date < now
+        // Get all booking_checking where end_date < now and status is active
         $expired = DB::table('booking_checking')
             ->where('end_date', '<', $now)
+            ->where('status', 'active')
             ->get();
         foreach ($expired as $check) {
             // Set book_status=0 for the related booking_request
@@ -148,6 +184,23 @@ class BookingChecking extends Controller
                 ->update(['book_status' => 0]);
             // Set the related post status to 1 (available)
             DB::table('posts')->where('id', $check->post_id)->update(['status' => 1]);
+            // Update booking checking status to expired
+            DB::table('booking_checking')
+                ->where('id', $check->id)
+                ->update(['status' => 'expired']);
         }
+    }
+
+    /**
+     * Public method to manually trigger expired bookings update
+     * This can be called by a scheduled task or manually
+     */
+    public function updateExpiredBookingsPublic()
+    {
+        $this->updateExpiredBookings();
+        return response()->json([
+            'message' => 'Expired bookings updated successfully.',
+            'status' => 200
+        ]);
     }
 }
