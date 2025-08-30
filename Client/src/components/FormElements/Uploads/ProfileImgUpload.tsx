@@ -44,6 +44,20 @@ const ProfileImageUpload = ({ value, onChange }: { value: string; onChange: (img
     };
 
     const beforeUpload = (file: FileType) => {
+        // Check file type
+        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+        if (!isJpgOrPng) {
+            alert('Faqat JPG va PNG formatdagi rasmlar qabul qilinadi!');
+            return false;
+        }
+
+        // Check file size (1MB = 1024 * 1024 bytes)
+        const isLt1M = file.size / 1024 / 1024 < 1;
+        if (!isLt1M) {
+            alert('Rasm hajmi 1MB dan kam bo\'lishi kerak!');
+            return false;
+        }
+
         const reader = new FileReader();
         reader.onloadend = () => {
             setImageSrc(reader.result as string);
@@ -91,7 +105,7 @@ const ProfileImageUpload = ({ value, onChange }: { value: string; onChange: (img
                 onChange={handleChange}
                 beforeUpload={beforeUpload}
                 showUploadList={{ showPreviewIcon: true }}
-                accept="image/*"
+                accept=".jpg,.jpeg,.png"
                 className="!w-[280px] !h-[280px]"
                 style={{ width: 280, height: 280 }}
             >

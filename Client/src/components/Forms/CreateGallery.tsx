@@ -29,9 +29,35 @@ const CreateGalleryForm: React.FC<CreateGalleryFormProps> = ({
     const galleryFileInputRef = useRef<HTMLInputElement>(null)
     const token = localStorage.getItem('token')
 
+    const validateImageFile = (file: File): boolean => {
+        // Check file type
+        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+        if (!isJpgOrPng) {
+            AlertDefault.error('Faqat JPG va PNG formatdagi rasmlar qabul qilinadi!');
+            return false;
+        }
+
+        // Check file size (500KB = 500 * 1024 bytes)
+        const isLt500KB = file.size / 1024 < 500;
+        if (!isLt500KB) {
+            AlertDefault.error('Rasm hajmi 500KB dan kam bo\'lishi kerak!');
+            return false;
+        }
+
+        return true;
+    }
+
     const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files
         if (!files || files.length === 0) return
+
+        // Validate all files before uploading
+        for (let i = 0; i < files.length; i++) {
+            if (!validateImageFile(files[i])) {
+                e.target.value = ''; // Reset input
+                return;
+            }
+        }
 
         setUploading(true)
 
@@ -104,7 +130,7 @@ const CreateGalleryForm: React.FC<CreateGalleryFormProps> = ({
                 type="file"
                 ref={galleryFileInputRef}
                 onChange={handleGalleryUpload}
-                accept="image/*"
+                accept=".jpg,.jpeg,.png"
                 className="hidden"
                 multiple
             />

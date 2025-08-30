@@ -106,9 +106,32 @@ const EditPostForm = () => {
 
     const mainFileInputRef = useRef<HTMLInputElement>(null)
 
+    const validateImageFile = (file: File): boolean => {
+        // Check file type
+        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+        if (!isJpgOrPng) {
+            message.error('Faqat JPG va PNG formatdagi rasmlar qabul qilinadi!');
+            return false;
+        }
+
+        // Check file size (500KB = 500 * 1024 bytes)
+        const isLt500KB = file.size / 1024 < 500;
+        if (!isLt500KB) {
+            message.error('Rasm hajmi 500KB dan kam bo\'lishi kerak!');
+            return false;
+        }
+
+        return true;
+    }
+
     const handleMainImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (!file) return
+
+        if (!validateImageFile(file)) {
+            e.target.value = ''; // Reset input
+            return;
+        }
 
         const reader = new FileReader()
         reader.onload = (event) => {
@@ -190,7 +213,7 @@ const EditPostForm = () => {
                             type="file"
                             ref={mainFileInputRef}
                             onChange={handleMainImageChange}
-                            accept="image/*"
+                            accept=".jpg,.jpeg,.png"
                             className="hidden"
                             id="main-img"
                         />
