@@ -30,6 +30,7 @@ const EditGalleryForm: React.FC<EditGalleryFormProps> = ({
     const [uploading, setUploading] = useState(false)
     const galleryFileInputRef = useRef<HTMLInputElement>(null)
     const { data: galleryImages = [], refetch } = useGalleryByPostId(postId)
+    const token = localStorage.getItem('token')
 
     useEffect(() => {
         if (galleryImages) {
@@ -47,7 +48,10 @@ const EditGalleryForm: React.FC<EditGalleryFormProps> = ({
     const handleDelete = async (fileId: number) => {
         try {
             const res = await fetch(`http://zenlyserver.test/api/gallery/${fileId}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
             })
             if (!res.ok) throw new Error("Serverdan muvaffaqiyatsiz javob.")
             AlertDefault.success('Rasm o‘chirildi.')
@@ -104,6 +108,9 @@ const EditGalleryForm: React.FC<EditGalleryFormProps> = ({
             const res = await fetch('http://zenlyserver.test/api/gallery', {
                 method: 'POST',
                 body: formData,
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
             })
 
             if (!res.ok) throw new Error('Yuklash muvaffaqiyatsiz')
