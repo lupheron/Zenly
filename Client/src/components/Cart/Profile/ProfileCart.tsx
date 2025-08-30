@@ -16,7 +16,7 @@ const ProfileCart: React.FC<ProfileCartProps> = ({ user_id }) => {
             <Image
                 width={80}
                 height={80}
-                src={data.img}
+                src={data.img || '/logo/profile-default.png'}
                 alt='User profile image'
                 className='rounded-[50%]'
             />
