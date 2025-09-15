@@ -6,13 +6,10 @@ import React, { useEffect, useState } from 'react';
 import ButtonDefault from '../Button/ButtonDefault';
 import { useUser } from '@/src/hooks/users/useUser';
 import LogoutIcon from '@mui/icons-material/Logout';
-import MenuIcon from '@mui/icons-material/Menu';
-import CloseIcon from '@mui/icons-material/Close';
 import { useRouter } from 'next/navigation';
 
 const NavbarSection = () => {
     const [hasToken, setHasToken] = useState(false);
-    const [menuOpen, setMenuOpen] = useState(false);
     const { data } = useUser();
     const router = useRouter();
 
@@ -102,86 +99,14 @@ const NavbarSection = () => {
                 </div>
 
                 <div className="lg:hidden">
-                    <MenuIcon
-                        fontSize="large"
-                        className="text-white cursor-pointer"
-                        onClick={() => setMenuOpen(true)}
-                    />
+                    {/* Mobile menu button removed - using bottom navigation instead */}
                 </div>
             </div>
 
             <div className="w-[90%] h-[0.1px] bg-black-muted mx-auto"></div>
 
-            <div
-                className={`fixed top-0 right-0 h-full w-[70%] sm:w-[60%] bg-dark-green z-50 transform transition-transform duration-300 ${menuOpen ? 'translate-x-0' : 'translate-x-full'
-                    }`}
-            >
-                <div className="flex justify-between items-center p-4">
-                    <h2 className="text-white text-lg font-bold">Menu</h2>
-                    <CloseIcon
-                        fontSize="large"
-                        className="text-white cursor-pointer"
-                        onClick={() => setMenuOpen(false)}
-                    />
-                </div>
-
-                <ul className="flex flex-col space-y-4 mt-6 px-4">
-                    {navLinks.map(({ label, link }) => (
-                        <li key={link}>
-                            <Link
-                                href={`#${link}`}
-                                className="block text-[17px] text-white font-semibold hover:text-light-green transition duration-300"
-                                onClick={() => setMenuOpen(false)}
-                            >
-                                {label}
-                            </Link>
-                        </li>
-                    ))}
-                </ul>
-
-                <div className="px-4 mt-8 space-y-4">
-                    {hasToken ? (
-                        <>
-                            <div
-                                className="flex items-center space-x-3 cursor-pointer"
-                                onClick={() => {
-                                    setMenuOpen(false);
-                                    handleProfileClick();
-                                }}
-                            >
-                                <Image
-                                    src={data?.img && data.img.trim() !== "" ? data.img : "/logo/profile-default.png"}
-                                    alt="Profile"
-                                    width={50}
-                                    height={50}
-                                    className="rounded-full object-cover"
-                                />
-                                <span className="text-white text-[16px]">Profil</span>
-                            </div>
-                            <button
-                                onClick={() => {
-                                    localStorage.removeItem("token");
-                                    localStorage.removeItem("user_id");
-                                    setHasToken(false);
-                                    setMenuOpen(false);
-                                }}
-                                className="text-white hover:text-light-green transition duration-300"
-                            >
-                                <LogoutIcon fontSize="large" className="cursor-pointer" />
-                            </button>
-                        </>
-                    ) : (
-                        <>
-                            <Link href="/register" onClick={() => setMenuOpen(false)}>
-                                <ButtonDefault label="Ro'yxatdan O'tish" customClasses='w-full' onClick={() => console.log()} />
-                            </Link>
-                            <Link href="/login" onClick={() => setMenuOpen(false)}>
-                                <ButtonDefault customClasses="w-full mt-5" label="Kirish" onClick={() => console.log()} />
-                            </Link>
-                        </>
-                    )}
-                </div>
-            </div>
+            {/* Mobile menu removed - using bottom navigation instead */}
+            
         </nav>
     );
 };

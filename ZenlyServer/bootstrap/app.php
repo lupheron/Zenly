@@ -21,9 +21,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        $middleware->prepend(\Illuminate\Http\Middleware\HandleCors::class);
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
 
-        $middleware->append(Cors::class);
 
         $middleware->web(append: [
             HandleAppearance::class,

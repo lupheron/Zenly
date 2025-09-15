@@ -2,19 +2,16 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React from 'react'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import PanoramaIcon from '@mui/icons-material/Panorama'
-import MenuIcon from '@mui/icons-material/Menu'
-import CloseIcon from '@mui/icons-material/Close'
 import { usePathname, useRouter } from 'next/navigation'
 import TurnedInIcon from '@mui/icons-material/TurnedIn'
 
 const Aside = () => {
     const pathname = usePathname()
     const router = useRouter()
-    const [isOpen, setIsOpen] = useState(false)
 
     const routes = [
         {
@@ -39,35 +36,12 @@ const Aside = () => {
         }
     ]
 
-    const toggleSidebar = () => {
-        setIsOpen(!isOpen)
-    }
-
-    const closeSidebar = () => {
-        setIsOpen(false)
-    }
 
     return (
         <>
-            {/* Mobile Menu Button */}
-            <button
-                onClick={toggleSidebar}
-                className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-md shadow-lg border border-gray-200"
-            >
-                {isOpen ? (
-                    <CloseIcon className="w-6 h-6" />
-                ) : (
-                    <MenuIcon className="w-6 h-6" />
-                )}
-            </button>
+            {/* Mobile Menu Button removed - using bottom navigation instead */}
 
-            {/* Mobile Overlay */}
-            {isOpen && (
-                <div 
-                    className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
-                    onClick={closeSidebar}
-                />
-            )}
+            {/* Mobile Overlay removed - using bottom navigation instead */}
 
             {/* Sidebar */}
             <aside className={`
@@ -75,7 +49,7 @@ const Aside = () => {
                 w-64 min-h-screen p-4 border-r border-gray-200 
                 shadow-[4px_0_6px_-1px_rgba(0,0,0,0.1)] bg-white
                 transform transition-transform duration-300 ease-in-out
-                ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+                -translate-x-full lg:translate-x-0
             `}>
                 <div className="mb-4 flex items-center justify-center">
                     <Image
@@ -85,7 +59,6 @@ const Aside = () => {
                         alt="Logo"
                         onClick={() => {
                             router.push('/')
-                            closeSidebar()
                         }}
                         className='cursor-pointer'
                     />
@@ -96,7 +69,6 @@ const Aside = () => {
                         <Link
                             key={index}
                             href={item.route}
-                            onClick={closeSidebar}
                             className={`
                                 text-sm sm:text-base lg:text-lg font-bold tracking-[1px] 
                                 flex items-center gap-2 p-2 sm:p-3 rounded transition-colors duration-200

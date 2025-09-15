@@ -8,6 +8,7 @@ import ButtonDefault from '@/src/components/Button/ButtonDefault'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import AlertDefault from '@/src/components/Alert/AlertDefault'
 import api from '@/src/utils/axios'
+import ProfileBottomNavigation from '@/src/components/BottomNavigation/ProfileBottomNavigation'
 
 export default function UserLayout({ children }: { children: React.ReactNode }) {
     const router = useRouter()
@@ -66,11 +67,12 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
                             🏠 Bosh sahifa
                         </Link>
                     </div>
-                    <main className="min-h-[calc(100vh-120px)] border-1 rounded-xl sm:rounded-2xl bg-light-gray border-gray-200 shadow-[4px_0_6px_-1px_rgba(0,0,0,0.1)] p-4 sm:p-6 lg:p-10">
+                    <main className="min-h-[calc(100vh-120px)] border-1 rounded-xl sm:rounded-2xl bg-light-gray border-gray-200 shadow-[4px_0_6px_-1px_rgba(0,0,0,0.1)] p-4 sm:p-6 lg:p-10 pb-20 lg:pb-10">
                         {children}
                     </main>
                 </div>
             </div>
+            <ProfileBottomNavigation userType="user" />
         </div>
     )
 }

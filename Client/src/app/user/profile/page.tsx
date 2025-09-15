@@ -84,6 +84,17 @@ const Profile = () => {
                         customClasses='w-full sm:w-full cursor-pointer !bg-red-700'
                     />
                 </div>
+                <div className='flex justify-center mt-4'>
+                    <ButtonDefault
+                        label='Chiqish'
+                        onClick={() => {
+                            localStorage.removeItem("token");
+                            localStorage.removeItem("user_id");
+                            router.push('/');
+                        }}
+                        customClasses='w-full cursor-pointer !bg-gray-600 hover:!bg-gray-700'
+                    />
+                </div>
             </div>
 
             {/* Comments and Ratings Section */}

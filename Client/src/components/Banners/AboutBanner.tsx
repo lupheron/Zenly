@@ -19,7 +19,7 @@ const AboutBanner: React.FC<AboutBannerProps> = ({ img, title, paragraph }) => {
                 className="w-full h-full object-cover rounded-xl"
             />
 
-            <div className="absolute bottom-4 left-4 right-4 h-30 sm:h-25 md:h-30 bg-white p-4 sm:p-6 transition-all duration-500 ease-in-out group-hover:h-[150px] rounded-xl flex flex-col overflow-hidden">
+            <div className="absolute bottom-4 left-4 right-4 h-30 sm:h-25 md:h-30 bg-white p-4 sm:p-6 transition-all duration-500 ease-in-out group-hover:h-[150px] rounded-xl flex flex-col overflow-hidden break-words">
                 <div>
                     <div className="w-16 h-[2px] bg-dark-green mb-2"></div>
                     <div className="flex items-center justify-between">

@@ -17,7 +17,7 @@ const ButtonDefault: React.FC<ButtonProps> = ({
     children,
     type = "button"
 }) => {
-    const defaultClasses = "px-3 sm:px-4 md:px-6 lg:px-8 py-2 sm:py-2 md:py-2 rounded-4xl text-white font-mulish font-semibold transition duration-300 outline-none text-sm sm:text-base md:text-md";
+    const defaultClasses = "px-4 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-2 md:py-2 rounded-4xl text-white font-mulish font-semibold transition duration-300 outline-none text-sm sm:text-base md:text-md min-h-[44px]";
     const disabledClasses = "bg-gray cursor-not-allowed";
     const enabledClasses = "bg-light-green";
 

@@ -34,7 +34,7 @@ const IntroSlider: React.FC<IntroProps> = ({ title, text, src, alt }) => {
                         animate={{ y: 0, opacity: 1 }}
                         exit={{ y: -20, opacity: 0 }}
                         transition={{ duration: 0.3, delay: 0.1 }}
-                        className="text-sm sm:text-base md:text-md lg:text-gl leading-relaxed w-full lg:w-[85%] xl:w-[75%]"
+                        className="text-sm sm:text-base md:text-md lg:text-lg leading-relaxed w-full lg:w-[85%] xl:w-[75%]"
                     >
                         {text}
                     </motion.p>

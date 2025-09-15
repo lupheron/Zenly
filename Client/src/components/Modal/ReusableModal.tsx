@@ -41,7 +41,7 @@ const ReusableModal: React.FC<ReusableModalProps> = ({
             style={{ 
                 maxWidth: typeof width === 'number' ? `${width}px` : '600px',
                 margin: '0 auto',
-                top: '5%'
+                top: '2%'
             }}
             centered={false}
             destroyOnHidden={true}
