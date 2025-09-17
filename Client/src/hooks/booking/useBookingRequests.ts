@@ -144,7 +144,7 @@ export const useCustomerConfirmBookingChecking = () => {
       const res = await api.post(`/booking-checking/${id}/customer-confirm`, { start_date, end_date, price })
       return res.data
     },
-    onSuccess: (data, variables) => {
+    onSuccess: () => {
       // Invalidate both booking requests and booking checking queries
       queryClient.invalidateQueries({ queryKey: ['user-booking-requests'] })
       queryClient.invalidateQueries({ queryKey: ['booking-checking'] })

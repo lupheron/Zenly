@@ -2,6 +2,7 @@
 
 import React, { useRef, useState } from 'react'
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons'
+import Image from 'next/image'
 import AlertDefault from '@/src/components/Alert/AlertDefault'
 
 export interface GalleryFile {
@@ -137,10 +138,11 @@ const CreateGalleryForm: React.FC<CreateGalleryFormProps> = ({
 
             {galleryFileList.map((file) => (
                 <div key={file.uid} className="relative border-2 border-dashed border-gray-300 rounded-lg w-full h-28">
-                    <img
+                    <Image
                         src={file.url}
                         alt="Gallery preview"
-                        className="w-full h-full object-cover rounded-lg"
+                        fill
+                        className="object-cover rounded-lg"
                     />
                     <button
                         type="button"

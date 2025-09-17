@@ -67,7 +67,7 @@ const EditClientForm = () => {
                 AlertDefault.error("Taxrirlashda xatolik yuz berdi!")
             }
         }
-    }, [isSuccess, isError, router]);
+    }, [isSuccess, isError, error, router]);
 
     if (isLoading) return <p>Yuklanmoqda...</p>
 

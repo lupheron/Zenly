@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
 import LabelDefault from '../FormElements/label/LabelDefault'
 import InputDefault from '../FormElements/Input/InputDefault'
 import ButtonDefault from '../Button/ButtonDefault'
@@ -220,10 +221,11 @@ const EditPostForm = () => {
                         <div className="relative border-2 border-dashed border-gray-300 rounded-lg w-full h-64 flex items-center justify-center">
                             {mainFileList.length > 0 ? (
                                 <div className="relative w-full h-full">
-                                    <img
+                                    <Image
                                         src={mainFileList[0].url}
                                         alt="Asosiy rasm"
-                                        className="w-full h-full object-cover rounded-lg"
+                                        fill
+                                        className="object-cover rounded-lg"
                                     />
                                     <button
                                         type="button"

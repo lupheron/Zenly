@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useRef } from 'react'
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons'
+import Image from 'next/image'
 import AlertDefault from '@/src/components/Alert/AlertDefault'
 import { useGalleryByPostId } from '@/src/hooks/gallery/useGalleryByPostId'
 
@@ -146,10 +147,11 @@ const EditGalleryForm: React.FC<EditGalleryFormProps> = ({
 
             {galleryFileList.map((file) => (
                 <div key={file.uid} className="relative border-2 border-dashed border-gray-300 rounded-lg w-full h-28">
-                    <img
+                    <Image
                         src={file.url}
                         alt="Gallery preview"
-                        className="w-full h-full object-cover rounded-lg"
+                        fill
+                        className="object-cover rounded-lg"
                     />
                     <button
                         type="button"
