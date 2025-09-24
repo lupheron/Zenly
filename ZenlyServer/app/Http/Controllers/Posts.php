@@ -24,7 +24,20 @@ class Posts extends Controller
         
         $query = DB::table("posts")
             ->select(
-                "posts.*",
+                "posts.id",
+                "posts.user_id",
+                "posts.area_id",
+                "posts.title",
+                "posts.small_description",
+                "posts.description",
+                "posts.location",
+                "posts.members",
+                "posts.price_daily",
+                "posts.img",
+                "posts.status",
+                "posts.created_at",
+                "posts.updated_at",
+                "posts.deleted_at",
                 DB::raw("AVG(rating.rating) as avg_rating"),
                 DB::raw("COUNT(DISTINCT post_comments.id) as comment_count"),
                 DB::raw("COUNT(DISTINCT post_views.id) as view_count")
@@ -33,7 +46,7 @@ class Posts extends Controller
             ->leftJoin('post_comments', 'post_comments.post_id', '=', 'posts.id')
             ->leftJoin('post_views', 'post_views.post_id', '=', 'posts.id')
             ->where('posts.status', 1) // Only show available posts (status = 1)
-            ->groupBy('posts.id');
+            ->groupBy('posts.id', 'posts.user_id', 'posts.area_id', 'posts.title', 'posts.small_description', 'posts.description', 'posts.location', 'posts.members', 'posts.price_daily', 'posts.img', 'posts.status', 'posts.created_at', 'posts.updated_at', 'posts.deleted_at');
 
         if ($request->has('area_id')) {
             $query->where('area_id', $request->input('area_id'));
@@ -70,7 +83,20 @@ class Posts extends Controller
     {
         $posts = DB::table("posts")
             ->select(
-                "posts.*",
+                "posts.id",
+                "posts.user_id",
+                "posts.area_id",
+                "posts.title",
+                "posts.small_description",
+                "posts.description",
+                "posts.location",
+                "posts.members",
+                "posts.price_daily",
+                "posts.img",
+                "posts.status",
+                "posts.created_at",
+                "posts.updated_at",
+                "posts.deleted_at",
                 DB::raw("AVG(rating.rating) as avg_rating"),
                 DB::raw("COUNT(DISTINCT post_comments.id) as comment_count"),
                 DB::raw("COUNT(DISTINCT post_views.id) as view_count")
@@ -78,7 +104,7 @@ class Posts extends Controller
             ->leftJoin('rating', 'rating.post_id', '=', 'posts.id')
             ->leftJoin('post_comments', 'post_comments.post_id', '=', 'posts.id')
             ->leftJoin('post_views', 'post_views.post_id', '=', 'posts.id')
-            ->groupBy('posts.id')
+            ->groupBy('posts.id', 'posts.user_id', 'posts.area_id', 'posts.title', 'posts.small_description', 'posts.description', 'posts.location', 'posts.members', 'posts.price_daily', 'posts.img', 'posts.status', 'posts.created_at', 'posts.updated_at', 'posts.deleted_at')
             ->orderBy('posts.created_at', 'desc')
             ->get();
 
@@ -113,7 +139,20 @@ class Posts extends Controller
     {
         $query = DB::table("posts")
             ->select(
-                "posts.*",
+                "posts.id",
+                "posts.user_id",
+                "posts.area_id",
+                "posts.title",
+                "posts.small_description",
+                "posts.description",
+                "posts.location",
+                "posts.members",
+                "posts.price_daily",
+                "posts.img",
+                "posts.status",
+                "posts.created_at",
+                "posts.updated_at",
+                "posts.deleted_at",
                 DB::raw("AVG(rating.rating) as avg_rating"),
                 DB::raw("COUNT(DISTINCT post_comments.id) as comment_count"),
                 DB::raw("COUNT(DISTINCT post_views.id) as view_count")
@@ -122,7 +161,7 @@ class Posts extends Controller
             ->leftJoin('post_comments', 'post_comments.post_id', '=', 'posts.id')
             ->leftJoin('post_views', 'post_views.post_id', '=', 'posts.id')
             ->where('posts.user_id', $userId) // Filter by specific user
-            ->groupBy('posts.id')
+            ->groupBy('posts.id', 'posts.user_id', 'posts.area_id', 'posts.title', 'posts.small_description', 'posts.description', 'posts.location', 'posts.members', 'posts.price_daily', 'posts.img', 'posts.status', 'posts.created_at', 'posts.updated_at', 'posts.deleted_at')
             ->orderBy('posts.created_at', 'desc');
 
         $posts = $query->get();
@@ -148,7 +187,20 @@ class Posts extends Controller
     {
         $post = DB::table("posts")
             ->select(
-                "posts.*",
+                "posts.id",
+                "posts.user_id",
+                "posts.area_id",
+                "posts.title",
+                "posts.small_description",
+                "posts.description",
+                "posts.location",
+                "posts.members",
+                "posts.price_daily",
+                "posts.img",
+                "posts.status",
+                "posts.created_at",
+                "posts.updated_at",
+                "posts.deleted_at",
                 DB::raw("AVG(rating.rating) as avg_rating"),
                 DB::raw("COUNT(DISTINCT post_comments.id) as comment_count"),
                 DB::raw("COUNT(DISTINCT post_views.id) as view_count")
@@ -157,7 +209,7 @@ class Posts extends Controller
             ->leftJoin('post_comments', 'post_comments.post_id', '=', 'posts.id')
             ->leftJoin('post_views', 'post_views.post_id', '=', 'posts.id')
             ->where('posts.id', $id)
-            ->groupBy('posts.id')
+            ->groupBy('posts.id', 'posts.user_id', 'posts.area_id', 'posts.title', 'posts.small_description', 'posts.description', 'posts.location', 'posts.members', 'posts.price_daily', 'posts.img', 'posts.status', 'posts.created_at', 'posts.updated_at', 'posts.deleted_at')
             ->first();
 
         if (!$post) {
@@ -243,7 +295,20 @@ class Posts extends Controller
         $endDate = $request->input('end_date');
         $posts = DB::table("posts")
             ->select(
-                "posts.*",
+                "posts.id",
+                "posts.user_id",
+                "posts.area_id",
+                "posts.title",
+                "posts.small_description",
+                "posts.description",
+                "posts.location",
+                "posts.members",
+                "posts.price_daily",
+                "posts.img",
+                "posts.status",
+                "posts.created_at",
+                "posts.updated_at",
+                "posts.deleted_at",
                 DB::raw("AVG(rating.rating) as avg_rating"),
                 DB::raw("COUNT(DISTINCT post_comments.id) as comment_count"),
                 DB::raw("COUNT(DISTINCT post_views.id) as view_count")
@@ -258,7 +323,7 @@ class Posts extends Controller
             ->when($endDate, function ($query) use ($endDate) {
                 $query->where('posts.created_at', '<=', $endDate);
             })
-            ->groupBy('posts.id')
+            ->groupBy('posts.id', 'posts.user_id', 'posts.area_id', 'posts.title', 'posts.small_description', 'posts.description', 'posts.location', 'posts.members', 'posts.price_daily', 'posts.img', 'posts.status', 'posts.created_at', 'posts.updated_at', 'posts.deleted_at')
             ->get();
 
         if ($posts->isEmpty()) {
@@ -291,7 +356,20 @@ class Posts extends Controller
         $endDate = $request->input('end_date');
         $query = DB::table("posts")
             ->select(
-                "posts.*",
+                "posts.id",
+                "posts.user_id",
+                "posts.area_id",
+                "posts.title",
+                "posts.small_description",
+                "posts.description",
+                "posts.location",
+                "posts.members",
+                "posts.price_daily",
+                "posts.img",
+                "posts.status",
+                "posts.created_at",
+                "posts.updated_at",
+                "posts.deleted_at",
                 DB::raw("AVG(rating.rating) as avg_rating"),
                 DB::raw("COUNT(DISTINCT post_comments.id) as comment_count"),
                 DB::raw("COUNT(DISTINCT post_views.id) as view_count")
@@ -306,7 +384,7 @@ class Posts extends Controller
         if ($endDate) {
             $query->where('posts.created_at', '<=', $endDate);
         }
-        $post = $query->groupBy('posts.id')->first();
+        $post = $query->groupBy('posts.id', 'posts.user_id', 'posts.area_id', 'posts.title', 'posts.small_description', 'posts.description', 'posts.location', 'posts.members', 'posts.price_daily', 'posts.img', 'posts.status', 'posts.created_at', 'posts.updated_at', 'posts.deleted_at')->first();
 
         if (!$post) {
             return response()->json([
@@ -341,7 +419,20 @@ class Posts extends Controller
         $endDate = $request->input('end_date');
         $query = DB::table('posts')
             ->select(
-                'posts.*',
+                'posts.id',
+                'posts.user_id',
+                'posts.area_id',
+                'posts.title',
+                'posts.small_description',
+                'posts.description',
+                'posts.location',
+                'posts.members',
+                'posts.price_daily',
+                'posts.img',
+                'posts.status',
+                'posts.created_at',
+                'posts.updated_at',
+                'posts.deleted_at',
                 DB::raw('AVG(rating.rating) as avg_rating'),
                 DB::raw('COUNT(DISTINCT post_comments.id) as comment_count'),
                 DB::raw('COUNT(DISTINCT post_views.id) as view_count')
@@ -351,7 +442,7 @@ class Posts extends Controller
             ->leftJoin('post_views', 'post_views.post_id', '=', 'posts.id')
             ->leftJoin('features', 'posts.id', '=', 'features.post_id')
             ->where('posts.status', 1) // Only show available posts (status = 1)
-            ->groupBy('posts.id');
+            ->groupBy('posts.id', 'posts.user_id', 'posts.area_id', 'posts.title', 'posts.small_description', 'posts.description', 'posts.location', 'posts.members', 'posts.price_daily', 'posts.img', 'posts.status', 'posts.created_at', 'posts.updated_at', 'posts.deleted_at');
         if ($areaId) {
             $query->where('posts.area_id', $areaId);
         }
@@ -601,7 +692,20 @@ class Posts extends Controller
         $endDate = $request->input('end_date');
         $query = DB::table('posts')
             ->select(
-                'posts.*',
+                'posts.id',
+                'posts.user_id',
+                'posts.area_id',
+                'posts.title',
+                'posts.small_description',
+                'posts.description',
+                'posts.location',
+                'posts.members',
+                'posts.price_daily',
+                'posts.img',
+                'posts.status',
+                'posts.created_at',
+                'posts.updated_at',
+                'posts.deleted_at',
                 DB::raw('AVG(rating.rating) as avg_rating'),
                 DB::raw('COUNT(DISTINCT post_comments.id) as comment_count'),
                 DB::raw('COUNT(DISTINCT post_views.id) as view_count')
@@ -610,7 +714,7 @@ class Posts extends Controller
             ->leftJoin('post_comments', 'post_comments.post_id', '=', 'posts.id')
             ->leftJoin('post_views', 'post_views.post_id', '=', 'posts.id')
             ->where('posts.status', 1) // Only show available posts (status = 1)
-            ->groupBy('posts.id');
+            ->groupBy('posts.id', 'posts.user_id', 'posts.area_id', 'posts.title', 'posts.small_description', 'posts.description', 'posts.location', 'posts.members', 'posts.price_daily', 'posts.img', 'posts.status', 'posts.created_at', 'posts.updated_at', 'posts.deleted_at');
         if ($startDate) {
             $query->where('posts.created_at', '>=', $startDate);
         }

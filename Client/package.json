@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "build:prod": "NODE_ENV=production next build",
+    "start:prod": "NODE_ENV=production next start -p 3000"
   },
   "dependencies": {
     "@ant-design/icons": "^5.6.1",
@@ -23,7 +25,7 @@
     "chart.js": "^4.5.0",
     "framer-motion": "^12.15.0",
     "lucide-react": "^0.523.0",
-    "next": "15.3.2",
+    "next": "^15.5.3",
     "react": "^19.0.0",
     "react-chartjs-2": "^5.3.0",
     "react-datepicker": "^8.4.0",
