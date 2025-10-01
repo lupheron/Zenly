@@ -8,6 +8,8 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import RegisterClient from './RegisterClient'
 import RegisterForm from '@/src/components/Forms/Register/RegisterForm'
 import RegisterClientForm from '@/src/components/Forms/Register/RegisterClientForm'
+import Link from 'next/link'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 
 const Register = () => {
     const [modalOpen, setModalOpen] = useState(true)
@@ -26,8 +28,16 @@ const Register = () => {
         <div className="min-h-screen bg-gray-50">
             <NavbarSection />
 
-            <div className="flex flex-col md:flex-row items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
-                <div className='w-full max-w-md lg:max-w-lg xl:max-w-xl bg-gray-200 p-4 sm:p-6 lg:p-8 rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none h-auto md:h-[700px] lg:h-[670px] flex items-center'>
+            {/* Back Button */}
+            <Link 
+                href="/" 
+                className="absolute top-20 left-4 z-10 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg hover:bg-white transition-colors duration-200"
+            >
+                <ArrowBackIcon className="text-gray-700" />
+            </Link>
+
+            <div className="flex flex-col md:flex-row items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8 w-full max-w-full overflow-x-hidden">
+                <div className='w-full max-w-md lg:max-w-lg xl:max-w-xl bg-gray-200 p-4 sm:p-6 lg:p-8 rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none h-auto md:h-[700px] lg:h-[670px] flex items-center overflow-hidden'>
                     {selectedType && (
                         <div className="w-full">
                             <h2 className='text-xl sm:text-2xl font-bold mb-4 sm:mb-6'>

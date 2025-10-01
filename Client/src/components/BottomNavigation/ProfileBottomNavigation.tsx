@@ -46,7 +46,11 @@ const ProfileBottomNavigation: React.FC<ProfileBottomNavigationProps> = ({ userT
                             alt="Profile"
                             width={32}
                             height={32}
-                            className="rounded-full object-cover"
+                            className="rounded-full object-cover border-2 border-gray-200"
+                            onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.src = "/logo/profile-default.png";
+                            }}
                         />
                     ),
                     action: () => router.push('/user/profile'),
@@ -81,7 +85,11 @@ const ProfileBottomNavigation: React.FC<ProfileBottomNavigationProps> = ({ userT
                             alt="Profile"
                             width={32}
                             height={32}
-                            className="rounded-full object-cover"
+                            className="rounded-full object-cover border-2 border-gray-200"
+                            onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.src = "/logo/profile-default.png";
+                            }}
                         />
                     ),
                     action: () => router.push('/customer/profile'),

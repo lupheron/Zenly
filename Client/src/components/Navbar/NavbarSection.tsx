@@ -71,7 +71,11 @@ const NavbarSection = () => {
                                     alt="Profile"
                                     width={60}
                                     height={60}
-                                    className="rounded-full object-cover"
+                                    className="rounded-full object-cover border-2 border-gray-200"
+                                    onError={(e) => {
+                                        const target = e.target as HTMLImageElement;
+                                        target.src = "/logo/profile-default.png";
+                                    }}
                                 />
                             </div>
                             <button

@@ -37,15 +37,54 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-poppins), sans-serif;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
 }
 
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 100px;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+}
+
+/* Prevent horizontal scrolling and white spaces */
+* {
+  box-sizing: border-box;
+}
+
+#__next {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
 @media (min-width: 1024px) {
   html {
     scroll-padding-top: 200px;
+  }
+}
+
+/* Mobile-specific fixes */
+@media (max-width: 768px) {
+  body {
+    position: relative;
+    width: 100vw;
+    overflow-x: hidden;
+  }
+  
+  /* Ensure all containers don't exceed viewport width */
+  .container, .max-w-7xl, .max-w-6xl, .max-w-5xl, .max-w-4xl, .max-w-3xl, .max-w-2xl, .max-w-xl, .max-w-lg, .max-w-md, .max-w-sm {
+    max-width: 100vw;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Fix any elements that might cause horizontal overflow */
+  .w-full {
+    width: 100%;
+    max-width: 100%;
   }
 }

@@ -1,17 +1,27 @@
 import LoginForm from '@/src/components/Forms/LoginForm'
 import Image from 'next/image'
 import React from 'react'
+import Link from 'next/link'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 
 const LoginClient = () => {
     return (
-        <div className='flex flex-col md:flex-row items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8'>
+        <div className='flex flex-col md:flex-row items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8 w-full max-w-full overflow-x-hidden'>
+            {/* Back Button */}
+            <Link 
+                href="/" 
+                className="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg hover:bg-white transition-colors duration-200"
+            >
+                <ArrowBackIcon className="text-gray-700" />
+            </Link>
+
             {/* Form Section */}
-            <div className='w-full max-w-md lg:max-w-lg xl:max-w-xl bg-gray-200 p-4 sm:p-6 lg:p-8 rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none h-auto md:h-[550px] lg:h-[550px]'>
+            <div className='w-full max-w-md lg:max-w-lg xl:max-w-xl bg-gray-200 p-4 sm:p-6 lg:p-8 rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none h-auto md:h-[550px] lg:h-[550px] overflow-hidden'>
                 <LoginForm />
             </div>
             
             {/* Info Section */}
-            <div className='w-full max-w-md lg:max-w-lg xl:max-w-xl flex flex-col gap-3 sm:gap-4 bg-dark-green text-white p-4 sm:p-6 lg:p-8 rounded-b-2xl md:rounded-r-2xl md:rounded-bl-none h-auto md:h-[550px] lg:h-[550px]'>
+            <div className='w-full max-w-md lg:max-w-lg xl:max-w-xl flex flex-col gap-3 sm:gap-4 bg-dark-green text-white p-4 sm:p-6 lg:p-8 rounded-b-2xl md:rounded-r-2xl md:rounded-bl-none h-auto md:h-[550px] lg:h-[550px] overflow-hidden'>
                 <h1 className='text-2xl sm:text-3xl lg:text-4xl font-semibold'>Profilga Kirish</h1>
                 <p className='text-sm sm:text-base text-gray-200 leading-relaxed'>
                     Biz bilan birga o&apos;z dam olish maskaningizdan daromad qilishni boshlang

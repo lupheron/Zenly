@@ -22,7 +22,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Zenly - Tabiat bilan sayohat",
   description: "Tabiat qo'ynida dam oling, yangi joylarni kashf eting, sarguzashtlarga to'la sayohat boshlang.",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes",
 };
 
 export default function RootLayout({
@@ -33,16 +33,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <QueryProvider>
-          <LoaderProvider>
-            <RouteChangeListener />
-            <LoaderOverlay />
-            <Toaster richColors position="top-center" />
-            {children}
-            <Analytics />
-            <SpeedInsights />
-          </LoaderProvider>
-        </QueryProvider>
+        <div className="w-full max-w-full overflow-x-hidden">
+          <QueryProvider>
+            <LoaderProvider>
+              <RouteChangeListener />
+              <LoaderOverlay />
+              <Toaster richColors position="top-center" />
+              {children}
+              <Analytics />
+              <SpeedInsights />
+            </LoaderProvider>
+          </QueryProvider>
+        </div>
       </body>
     </html>
   );

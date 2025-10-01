@@ -29,7 +29,7 @@ const Comments = () => {
                     <Image
                         width={600}
                         height={450}
-                        src="/comments/comments.jpg"
+                        src="/comments/comment.jpg"
                         alt="Mijozlar fikrlari"
                         className="rounded-lg object-cover w-full h-full"
                     />

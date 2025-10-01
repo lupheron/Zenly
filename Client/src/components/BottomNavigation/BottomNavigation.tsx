@@ -67,10 +67,16 @@ const BottomNavigation = () => {
                     alt="Profile"
                     width={32}
                     height={32}
-                    className="rounded-full object-cover"
+                    className="rounded-full object-cover border-2 border-gray-200"
+                    onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = "/logo/profile-default.png";
+                    }}
                 />
             ) : (
-                <div className="w-8 h-8 rounded-full bg-gray-300"></div>
+                <div className="w-8 h-8 rounded-full bg-gray-300 border-2 border-gray-200 flex items-center justify-center">
+                    <span className="text-xs text-gray-500">?</span>
+                </div>
             ),
             action: hasToken ? handleProfileClick : () => router.push('/login'),
             isActive: pathname.startsWith('/user') || pathname.startsWith('/customer')
