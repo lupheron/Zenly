@@ -4,10 +4,10 @@ import TitleButtons from '../Button/TitleButtons';
 import { useRouter } from 'next/navigation';
 
 const banners = [
-    { id: 1, title: 'Plyajdagi dam olish', paragraph: 'Yumshoq qum, mayin to‘lqinlar va to‘liq xotirjamlik.', img: "/about/beachh.jpg" },
-    { id: 2, title: 'Wellness maskanlari', paragraph: 'Yoga, meditatsiya va spa xizmatlari.', img: "/about/well.jpg" },
-    { id: 3, title: 'Kabina zonalari', paragraph: 'Tabiat qo‘ynida mashinangizni to‘xtatib, xotirjam dam oling.', img: "/about/cabine.jpg" },
-    { id: 4, title: 'Eko sayohatlar', paragraph: 'Tabiiy go‘zalliklarni o‘rganing va atrof-muhitni asrang.', img: "/about/ecoo.jpg" },
+    { id: 1, title: 'Dachalar', paragraph: 'Eng yaxshi sharoitdagi dachalar', img: "/about/dacha.jpg" },
+    { id: 2, title: 'Touristic Zones', paragraph: 'National restaurants and cafes, historical and cultural monuments and many more', img: "/about/registan.jpeg" },
+    { id: 3, title: 'Guest Houses', paragraph: 'Affordable and comfortable guest houses', img: "/about/guest_houses.jpg" },
+    { id: 4, title: 'Eko sayohatlar', paragraph: "Tabiat qo'ynida va Tapchanlarda dam olish", img: "/about/ecoo.jpg" },
 ];
 
 const AboutSection = () => {
