@@ -28,15 +28,15 @@ const Register = () => {
         <div className="min-h-screen bg-gray-50">
             <NavbarSection />
 
-            {/* Back Button */}
             <Link 
                 href="/" 
-                className="absolute top-20 left-4 z-10 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg hover:bg-white transition-colors duration-200"
+                className="bg-white/95 backdrop-blur-sm rounded-lg mt-10 ml-5 w-30 px-3 py-2 shadow-lg hover:bg-white transition-colors duration-200 flex items-center gap-2"
             >
-                <ArrowBackIcon className="text-gray-700" />
+                <ArrowBackIcon className="text-gray-700 w-5 h-5" />
+                <span className="text-gray-700 font-medium text-sm">Qaytish</span>
             </Link>
 
-            <div className="flex flex-col md:flex-row items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8 w-full max-w-full overflow-x-hidden">
+             <div className="flex flex-col md:flex-row lg:items-center lg:justify-center p-4 sm:p-6 lg:p-8 w-full max-w-full overflow-x-hidden lg:mt-30">
                 <div className='w-full max-w-md lg:max-w-lg xl:max-w-xl bg-gray-200 p-4 sm:p-6 lg:p-8 rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none h-auto md:h-[700px] lg:h-[670px] flex items-center overflow-hidden'>
                     {selectedType && (
                         <div className="w-full">
@@ -52,7 +52,6 @@ const Register = () => {
                     )}
                 </div>
 
-                {/* Info Section */}
                 <RegisterClient />
             </div>
 

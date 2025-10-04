@@ -7,12 +7,14 @@ import HomeIcon from '@mui/icons-material/Home';
 import PhotoIcon from '@mui/icons-material/Photo';
 import CallIcon from '@mui/icons-material/Call';
 import { useUser } from '@/src/hooks/users/useUser';
+import AuthChoiceModal from '../Modal/AuthChoiceModal';
 
 const BottomNavigation = () => {
     const router = useRouter();
     const pathname = usePathname();
     const { data } = useUser();
     const [hasToken, setHasToken] = useState(false);
+    const [showAuthModal, setShowAuthModal] = useState(false);
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -78,7 +80,7 @@ const BottomNavigation = () => {
                     <span className="text-xs text-gray-500">?</span>
                 </div>
             ),
-            action: hasToken ? handleProfileClick : () => router.push('/login'),
+            action: hasToken ? handleProfileClick : () => setShowAuthModal(true),
             isActive: pathname.startsWith('/user') || pathname.startsWith('/customer')
         }
     ];
@@ -102,6 +104,11 @@ const BottomNavigation = () => {
                     </button>
                 ))}
             </div>
+            
+            <AuthChoiceModal 
+                open={showAuthModal} 
+                onClose={() => setShowAuthModal(false)} 
+            />
         </div>
     );
 };
