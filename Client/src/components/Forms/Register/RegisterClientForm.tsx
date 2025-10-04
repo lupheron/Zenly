@@ -6,7 +6,7 @@ import AlertDefault from '../../Alert/AlertDefault'
 import InputDefault from '../../FormElements/Input/InputDefault'
 import LabelDefault from '../../FormElements/label/LabelDefault'
 import { useRegisterUser } from '@/src/hooks/useRegisterUser'
-import SelectDefault from '../../FormElements/Select/SelectDefault'
+import AnimatedSelect from '../../FormElements/Select/AnimatedSelect'
 
 const uzbekistanProvinces = [
     { label: 'Andijon', value: 'Andijon' },
@@ -120,7 +120,7 @@ const RegisterClientForm = () => {
             </div>
 
             <div>
-                <SelectDefault
+                <AnimatedSelect
                     label="Yashash manzilingiz:"
                     htmlFor="address"
                     name="address"
@@ -128,6 +128,7 @@ const RegisterClientForm = () => {
                     onChange={handleChange}
                     options={uzbekistanProvinces}
                     customClassesSelect="w-full"
+                    variant="default"
                 />
             </div>
 

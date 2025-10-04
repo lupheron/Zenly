@@ -4,7 +4,6 @@ import Loader from '../../components/Loader/Loader'
 import PieChart from '../../components/charts/PieChart'
 import LineChart from '../../components/charts/LineChart'
 import UserComments from '@/src/components/Comments/UserComments'
-import SelectDefault from '@/src/components/FormElements/Select/SelectDefault'
 import AnimatedSelect from '@/src/components/FormElements/Select/AnimatedSelect'
 import { useDashboardWithDateFilter, DateFilterValue } from '@/src/hooks/useDashboard'
 import BarChart from '../../components/charts/BarChart'
@@ -72,7 +71,7 @@ export default function Dashboard() {
 
                 {/* Comments Section */}
                 <div className='w-full flex flex-col gap-4 min-w-0'>
-                    <SelectDefault
+                    <AnimatedSelect
                         options={postOptions}
                         onChange={e => setSelectedPostId(Number(e.target.value))}
                         value={selectedPostId ? String(selectedPostId) : ''}
@@ -81,6 +80,7 @@ export default function Dashboard() {
                         htmlFor={'posts_sort'}
                         customClassesLabel={'text-lg font-bold'}
                         customClassesSelect={'w-full border rounded px-2 py-1 cursor-pointer outline-none'}
+                        variant="default"
                     />
                     <UserComments postId={selectedPostId} dateFilter={dateFilter} />
                 </div>

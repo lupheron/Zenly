@@ -15,7 +15,6 @@ import { useGalleryByPostId } from '@/src/hooks/gallery/useGalleryByPostId'
 import EditGalleryForm from './EditGalleryForm'
 import AddIcon from '@mui/icons-material/Add'
 import { useUsersPosts } from '@/src/hooks/posts/useUsersPosts'
-import SelectDefault from '../FormElements/Select/SelectDefault'
 import { UpdatePostPayload } from '@/src/utils/UsersPosts'
 import { GalleryFile, GalleryImage, MainFile } from '@/src/utils/Gallery'
 import { useAreaTypes } from '@/src/hooks/area_types/useAreaType';
@@ -333,7 +332,7 @@ const EditPostForm = () => {
                         customClasses="w-full border border-gray-300 rounded px-3 py-2"
                     />
 
-                    <SelectDefault
+                    <AnimatedSelect
                         label="Viloyatni tanlang:"
                         htmlFor="location"
                         name="location"
@@ -341,6 +340,7 @@ const EditPostForm = () => {
                         onChange={handleChange}
                         options={uzbekistanProvinces}
                         customClassesSelect="w-full h-[60px] border border-gray-300 rounded px-3 py-2"
+                        variant="default"
                     />
 
                     <LabelDefault label="Odam soni:" htmlFor="members" />

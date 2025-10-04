@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import AlertDefault from '../../Alert/AlertDefault'
 import InputDefault from '../../FormElements/Input/InputDefault'
 import LabelDefault from '../../FormElements/label/LabelDefault'
-import SelectDefault from '../../FormElements/Select/SelectDefault'
+import AnimatedSelect from '../../FormElements/Select/AnimatedSelect'
 
 const uzbekistanProvinces = [
     { label: 'Andijon', value: 'Andijon' },
@@ -119,7 +119,7 @@ const RegisterForm = () => {
             </div>
 
             <div>
-                <SelectDefault
+                <AnimatedSelect
                     label="Yashash manzilingiz:"
                     htmlFor="address"
                     name="address"
@@ -127,6 +127,7 @@ const RegisterForm = () => {
                     onChange={handleChange}
                     options={uzbekistanProvinces}
                     customClassesSelect="w-full"
+                    variant="default"
                 />
             </div>
 
