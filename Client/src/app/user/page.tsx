@@ -5,6 +5,7 @@ import PieChart from '../../components/charts/PieChart'
 import LineChart from '../../components/charts/LineChart'
 import UserComments from '@/src/components/Comments/UserComments'
 import SelectDefault from '@/src/components/FormElements/Select/SelectDefault'
+import AnimatedSelect from '@/src/components/FormElements/Select/AnimatedSelect'
 import { useDashboardWithDateFilter, DateFilterValue } from '@/src/hooks/useDashboard'
 import BarChart from '../../components/charts/BarChart'
 import DateFilter from '../../components/Filter/DateFilter'
@@ -54,15 +55,16 @@ export default function Dashboard() {
 
                     <div className="mb-4 flex items-center justify-center gap-2">
                         <label htmlFor="sortBy" className="font-semibold">Tanlang:</label>
-                        <select
-                            id="sortBy"
+                        <AnimatedSelect
+                            name="sortBy"
                             value={sortBy}
                             onChange={e => setSortBy(e.target.value as 'views' | 'rating')}
-                            className="border rounded px-2 py-1 cursor-pointer outline-none"
-                        >
-                            <option value="views">Eng ko&apos;p ko&apos;rilganlar</option>
-                            <option value="rating">Eng yuqori reyting</option>
-                        </select>
+                            customClassesSelect="border rounded px-2 py-1 cursor-pointer outline-none"
+                            options={[
+                                { label: 'Eng ko\'p ko\'rilganlar', value: 'views' },
+                                { label: 'Eng yuqori reyting', value: 'rating' }
+                            ]}
+                        />
                     </div>
 
                     <LineChart labels={lineChartData.labels} data={lineChartData.data} />

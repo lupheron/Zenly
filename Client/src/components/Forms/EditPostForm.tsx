@@ -19,6 +19,7 @@ import SelectDefault from '../FormElements/Select/SelectDefault'
 import { UpdatePostPayload } from '@/src/utils/UsersPosts'
 import { GalleryFile, GalleryImage, MainFile } from '@/src/utils/Gallery'
 import { useAreaTypes } from '@/src/hooks/area_types/useAreaType';
+import AnimatedSelect from '../FormElements/Select/AnimatedSelect';
 
 const uzbekistanProvinces = [
     { label: 'Andijon', value: 'Andijon' },
@@ -352,25 +353,20 @@ const EditPostForm = () => {
                         customClasses="w-full border border-gray-300 rounded px-3 py-2"
                     />
 
-                    <LabelDefault label="Dam olish zonasining turi:" htmlFor="area_id" />
-                    <select
+                    <AnimatedSelect
+                        label="Dam olish zonasining turi:"
+                        htmlFor="area_id"
                         name="area_id"
                         value={form.area_id}
                         onChange={handleChange}
                         required
-                        className="w-full border border-gray-300 rounded px-3 py-2"
-                    >
-                        <option value="">Tanlang</option>
-                        {isAreaTypesLoading ? (
-                            <option disabled>Yuklanmoqda...</option>
-                        ) : (
-                            areaTypes?.map((area) => (
-                                <option key={area.id} value={area.id}>
-                                    {area.name}
-                                </option>
-                            ))
-                        )}
-                    </select>
+                        placeholder="Tanlang"
+                        customClassesSelect="w-full border border-gray-300 rounded px-3 py-2"
+                        options={isAreaTypesLoading ? [] : (areaTypes?.map((area) => ({
+                            label: area.name,
+                            value: area.id.toString()
+                        })) || [])}
+                    />
 
                     <div className="flex gap-4 mt-4">
                         <ButtonDefault label="Saqlash" type="submit" customClasses="w-full" />

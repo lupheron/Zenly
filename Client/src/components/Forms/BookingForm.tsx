@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import AnimatedSelect from '../FormElements/Select/AnimatedSelect';
 
 interface BookingFormProps {
     onSearch: (params: { location: string; sort: string; guests: string }) => void;
@@ -115,18 +116,20 @@ const BookingForm: React.FC<BookingFormProps> = ({ onSearch }) => {
 
                 <div>
                     <label className="block text-sm font-medium mb-2">Saralash</label>
-                    <select
+                    <AnimatedSelect
+                        variant="booking"
+                        name="sort"
                         value={formData.sort}
                         onChange={(e) => handleInputChange('sort', e.target.value)}
-                        className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                        <option value="">Tanlang</option>
-                        <option value="recent">Eng yangi</option>
-                        <option value="rating">Eng yuqori reyting</option>
-                        <option value="price_low">Arzon narx</option>
-                        <option value="price_high">Qimmat narx</option>
-                        <option value="popular">Mashhur</option>
-                    </select>
+                        placeholder="Tanlang"
+                        options={[
+                            { label: 'Eng yangi', value: 'recent' },
+                            { label: 'Eng yuqori reyting', value: 'rating' },
+                            { label: 'Arzon narx', value: 'price_low' },
+                            { label: 'Qimmat narx', value: 'price_high' },
+                            { label: 'Mashhur', value: 'popular' }
+                        ]}
+                    />
                 </div>
 
                 <div>

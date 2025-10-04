@@ -28,10 +28,10 @@ const PostInfo = () => {
     const { data: currentUser } = useUser()
 
     const banners = [
-        { id: 1, title: 'Plyajdagi dam olish' },
-        { id: 2, title: 'Wellness maskanlari' },
-        { id: 3, title: 'Kabina zonalari' },
-        { id: 4, title: 'Eko sayohatlar' },
+        { id: 1, title: 'Dachalar' },
+        { id: 2, title: 'Touristic Zones' },
+        { id: 3, title: 'Guest Houses' },
+        { id: 4, title: 'Eko travels' },
     ]
 
     const handleBack = () => {

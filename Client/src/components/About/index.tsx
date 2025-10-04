@@ -7,7 +7,7 @@ const banners = [
     { id: 1, title: 'Dachalar', paragraph: 'Eng yaxshi sharoitdagi dachalar', img: "/about/dacha.jpg" },
     { id: 2, title: 'Touristic Zones', paragraph: 'National restaurants and cafes, historical and cultural monuments and many more', img: "/about/registan.jpeg" },
     { id: 3, title: 'Guest Houses', paragraph: 'Affordable and comfortable guest houses', img: "/about/guest_houses.jpg" },
-    { id: 4, title: 'Eko sayohatlar', paragraph: "Tabiat qo'ynida va Tapchanlarda dam olish", img: "/about/ecoo.jpg" },
+    { id: 4, title: 'Eko travels', paragraph: "Tabiat qo'ynida va Tapchanlarda dam olish", img: "/about/ecoo.jpg" },
 ];
 
 const AboutSection = () => {

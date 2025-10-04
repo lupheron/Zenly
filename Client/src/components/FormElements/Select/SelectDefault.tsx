@@ -1,5 +1,5 @@
 import React from 'react'
-import LabelDefault from '../label/LabelDefault'
+import AnimatedSelect from './AnimatedSelect'
 
 interface Option {
     label: string;
@@ -30,32 +30,18 @@ const SelectDefault: React.FC<SelectDefaultProps> = ({
     onChange
 }) => {
     return (
-        <div className="w-full">
-            <LabelDefault label={label} htmlFor={htmlFor} customClasses={customClassesLabel} />
-            <select
-                name={name}
-                id={htmlFor}
-                value={value}
-                onChange={onChange}
-                className={`h-[40px] sm:h-[45px] md:h-[50px] border border-gray-300 rounded px-3 sm:px-4 md:px-5 py-2 sm:py-3 md:py-0 text-sm sm:text-base bg-white focus:outline-none focus:ring-2 focus:ring-light-green focus:border-transparent ${customClassesSelect}`}
-            >
-                {options.map((opt, index) => {
-                    if (typeof opt === 'string') {
-                        return (
-                            <option key={index} value={opt} className={`py-2 ${customClassesOptions}`}>
-                                {opt}
-                            </option>
-                        )
-                    } else {
-                        return (
-                            <option key={index} value={opt.value} className={`py-2 ${customClassesOptions}`}>
-                                {opt.label}
-                            </option>
-                        )
-                    }
-                })}
-            </select>
-        </div>
+        <AnimatedSelect
+            label={label}
+            htmlFor={htmlFor}
+            name={name}
+            customClassesLabel={customClassesLabel}
+            customClassesSelect={customClassesSelect}
+            customClassesOptions={customClassesOptions}
+            options={options}
+            value={value}
+            onChange={onChange}
+            variant="default"
+        />
     )
 }
 

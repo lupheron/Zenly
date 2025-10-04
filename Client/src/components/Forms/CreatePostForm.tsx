@@ -15,6 +15,7 @@ import CreateFeatureForm from './CreateFeatureForm'
 import AddIcon from '@mui/icons-material/Add'
 import { useFeatures } from '@/src/hooks/features/useFeatures'
 import { useAreaTypes } from '@/src/hooks/area_types/useAreaType';
+import AnimatedSelect from '../FormElements/Select/AnimatedSelect';
 
 interface GalleryFile {
     uid: string
@@ -327,27 +328,20 @@ const CreatePostForm = () => {
                                 customClasses="w-full border border-gray-300 rounded px-3 py-2"
                             />
 
-                            <LabelDefault label="Dam olish zonasining turi:" htmlFor="area_id" />
-                            <div className="flex gap-2 items-center">
-                                <select
-                                    name="area_id"
-                                    value={form.area_id}
-                                    onChange={handleChange}
-                                    required
-                                    className="w-full border border-gray-300 rounded px-3 py-2"
-                                >
-                                    <option value="">Tanlang</option>
-                                    {isAreaTypesLoading ? (
-                                        <option disabled>Yuklanmoqda...</option>
-                                    ) : (
-                                        areaTypes?.map((area) => (
-                                            <option key={area.id} value={area.id}>
-                                                {area.name}
-                                            </option>
-                                        ))
-                                    )}
-                                </select>
-                            </div>
+                            <AnimatedSelect
+                                label="Dam olish zonasining turi:"
+                                htmlFor="area_id"
+                                name="area_id"
+                                value={form.area_id}
+                                onChange={handleChange}
+                                required
+                                placeholder="Tanlang"
+                                customClassesSelect="w-full border border-gray-300 rounded px-3 py-2"
+                                options={isAreaTypesLoading ? [] : (areaTypes?.map((area) => ({
+                                    label: area.name,
+                                    value: area.id.toString()
+                                })) || [])}
+                            />
 
                             <LabelDefault label="Odam soni:" htmlFor="members" />
                             <InputDefault

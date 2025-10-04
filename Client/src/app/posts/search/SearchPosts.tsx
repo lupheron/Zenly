@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import AnimatedSelect from '@/src/components/FormElements/Select/AnimatedSelect';
 
 interface SearchPostsProps {
     onSearch: (params: { location: string; sort: string; guests: string }) => void;
@@ -118,19 +119,14 @@ const SearchPosts: React.FC<SearchPostsProps> = ({ onSearch }) => {
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Qidiruv turi *
                         </label>
-                        <select
+                        <AnimatedSelect
+                            name="sort"
                             value={searchData.sort}
                             onChange={(e) => handleInputChange('sort', e.target.value)}
-                            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.sort ? 'border-red-500' : 'border-gray-300'
-                                }`}
-                        >
-                            <option value="">Tanlang...</option>
-                            {sortOptions.map(option => (
-                                <option key={option.value} value={option.value}>
-                                    {option.label}
-                                </option>
-                            ))}
-                        </select>
+                            placeholder="Tanlang..."
+                            customClassesSelect={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.sort ? 'border-red-500' : 'border-gray-300'}`}
+                            options={sortOptions}
+                        />
                         {errors.sort && (
                             <p className="text-red-500 text-xs mt-1">{errors.sort}</p>
                         )}

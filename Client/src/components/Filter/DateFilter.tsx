@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import AnimatedSelect from '../FormElements/Select/AnimatedSelect';
 
 interface DateFilterValue {
   startDate: string;
@@ -65,20 +66,20 @@ export default function DateFilter({ value, onChange, minYear = 2020, maxYear }:
         <div className="flex-1 flex flex-col items-stretch">
           <span className="font-semibold mb-1 text-center sm:text-left">From</span>
           <div className="flex flex-col sm:flex-row gap-2 w-full">
-            <select
-              className="border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-400 transition cursor-pointer w-full sm:w-auto"
-              value={start ? start.getFullYear() : today.getFullYear()}
+            <AnimatedSelect
+              variant="filter"
+              name="startYear"
+              value={start ? start.getFullYear().toString() : today.getFullYear().toString()}
               onChange={e => handleYearChange('start', Number(e.target.value))}
-            >
-              {years.map(y => <option key={y} value={y}>{y}</option>)}
-            </select>
-            <select
-              className="border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-400 transition cursor-pointer w-full sm:w-auto"
-              value={start ? start.getMonth() : today.getMonth()}
+              options={years.map(y => ({ label: y.toString(), value: y.toString() }))}
+            />
+            <AnimatedSelect
+              variant="filter"
+              name="startMonth"
+              value={start ? start.getMonth().toString() : today.getMonth().toString()}
               onChange={e => handleMonthChange('start', Number(e.target.value))}
-            >
-              {months.map((m, i) => <option key={m} value={i}>{m}</option>)}
-            </select>
+              options={months.map((m, i) => ({ label: m, value: i.toString() }))}
+            />
             <input
               type="date"
               className="border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-400 transition cursor-pointer w-full sm:w-auto"
@@ -92,20 +93,20 @@ export default function DateFilter({ value, onChange, minYear = 2020, maxYear }:
         <div className="flex-1 flex flex-col items-stretch">
           <span className="font-semibold mb-1 text-center sm:text-left">To</span>
           <div className="flex flex-col sm:flex-row gap-2 w-full">
-            <select
-              className="border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-400 transition cursor-pointer w-full sm:w-auto"
-              value={end ? end.getFullYear() : today.getFullYear()}
+            <AnimatedSelect
+              variant="filter"
+              name="endYear"
+              value={end ? end.getFullYear().toString() : today.getFullYear().toString()}
               onChange={e => handleYearChange('end', Number(e.target.value))}
-            >
-              {years.map(y => <option key={y} value={y}>{y}</option>)}
-            </select>
-            <select
-              className="border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-400 transition cursor-pointer w-full sm:w-auto"
-              value={end ? end.getMonth() : today.getMonth()}
+              options={years.map(y => ({ label: y.toString(), value: y.toString() }))}
+            />
+            <AnimatedSelect
+              variant="filter"
+              name="endMonth"
+              value={end ? end.getMonth().toString() : today.getMonth().toString()}
               onChange={e => handleMonthChange('end', Number(e.target.value))}
-            >
-              {months.map((m, i) => <option key={m} value={i}>{m}</option>)}
-            </select>
+              options={months.map((m, i) => ({ label: m, value: i.toString() }))}
+            />
             <input
               type="date"
               className="border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-400 transition cursor-pointer w-full sm:w-auto"
