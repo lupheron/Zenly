@@ -19,6 +19,7 @@ import { UpdatePostPayload } from '@/src/utils/UsersPosts'
 import { GalleryFile, GalleryImage, MainFile } from '@/src/utils/Gallery'
 import { useAreaTypes } from '@/src/hooks/area_types/useAreaType';
 import AnimatedSelect from '../FormElements/Select/AnimatedSelect';
+import LocationPicker from './LocationPicker';
 
 const uzbekistanProvinces = [
     { label: 'Andijon', value: 'Andijon' },
@@ -65,6 +66,8 @@ const EditPostForm = () => {
         description: '',
         price_daily: '',
         location: '',
+        latitude: '',
+        longitude: '',
         members: '',
         area_id: ''
     })
@@ -82,6 +85,8 @@ const EditPostForm = () => {
                 small_description: post.small_description || '',
                 price_daily: post.price_daily?.toString() || '',
                 location: post.location || '',
+                latitude: post.latitude?.toString() || '',
+                longitude: post.longitude?.toString() || '',
                 members: post.members || '',
                 area_id: post.area_id || ""
             })
@@ -341,6 +346,21 @@ const EditPostForm = () => {
                         options={uzbekistanProvinces}
                         customClassesSelect="w-full h-[60px] border border-gray-300 rounded px-3 py-2"
                         variant="default"
+                    />
+
+                    <LocationPicker
+                        latitude={form.latitude ? parseFloat(form.latitude) : null}
+                        longitude={form.longitude ? parseFloat(form.longitude) : null}
+                        location={form.location}
+                        onLocationSelect={(data) => {
+                            setForm(prev => ({
+                                ...prev,
+                                latitude: data.latitude.toString(),
+                                longitude: data.longitude.toString(),
+                                location: data.location
+                            }))
+                        }}
+                        className="mb-4"
                     />
 
                     <LabelDefault label="Odam soni:" htmlFor="members" />

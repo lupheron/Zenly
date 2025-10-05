@@ -14,6 +14,7 @@ use App\Http\Controllers\Users;
 use App\Http\Controllers\AreaTypesController;
 use App\Http\Controllers\BookingRequest;
 use App\Http\Controllers\BookingChecking;
+use App\Http\Controllers\MapController;
 use App\Http\Middleware\Cors;
 use App\Http\Middleware\AdminAuth;
 use Illuminate\Http\Request;
@@ -45,6 +46,11 @@ Route::group(['middleware' => [Cors::class]], function () {
     Route::put('/area-types/{id}', [AreaTypesController::class, 'update']);
     Route::get('/posts/top-rated', [Posts::class, 'topRated']);
     Route::get('/users/{id}/basic', [Users::class, 'getBasicUserInfo']);
+    
+    // Map routes
+    Route::get('/map/posts', [MapController::class, 'getMapPosts']);
+    Route::get('/map/posts-by-region', [MapController::class, 'getPostsByRegion']);
+    Route::get('/map/regions', [MapController::class, 'getUzbekistanRegions']);
 
     // Public image serving
     Route::get('/uploads/{path}', [Uploads::class, 'serveImage'])->where('path', '.*');

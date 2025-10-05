@@ -16,6 +16,7 @@ import AddIcon from '@mui/icons-material/Add'
 import { useFeatures } from '@/src/hooks/features/useFeatures'
 import { useAreaTypes } from '@/src/hooks/area_types/useAreaType';
 import AnimatedSelect from '../FormElements/Select/AnimatedSelect';
+import LocationPicker from './LocationPicker';
 
 interface GalleryFile {
     uid: string
@@ -51,6 +52,8 @@ const CreatePostForm = () => {
         description: '',
         price_daily: '',
         location: '',
+        latitude: '',
+        longitude: '',
         members: '',
         area_id: ''
     })
@@ -341,6 +344,21 @@ const CreatePostForm = () => {
                                     label: area.name,
                                     value: area.id.toString()
                                 })) || [])}
+                            />
+
+                            <LocationPicker
+                                latitude={form.latitude ? parseFloat(form.latitude) : null}
+                                longitude={form.longitude ? parseFloat(form.longitude) : null}
+                                location={form.location}
+                                onLocationSelect={(data) => {
+                                    setForm(prev => ({
+                                        ...prev,
+                                        latitude: data.latitude.toString(),
+                                        longitude: data.longitude.toString(),
+                                        location: data.location
+                                    }))
+                                }}
+                                className="mb-4"
                             />
 
                             <LabelDefault label="Odam soni:" htmlFor="members" />

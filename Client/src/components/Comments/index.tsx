@@ -12,7 +12,7 @@ const Comments = () => {
     const { data } = useWebComments();
 
     return (
-        <div className="py-20 mt-20 bg-dark-green text-white" id='coments'>
+        <div className="py-20 mt-20" id='coments'>
             <div data-aos="fade-top" className="mb-20 flex flex-col text-center items-center px-4">
                 <TitleButtons 
                     label="Biz haqimizda fikringiz" 

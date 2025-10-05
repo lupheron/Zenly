@@ -31,6 +31,8 @@ class Posts extends Controller
                 "posts.small_description",
                 "posts.description",
                 "posts.location",
+                "posts.latitude",
+                "posts.longitude",
                 "posts.members",
                 "posts.price_daily",
                 "posts.img",
@@ -46,10 +48,21 @@ class Posts extends Controller
             ->leftJoin('post_comments', 'post_comments.post_id', '=', 'posts.id')
             ->leftJoin('post_views', 'post_views.post_id', '=', 'posts.id')
             ->where('posts.status', 1) // Only show available posts (status = 1)
-            ->groupBy('posts.id', 'posts.user_id', 'posts.area_id', 'posts.title', 'posts.small_description', 'posts.description', 'posts.location', 'posts.members', 'posts.price_daily', 'posts.img', 'posts.status', 'posts.created_at', 'posts.updated_at', 'posts.deleted_at');
+            ->groupBy('posts.id', 'posts.user_id', 'posts.area_id', 'posts.title', 'posts.small_description', 'posts.description', 'posts.location', 'posts.latitude', 'posts.longitude', 'posts.members', 'posts.price_daily', 'posts.img', 'posts.status', 'posts.created_at', 'posts.updated_at', 'posts.deleted_at');
 
         if ($request->has('area_id')) {
             $query->where('area_id', $request->input('area_id'));
+        }
+
+        // Coordinate filtering for map functionality
+        if ($request->has('bounds')) {
+            $bounds = $request->input('bounds');
+            if (is_array($bounds) && isset($bounds['north'], $bounds['south'], $bounds['east'], $bounds['west'])) {
+                $query->whereNotNull('posts.latitude')
+                      ->whereNotNull('posts.longitude')
+                      ->whereBetween('posts.latitude', [$bounds['south'], $bounds['north']])
+                      ->whereBetween('posts.longitude', [$bounds['west'], $bounds['east']]);
+            }
         }
         // Date filtering
         $startDate = $request->input('start_date');
@@ -90,6 +103,8 @@ class Posts extends Controller
                 "posts.small_description",
                 "posts.description",
                 "posts.location",
+                "posts.latitude",
+                "posts.longitude",
                 "posts.members",
                 "posts.price_daily",
                 "posts.img",
@@ -146,6 +161,8 @@ class Posts extends Controller
                 "posts.small_description",
                 "posts.description",
                 "posts.location",
+                "posts.latitude",
+                "posts.longitude",
                 "posts.members",
                 "posts.price_daily",
                 "posts.img",
@@ -194,6 +211,8 @@ class Posts extends Controller
                 "posts.small_description",
                 "posts.description",
                 "posts.location",
+                "posts.latitude",
+                "posts.longitude",
                 "posts.members",
                 "posts.price_daily",
                 "posts.img",
@@ -302,6 +321,8 @@ class Posts extends Controller
                 "posts.small_description",
                 "posts.description",
                 "posts.location",
+                "posts.latitude",
+                "posts.longitude",
                 "posts.members",
                 "posts.price_daily",
                 "posts.img",
@@ -363,6 +384,8 @@ class Posts extends Controller
                 "posts.small_description",
                 "posts.description",
                 "posts.location",
+                "posts.latitude",
+                "posts.longitude",
                 "posts.members",
                 "posts.price_daily",
                 "posts.img",
@@ -442,7 +465,7 @@ class Posts extends Controller
             ->leftJoin('post_views', 'post_views.post_id', '=', 'posts.id')
             ->leftJoin('features', 'posts.id', '=', 'features.post_id')
             ->where('posts.status', 1) // Only show available posts (status = 1)
-            ->groupBy('posts.id', 'posts.user_id', 'posts.area_id', 'posts.title', 'posts.small_description', 'posts.description', 'posts.location', 'posts.members', 'posts.price_daily', 'posts.img', 'posts.status', 'posts.created_at', 'posts.updated_at', 'posts.deleted_at');
+            ->groupBy('posts.id', 'posts.user_id', 'posts.area_id', 'posts.title', 'posts.small_description', 'posts.description', 'posts.location', 'posts.latitude', 'posts.longitude', 'posts.members', 'posts.price_daily', 'posts.img', 'posts.status', 'posts.created_at', 'posts.updated_at', 'posts.deleted_at');
         if ($areaId) {
             $query->where('posts.area_id', $areaId);
         }
@@ -548,6 +571,8 @@ class Posts extends Controller
             "description" => $request->input('description'),
             "small_description" => $request->input('small_description'),
             "location" => $request->input('location'),
+            "latitude" => $request->input('latitude') ? (float)$request->input('latitude') : null,
+            "longitude" => $request->input('longitude') ? (float)$request->input('longitude') : null,
             "members" => $request->input('members'),
             "price_daily" => $request->input('price_daily'),
             "user_id" => $user->id,
@@ -623,6 +648,8 @@ class Posts extends Controller
                 "description" => $request->input('description'),
                 "small_description" => $request->input('small_description'),
                 "location" => $request->input('location'),
+                "latitude" => $request->input('latitude') ? (float)$request->input('latitude') : null,
+                "longitude" => $request->input('longitude') ? (float)$request->input('longitude') : null,
                 "members" => $request->input('members'),
                 "price_daily" => $request->input('price_daily'),
                 "img" => $imgPath,
@@ -714,7 +741,7 @@ class Posts extends Controller
             ->leftJoin('post_comments', 'post_comments.post_id', '=', 'posts.id')
             ->leftJoin('post_views', 'post_views.post_id', '=', 'posts.id')
             ->where('posts.status', 1) // Only show available posts (status = 1)
-            ->groupBy('posts.id', 'posts.user_id', 'posts.area_id', 'posts.title', 'posts.small_description', 'posts.description', 'posts.location', 'posts.members', 'posts.price_daily', 'posts.img', 'posts.status', 'posts.created_at', 'posts.updated_at', 'posts.deleted_at');
+            ->groupBy('posts.id', 'posts.user_id', 'posts.area_id', 'posts.title', 'posts.small_description', 'posts.description', 'posts.location', 'posts.latitude', 'posts.longitude', 'posts.members', 'posts.price_daily', 'posts.img', 'posts.status', 'posts.created_at', 'posts.updated_at', 'posts.deleted_at');
         if ($startDate) {
             $query->where('posts.created_at', '>=', $startDate);
         }

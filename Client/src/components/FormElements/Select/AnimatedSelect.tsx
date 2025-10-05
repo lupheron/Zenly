@@ -98,7 +98,7 @@ const AnimatedSelect: React.FC<AnimatedSelectProps> = ({
             setSelectedLabel('');
         }
         setSelectedValue(value);
-    }, [value, options]);
+    }, [value]); // Remove options dependency to prevent infinite loop
 
     // Handle option selection
     const handleOptionSelect = (optionValue: string, optionLabel: string) => {

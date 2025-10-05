@@ -7,6 +7,7 @@ import Comments from '../components/Comments'
 import PageFooter from '../components/PageFooter'
 import NavbarSection from '../components/Navbar/NavbarSection'
 import BottomNavigation from '../components/BottomNavigation/BottomNavigation'
+import MapMain from '../components/Map'
 
 const LandingPage = () => {
     return (
@@ -16,6 +17,7 @@ const LandingPage = () => {
             <AboutSection />
             <ReadySection />
             <PopularActivity />
+            <MapMain />
             <Comments />
             <PageFooter />
             <BottomNavigation />
