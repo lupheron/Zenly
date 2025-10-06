@@ -5,8 +5,8 @@ export interface MapPost {
   title: string
   small_description: string
   location: string
-  latitude: number
-  longitude: number
+  latitude: number | string
+  longitude: number | string
   members: number
   price_daily: number
   img: string | null

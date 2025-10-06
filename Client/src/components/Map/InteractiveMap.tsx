@@ -14,7 +14,6 @@ interface InteractiveMapProps {
   posts: MapPost[]
   selectedRegion: string
   isLoading: boolean
-  onBoundsChange: (bounds: { north: number; south: number; east: number; west: number }) => void
 }
 
 // Service type colors
@@ -33,8 +32,7 @@ const getServiceColor = (areaTypeName: string) => {
 const InteractiveMap: React.FC<InteractiveMapProps> = ({
   posts,
   selectedRegion,
-  isLoading,
-  onBoundsChange
+  isLoading
 }) => {
   const [showGoogleMaps, setShowGoogleMaps] = useState(false)
 
@@ -62,7 +60,6 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         {/* Posts representation with better styling */}
         {posts.length > 0 && (
           <div className='mt-6 grid grid-cols-2 gap-4 max-w-md'>
-            {console.log('Fallback map showing', posts.length, 'posts')}
             {posts.slice(0, 4).map((post) => (
               <div
                 key={post.id}
@@ -129,19 +126,24 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   useEffect(() => {
     console.log('InteractiveMap - Posts:', posts.length, posts)
     console.log('InteractiveMap - ShowGoogleMaps:', showGoogleMaps)
+    
+    // Log coordinate information for debugging
+    posts.forEach((post, index) => {
+      console.log(`Post ${index}: ${post.title}`, {
+        latitude: post.latitude,
+        longitude: post.longitude,
+        latType: typeof post.latitude,
+        lngType: typeof post.longitude
+      })
+    })
   }, [posts, showGoogleMaps])
 
   useEffect(() => {
     if (posts.length > 0) {
-      const bounds = {
-        north: 45.6,
-        south: 37.2,
-        east: 73.2,
-        west: 56.0
-      }
-      onBoundsChange(bounds)
+      // Note: Bounds change handling removed as it's not currently used
+      // This useEffect is kept for potential future bounds handling
     }
-  }, [posts, onBoundsChange])
+  }, [posts])
 
   useEffect(() => {
     const loadGoogleMaps = async () => {
@@ -181,30 +183,47 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
         console.log('Adding markers for', posts.length, 'posts')
         posts.forEach((post) => {
-          if (post.latitude && post.longitude) {
-            console.log('Adding marker for post:', post.title, 'at', post.latitude, post.longitude)
+          // Convert latitude and longitude to numbers and validate
+          const lat = parseFloat(String(post.latitude))
+          const lng = parseFloat(String(post.longitude))
+          
+          if (!isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0) {
+            console.log('Adding marker for post:', post.title, 'at', lat, lng)
+            
+            // Use the original image directly - Google Maps will handle it
+            const markerIcon = {
+              url: post.img || '/logo/profile-default.png',
+              scaledSize: new window.google.maps.Size(20, 20),
+              origin: new window.google.maps.Point(0, 0),
+              anchor: new window.google.maps.Point(10, 20)
+            }
+            
             const marker = new window.google.maps.Marker({
-              position: { lat: post.latitude, lng: post.longitude },
+              position: { lat: lat, lng: lng },
               map: map,
               title: post.title,
-              icon: {
-                path: window.google.maps.SymbolPath.CIRCLE,
-                scale: 8,
-                fillColor: getServiceColor(post.area_type_name),
-                fillOpacity: 0.8,
-                strokeColor: '#ffffff',
-                strokeWeight: 2
-              }
+              icon: markerIcon,
+              animation: window.google.maps.Animation.DROP
             })
 
             const infoWindow = new window.google.maps.InfoWindow({
               content: `
-                <div class="p-2">
-                  <h3 class="font-semibold text-sm">${post.title}</h3>
-                  <p class="text-xs text-gray-600 mt-1">${post.area_type_name}</p>
-                  <p class="text-xs text-gray-600">${post.location}</p>
-                  <p class="text-xs text-gray-600">$${post.price_daily}/day</p>
-                  <a href="/posts/${post.id}" class="text-xs text-blue-600 hover:underline">View Details</a>
+                <div class="p-3 max-w-xs">
+                  <div class="flex items-start space-x-3">
+                    <img src="${post.img || '/logo/profile-default.png'}" 
+                         alt="${post.title}" 
+                         class="w-16 h-16 object-cover rounded-lg" />
+                    <div class="flex-1">
+                      <h3 class="font-semibold text-sm text-gray-900 mb-1">${post.title}</h3>
+                      <p class="text-xs text-gray-600 mb-1">${post.area_type_name}</p>
+                      <p class="text-xs text-gray-600 mb-1">${post.location}</p>
+                      <p class="text-sm font-semibold text-green-600 mb-2">$${post.price_daily}/day</p>
+                      <button onclick="window.open('/posts/${post.id}', '_blank')" 
+                              class="text-xs bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition-colors">
+                        View Details
+                      </button>
+                    </div>
+                  </div>
                 </div>
               `
             })
@@ -212,6 +231,13 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
             marker.addListener('click', () => {
               infoWindow.open(map, marker)
             })
+            
+            // Add double-click listener to redirect to post details
+            marker.addListener('dblclick', () => {
+              window.open(`/posts/${post.id}`, '_blank')
+            })
+          } else {
+            console.log('Skipping post due to invalid coordinates:', post.title, 'lat:', post.latitude, 'lng:', post.longitude)
           }
         })
 

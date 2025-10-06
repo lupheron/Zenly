@@ -22,7 +22,6 @@ const MapMain = () => {
   const [mapPosts, setMapPosts] = useState<MapPost[]>([])
   const [sidebarPosts, setSidebarPosts] = useState<MapPost[]>([])
   const [isLoading, setIsLoading] = useState(false)
-  const [mapBounds, setMapBounds] = useState<{ north: number; south: number; east: number; west: number } | null>(null)
 
   const { data: areaTypes } = useAreaTypes()
 
@@ -37,7 +36,11 @@ const MapMain = () => {
       const data = await response.json()
       
       if (data.status === 200) {
+        console.log('Map posts fetched:', data.data.length, 'posts')
+        console.log('Map posts data:', data.data)
         setMapPosts(data.data)
+      } else {
+        console.log('Map posts fetch failed:', data)
       }
     } catch (error) {
       console.error('Error fetching map posts:', error)
@@ -56,7 +59,11 @@ const MapMain = () => {
       const data = await response.json()
       
       if (data.status === 200) {
+        console.log('Sidebar posts fetched:', data.data.length, 'posts')
+        console.log('Sidebar posts data:', data.data)
         setSidebarPosts(data.data)
+      } else {
+        console.log('Sidebar posts fetch failed:', data)
       }
     } catch (error) {
       console.error('Error fetching sidebar posts:', error)
@@ -64,9 +71,17 @@ const MapMain = () => {
   }, [selectedService, selectedRegion])
 
   useEffect(() => {
-    fetchMapPosts()
-    fetchSidebarPosts()
-  }, [selectedService, selectedRegion])
+    // Only fetch posts when both service and region are selected
+    if (selectedService && selectedRegion) {
+      fetchMapPosts()
+      fetchSidebarPosts()
+    } else {
+      // Clear posts when filters are not complete
+      setMapPosts([])
+      setSidebarPosts([])
+    }
+  }, [selectedService, selectedRegion, fetchMapPosts, fetchSidebarPosts])
+
 
   const handleServiceChange = (serviceId: string) => {
     setSelectedService(serviceId)
@@ -76,9 +91,6 @@ const MapMain = () => {
     setSelectedRegion(region)
   }
 
-  const handleMapBoundsChange = useCallback((bounds: { north: number; south: number; east: number; west: number }) => {
-    setMapBounds(bounds)
-  }, [])
 
   return (
     <div className='bg-dark-green mt-20 p-8 lg:p-20'>
@@ -98,21 +110,44 @@ const MapMain = () => {
         <div className='grid grid-cols-1 lg:grid-cols-4 gap-6 mt-8'>
           {/* Map - 70% width on large screens */}
           <div className='lg:col-span-3'>
-            <InteractiveMap
-              posts={mapPosts}
-              selectedRegion={selectedRegion}
-              isLoading={isLoading}
-              onBoundsChange={handleMapBoundsChange}
-            />
+            {selectedService && selectedRegion ? (
+              <InteractiveMap
+                posts={mapPosts}
+                selectedRegion={selectedRegion}
+                isLoading={isLoading}
+              />
+            ) : (
+              <div className='w-full h-96 lg:h-[500px] bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg shadow-lg flex items-center justify-center'>
+                <div className='text-center p-8'>
+                  <div className='text-6xl mb-4'>🗺️</div>
+                  <h3 className='text-xl font-semibold text-gray-700 mb-2'>Select Service & Region</h3>
+                  <p className='text-gray-600 max-w-md'>
+                    Please select a service type and region from the filters above to view posts on the interactive map.
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Posts Sidebar - 30% width on large screens */}
           <div className='lg:col-span-1'>
-            <MapPostsSidebar
-              posts={sidebarPosts}
-              selectedRegion={selectedRegion}
-              isLoading={isLoading}
-            />
+            {selectedService && selectedRegion ? (
+              <MapPostsSidebar
+                posts={sidebarPosts}
+                selectedRegion={selectedRegion}
+                isLoading={isLoading}
+              />
+            ) : (
+              <div className='w-full h-96 lg:h-[500px] bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg shadow-lg flex items-center justify-center'>
+                <div className='text-center p-6'>
+                  <div className='text-4xl mb-3'>📍</div>
+                  <h3 className='text-lg font-semibold text-gray-700 mb-2'>Posts Will Appear Here</h3>
+                  <p className='text-gray-600 text-sm'>
+                    Select service type and region to see available posts
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
