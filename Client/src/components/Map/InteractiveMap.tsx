@@ -166,6 +166,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     }
   }, [selectedRegion, selectedService, mapInstance])
 
+
   useEffect(() => {
     if (posts.length > 0) {
       // Note: Bounds change handling removed as it's not currently used
@@ -223,8 +224,6 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         setMapInstance(map)
 
         console.log('Adding markers for', posts.length, 'posts')
-        const markers: google.maps.Marker[] = []
-        
         posts.forEach((post) => {
           // Convert latitude and longitude to numbers and validate
           const lat = parseFloat(String(post.latitude))
@@ -253,23 +252,20 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
               animation: window.google.maps.Animation.DROP
             })
 
-            // Store marker for bounds calculation
-            markers.push(marker)
-
             const infoWindow = new window.google.maps.InfoWindow({
               content: `
-                <div class="p-3 max-w-xs">
-                  <div class="flex items-start space-x-3">
+                <div class="max-w-xs">
+                  <div class="flex items-start space-x-5">
                     <img src="${post.img || '/logo/profile-default.png'}" 
                          alt="${post.title}" 
-                         class="w-16 h-16 object-cover rounded-full" />
+                         class="w-18 h-18 object-cover rounded-full" />
                     <div class="flex-1">
-                      <h3 class="font-semibold text-sm text-gray-900 mb-1">${post.title}</h3>
-                      <p class="text-xs text-gray-600 mb-1">${post.area_type_name}</p>
-                      <p class="text-xs text-gray-600 mb-1">${cleanLocation(post.location)}</p>
-                      <p class="text-sm font-semibold text-green-600 mb-2">$${post.price_daily}/day</p>
+                      <h3 class="font-semibold text-xl text-gray-900 mb-1">${post.title}</h3>
+                      <p class="text-[14px] text-gray-600 mb-1">${post.area_type_name}</p>
+                      <p class="text-[14px] text-gray-600 mb-1">${cleanLocation(post.location)}</p>
+                      <p class="text-[15px] font-semibold text-green-600 mb-3">$${post.price_daily}/day</p>
                       <button onclick="window.open('/posts/${post.id}', '_blank')" 
-                              class="text-xs bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition-colors">
+                              class="text-[14px] font-semibold w-full h-7 cursor-pointer bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition-colors">
                         View Details
                       </button>
                     </div>
@@ -290,23 +286,6 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
             console.log('Skipping post due to invalid coordinates:', post.title, 'lat:', post.latitude, 'lng:', post.longitude)
           }
         })
-
-        // Fit map bounds to show all markers with padding
-        if (markers.length > 0) {
-          const bounds = new window.google.maps.LatLngBounds()
-          markers.forEach(marker => {
-            bounds.extend(marker.getPosition())
-          })
-          
-          // Add padding to the bounds
-          map.fitBounds(bounds)
-          
-          // Ensure minimum zoom level for better visibility
-          const listener = window.google.maps.event.addListener(map, 'idle', () => {
-            if (map.getZoom() > 12) map.setZoom(12) // Max zoom level for region view
-            window.google.maps.event.removeListener(listener)
-          })
-        }
 
         console.log('Google Maps initialized successfully with', posts.length, 'posts')
         }
