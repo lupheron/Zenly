@@ -19,6 +19,7 @@ import { usePostViews } from '@/src/hooks/postViews/usePostViews'
 import { useUser } from '@/src/hooks/users/useUser'
 import AlertDefault from '@/src/components/Alert/AlertDefault'
 import { useCreateBookingRequest } from '@/src/hooks/booking/useBookingRequests'
+import { cleanLocation } from '@/src/utils/locationUtils'
 
 const PostInfo = () => {
     const params = useParams()
@@ -91,7 +92,7 @@ const PostInfo = () => {
                             </div>
                             <div className='flex flex-col sm:flex-row gap-2 md:gap-3'>
                                 <span className='font-medium text-sm md:text-base'>Manzil:</span>
-                                <span className="text-gray-500 text-sm md:text-base">{post.location}</span>
+                                <span className="text-gray-500 text-sm md:text-base">{cleanLocation(post.location)}</span>
                             </div>
                             <div className='flex flex-col sm:flex-row gap-2 md:gap-3'>
                                 <span className='font-medium text-sm md:text-base'>Odam Soni:</span>

@@ -114,6 +114,7 @@ const MapMain = () => {
               <InteractiveMap
                 posts={mapPosts}
                 selectedRegion={selectedRegion}
+                selectedService={selectedService}
                 isLoading={isLoading}
               />
             ) : (

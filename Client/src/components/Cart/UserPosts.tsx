@@ -2,6 +2,7 @@ import Image from 'next/image'
 import React from 'react'
 import ButtonDefault from '../Button/ButtonDefault'
 import Rating from '../Rating/Rating'
+import { cleanLocation } from '@/src/utils/locationUtils'
 
 interface UsersPostsProps {
     src: string;
@@ -47,7 +48,7 @@ const UsersPosts: React.FC<UsersPostsProps> = ({
             <div className='flex flex-col justify-between gap-2 mt-4 lg:mt-5 px-2 lg:px-4'>
                 <h2 className='text-lg lg:text-xl xl:text-2xl font-bold'>{title}</h2>
                 <p className='text-sm lg:text-base text-gray-700 line-clamp-2'>{description}</p>
-                <p className='text-sm lg:text-base text-gray-600'>{location}</p>
+                <p className='text-sm lg:text-base text-gray-600'>{cleanLocation(location)}</p>
                 <div className='flex items-center gap-2'>
                     <Rating postId={rating} />
                 </div>

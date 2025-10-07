@@ -1,7 +1,9 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
+import Image from 'next/image'
 import { MapPost } from './types'
+import { cleanLocation } from '@/src/utils/locationUtils'
 
 declare global {
   interface Window {
@@ -13,28 +15,38 @@ declare global {
 interface InteractiveMapProps {
   posts: MapPost[]
   selectedRegion: string
+  selectedService: string
   isLoading: boolean
 }
 
-// Service type colors
-const getServiceColor = (areaTypeName: string) => {
-  const colors: { [key: string]: string } = {
-    'Monuments': '#FF6B6B', // Red
-    'Restaurants': '#4ECDC4', // Teal
-    'Guest Houses': '#45B7D1', // Blue
-    'Eco Travel Zones': '#96CEB4', // Green
-    'Hotels': '#FFEAA7', // Yellow
-    'Resorts': '#DDA0DD', // Plum
-  }
-  return colors[areaTypeName] || '#95A5A6' // Default gray
+// Uzbekistan regions coordinates mapping
+const uzbekistanRegionsCoordinates: { [key: string]: { lat: number; lng: number; zoom: number } } = {
+  'Andijon': { lat: 40.7684, lng: 72.2361, zoom: 9 },
+  'Buxoro': { lat: 39.7681, lng: 64.4556, zoom: 9 },
+  'Fargʻona': { lat: 40.3864, lng: 71.7864, zoom: 9 },
+  'Jizzax': { lat: 40.1164, lng: 67.8411, zoom: 9 },
+  'Xorazm': { lat: 41.3564, lng: 60.8564, zoom: 9 },
+  'Namangan': { lat: 40.9953, lng: 71.6725, zoom: 9 },
+  'Navoiy': { lat: 40.0844, lng: 65.3792, zoom: 9 },
+  'Qashqadaryo': { lat: 38.8619, lng: 66.2725, zoom: 9 },
+  'Qoraqalpogʻiston': { lat: 43.7683, lng: 59.0214, zoom: 8 },
+  'Samarqand': { lat: 39.6547, lng: 66.9597, zoom: 9 },
+  'Sirdaryo': { lat: 40.8436, lng: 68.6617, zoom: 9 },
+  'Surxondaryo': { lat: 37.9409, lng: 67.5709, zoom: 9 },
+  'Toshkent viloyati': { lat: 41.2213, lng: 69.8597, zoom: 9 },
+  'Toshkent shahri': { lat: 41.2995, lng: 69.2401, zoom: 10 }
 }
+
 
 const InteractiveMap: React.FC<InteractiveMapProps> = ({
   posts,
   selectedRegion,
+  selectedService,
   isLoading
 }) => {
   const [showGoogleMaps, setShowGoogleMaps] = useState(false)
+  const [mapInstance, setMapInstance] = useState<google.maps.Map | null>(null)
+
 
   // Simple fallback map component
   const SimpleMapFallback = () => (
@@ -67,9 +79,12 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
                 onClick={() => window.open(`/posts/${post.id}`, '_blank')}
               >
                 <div className='flex items-center mb-2'>
-                  <div
-                    className='w-3 h-3 rounded-full mr-2'
-                    style={{ backgroundColor: getServiceColor(post.area_type_name) }}
+                  <Image 
+                    src={post.img || '/logo/profile-default.png'} 
+                    alt={post.title}
+                    width={32}
+                    height={32}
+                    className='rounded-full object-cover mr-2'
                   />
                   <span className='text-xs font-medium text-gray-800 truncate'>
                     {post.title}
@@ -138,6 +153,19 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     })
   }, [posts, showGoogleMaps])
 
+  // Handle region and service changes - update map view
+  useEffect(() => {
+    if (mapInstance && selectedRegion && uzbekistanRegionsCoordinates[selectedRegion]) {
+      const regionCoords = uzbekistanRegionsCoordinates[selectedRegion]
+      
+      // Pan and zoom to the selected region
+      mapInstance.panTo({ lat: regionCoords.lat, lng: regionCoords.lng })
+      mapInstance.setZoom(regionCoords.zoom)
+      
+      console.log('Map updated to region:', selectedRegion, 'at zoom level:', regionCoords.zoom)
+    }
+  }, [selectedRegion, selectedService, mapInstance])
+
   useEffect(() => {
     if (posts.length > 0) {
       // Note: Bounds change handling removed as it's not currently used
@@ -169,10 +197,20 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
             return
           }
 
+          // Determine initial center and zoom based on selected region
+          let initialCenter = { lat: 41.2995, lng: 69.2401 } // Default to Tashkent
+          let initialZoom = 6
+
+          if (selectedRegion && uzbekistanRegionsCoordinates[selectedRegion]) {
+            const regionCoords = uzbekistanRegionsCoordinates[selectedRegion]
+            initialCenter = { lat: regionCoords.lat, lng: regionCoords.lng }
+            initialZoom = regionCoords.zoom
+          }
+
           console.log('Creating Google Maps instance...')
           const map = new window.google.maps.Map(mapElement, {
-          center: { lat: 41.2995, lng: 69.2401 },
-          zoom: 6,
+          center: initialCenter,
+          zoom: initialZoom,
           styles: [
             { featureType: 'all', elementType: 'geometry.fill', stylers: [{ weight: '2.00' }] },
             { featureType: 'all', elementType: 'geometry.stroke', stylers: [{ color: '#9c9c9c' }] },
@@ -181,7 +219,12 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
           ]
         })
 
+        // Store map instance for later use
+        setMapInstance(map)
+
         console.log('Adding markers for', posts.length, 'posts')
+        const markers: google.maps.Marker[] = []
+        
         posts.forEach((post) => {
           // Convert latitude and longitude to numbers and validate
           const lat = parseFloat(String(post.latitude))
@@ -190,12 +233,16 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
           if (!isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0) {
             console.log('Adding marker for post:', post.title, 'at', lat, lng)
             
-            // Use the original image directly - Google Maps will handle it
+            // Create circular marker icon with larger size
             const markerIcon = {
               url: post.img || '/logo/profile-default.png',
-              scaledSize: new window.google.maps.Size(20, 20),
+              scaledSize: new window.google.maps.Size(50, 50), // Increased from 20x20 to 50x50
               origin: new window.google.maps.Point(0, 0),
-              anchor: new window.google.maps.Point(10, 20)
+              anchor: new window.google.maps.Point(25, 25), // Centered anchor
+              shape: {
+                type: 'circle',
+                coords: [25, 25, 25] // Circle with radius 25
+              }
             }
             
             const marker = new window.google.maps.Marker({
@@ -206,17 +253,20 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
               animation: window.google.maps.Animation.DROP
             })
 
+            // Store marker for bounds calculation
+            markers.push(marker)
+
             const infoWindow = new window.google.maps.InfoWindow({
               content: `
                 <div class="p-3 max-w-xs">
                   <div class="flex items-start space-x-3">
                     <img src="${post.img || '/logo/profile-default.png'}" 
                          alt="${post.title}" 
-                         class="w-16 h-16 object-cover rounded-lg" />
+                         class="w-16 h-16 object-cover rounded-full" />
                     <div class="flex-1">
                       <h3 class="font-semibold text-sm text-gray-900 mb-1">${post.title}</h3>
                       <p class="text-xs text-gray-600 mb-1">${post.area_type_name}</p>
-                      <p class="text-xs text-gray-600 mb-1">${post.location}</p>
+                      <p class="text-xs text-gray-600 mb-1">${cleanLocation(post.location)}</p>
                       <p class="text-sm font-semibold text-green-600 mb-2">$${post.price_daily}/day</p>
                       <button onclick="window.open('/posts/${post.id}', '_blank')" 
                               class="text-xs bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition-colors">
@@ -241,6 +291,23 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
           }
         })
 
+        // Fit map bounds to show all markers with padding
+        if (markers.length > 0) {
+          const bounds = new window.google.maps.LatLngBounds()
+          markers.forEach(marker => {
+            bounds.extend(marker.getPosition())
+          })
+          
+          // Add padding to the bounds
+          map.fitBounds(bounds)
+          
+          // Ensure minimum zoom level for better visibility
+          const listener = window.google.maps.event.addListener(map, 'idle', () => {
+            if (map.getZoom() > 12) map.setZoom(12) // Max zoom level for region view
+            window.google.maps.event.removeListener(listener)
+          })
+        }
+
         console.log('Google Maps initialized successfully with', posts.length, 'posts')
         }
       } catch (error) {
@@ -250,7 +317,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     }
 
     loadGoogleMaps()
-  }, [showGoogleMaps, posts])
+  }, [showGoogleMaps, posts, selectedRegion])
 
   return (
     <div className='relative'>

@@ -14,6 +14,7 @@ import { useUserComments } from '@/src/hooks/comments/useUserComments'
 import ReusableModal from '@/src/components/Modal/ReusableModal'
 import SwiperDefault from '@/src/components/Swiper/SwiperDefault'
 import CommentCart from '@/src/components/Cart/CommentCart'
+import { cleanLocation } from '@/src/utils/locationUtils'
 
 const UserPostInfo = () => {
     const params = useParams()
@@ -84,7 +85,7 @@ const UserPostInfo = () => {
                                 </div>
                                 <div className='flex flex-col sm:flex-row gap-2 md:gap-3'>
                                     <span className='font-medium text-sm md:text-base'>Manzil:</span>
-                                    <span className="text-gray-500 text-sm md:text-base">{post.location}</span>
+                                    <span className="text-gray-500 text-sm md:text-base">{cleanLocation(post.location)}</span>
                                 </div>
                                 <div className='flex flex-col sm:flex-row gap-2 md:gap-3'>
                                     <span className='font-medium text-sm md:text-base'>Odam Soni:</span>
