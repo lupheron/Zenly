@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import useLoginStore from '../../../hooks/Auth/useLogin';
 import { useUserByIdStore } from '../../../hooks/Users/useUserById';
-import styles from '../../../assets/css/index.module.css';
+import styles from '../../../assets/css/pages.module.css';
 import ButtonDefault from '../../../Components/Mircro/Button/ButtonDefault';
 import DelModal from '../../../Components/Macro/Modals/DelModal';
 import Modal from '../../../Components/Macro/Modals/Modal';
@@ -18,7 +17,6 @@ function DetailedUser() {
     const [activeTab, setActiveTab] = useState('posts');
     const { id } = useParams();
     const navigate = useNavigate();
-    const { user: currentUser, logout, loading } = useLoginStore();
     const { user: userData, loading: loadingUser, error, getUserById, clearUser, deleteUser, updateUser, updateLoading } = useUserByIdStore();
     const [imageError, setImageError] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -34,13 +32,8 @@ function DetailedUser() {
         };
     }, [id, getUserById, clearUser]);
 
-    const handleLogout = async () => {
-        await logout();
-        navigate('/login');
-    };
-
     const handleBack = () => {
-        navigate('/dashboard');
+        navigate('/users');
     };
 
     const handleDeleteClick = () => {
@@ -121,43 +114,24 @@ function DetailedUser() {
         setImageError(true);
     };
 
-    if (loading) {
-        return (
-            <div className={styles.loadingContainer}>
-                Loading...
-            </div>
-        );
-    }
-
     if (loadingUser) {
         return (
             <div className={styles.loadingContainer}>
-                Loading user data...
+                <div className={styles.loadingSpinner}></div>
+                <div className={styles.loadingText}>Loading user data...</div>
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className={styles.dashboardContainer}>
-                <div className={styles.mainContent}>
-                    <div className={styles.header}>
-                        <h1 className={styles.dashboardTitle}>User Details</h1>
-                        <button
-                            onClick={handleLogout}
-                            className={styles.logoutButton}
-                        >
-                            Logout
-                        </button>
-                    </div>
-                    <div className={styles.errorContainer}>
-                        Error: {error}
-                    </div>
-                    <button
-                        onClick={handleBack}
-                        className={styles.backButton}
-                    >
-                        Back to Dashboard
+            <div className={styles.pageContainer}>
+                <div className={styles.emptyState}>
+                    <div className={styles.emptyStateIcon}>⚠️</div>
+                    <h2 className={styles.emptyStateTitle}>Error Loading User</h2>
+                    <p className={styles.emptyStateDescription}>{error}</p>
+                    <button onClick={handleBack} className={styles.primaryButton} style={{ marginTop: '1rem' }}>
+                        Back to Users
                     </button>
                 </div>
             </div>
@@ -165,126 +139,172 @@ function DetailedUser() {
     }
 
     return (
-        <div className={styles.dashboardContainer}>
-            <div className={styles.mainContent}>
-                <div className={styles.header}>
-                    <h1 className={styles.dashboardTitle}>User Details</h1>
-                    <button
-                        onClick={handleLogout}
-                        className={styles.logoutButton}
-                    >
-                        Logout
+        <div className={styles.pageContainer}>
+            {/* Page Header */}
+            <div className={styles.pageHeader}>
+                <div>
+                    <h1 className={styles.pageTitle}>User Details</h1>
+                    <p className={styles.pageDescription}>
+                        View and manage user information and activities
+                    </p>
+                </div>
+                <div className={styles.cardActions}>
+                    <button onClick={handleBack} className={styles.secondaryButton}>
+                        ← Back to Users
+                    </button>
+                    <button onClick={handleEditClick} className={styles.primaryButton}>
+                        ✏️ Edit User
+                    </button>
+                    <button onClick={handleDeleteClick} className={styles.dangerButton}>
+                        🗑️ Delete User
                     </button>
                 </div>
+            </div>
 
-                {currentUser && (
-                    <div className={styles.userInfo}>
-                        <h2 className={styles.userWelcome}>
-                            Welcome, {currentUser.name} {currentUser.surename}!
-                        </h2>
-                    </div>
-                )}
-
-                {userData ? (
-                    <div className={styles.userDetailsContainer}>
-                        <h2 className={styles.userDetailsTitle}>
-                            User Information
-                        </h2>
-
-                        {/* Profile Image Section */}
-                        <div className={styles.profileSection}>
-                            <div className={styles.profileImageContainer}>
+            {userData ? (
+                <>
+                    {/* Profile Card */}
+                    <div className={styles.contentCard} style={{ marginBottom: '2rem' }}>
+                        <div style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+                            {/* Profile Image */}
+                            <div style={{ flexShrink: 0 }}>
                                 {userData.img && !imageError ? (
                                     <img
                                         src={getImageUrl(userData.img)}
                                         alt={`${userData.fullname}'s profile`}
-                                        className={styles.profileImage}
+                                        style={{
+                                            width: '120px',
+                                            height: '120px',
+                                            borderRadius: '50%',
+                                            objectFit: 'cover',
+                                            border: '4px solid #f0f0f0'
+                                        }}
                                         onError={handleImageError}
                                     />
                                 ) : (
-                                    <div className={styles.profileAvatar}>
+                                    <div style={{
+                                        width: '120px',
+                                        height: '120px',
+                                        borderRadius: '50%',
+                                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        color: 'white',
+                                        fontSize: '3rem',
+                                        fontWeight: '700'
+                                    }}>
                                         {userData.fullname ? userData.fullname.charAt(0).toUpperCase() : 'U'}
                                     </div>
                                 )}
                             </div>
-                            <div className={styles.profileInfo}>
-                                <h3 className={styles.profileName}>
+                            
+                            {/* Profile Info */}
+                            <div style={{ flex: 1 }}>
+                                <h2 style={{ fontSize: '1.75rem', fontWeight: '700', color: '#2c3e50', margin: '0 0 0.5rem 0' }}>
                                     {userData.fullname}
-                                </h3>
-                                <p className={styles.profileDetail}>
-                                    <strong>Username:</strong> {userData.username}
+                                </h2>
+                                <p style={{ fontSize: '1rem', color: '#6c757d', margin: '0 0 1rem 0' }}>
+                                    @{userData.username} • ID: {userData.id}
                                 </p>
-                                <p className={styles.profileDetail}>
-                                    <strong>User ID:</strong> {userData.id}
-                                </p>
+                                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                                    <span style={{
+                                        padding: '0.375rem 0.75rem',
+                                        borderRadius: '0.375rem',
+                                        fontSize: '0.875rem',
+                                        fontWeight: '600',
+                                        background: userData.deleted_at ? '#fee' : '#e8f5e9',
+                                        color: userData.deleted_at ? '#c62828' : '#2e7d32'
+                                    }}>
+                                        {userData.deleted_at ? '❌ Deleted' : '✅ Active'}
+                                    </span>
+                                    <span style={{
+                                        padding: '0.375rem 0.75rem',
+                                        borderRadius: '0.375rem',
+                                        fontSize: '0.875rem',
+                                        fontWeight: '600',
+                                        background: '#e3f2fd',
+                                        color: '#1565c0'
+                                    }}>
+                                        {userData.type === 1 ? '👤 Client' : '👤 User'}
+                                    </span>
+                                    {userData.vip_status && (
+                                        <span style={{
+                                            padding: '0.375rem 0.75rem',
+                                            borderRadius: '0.375rem',
+                                            fontSize: '0.875rem',
+                                            fontWeight: '600',
+                                            background: 'linear-gradient(135deg, #ffd700 0%, #ffed4e 100%)',
+                                            color: '#b8860b'
+                                        }}>
+                                            ⭐ {userData.vip_status}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Information Grid */}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
+                        {/* Contact Information */}
+                        <div className={styles.contentCard}>
+                            <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#2c3e50', margin: '0 0 1rem 0', paddingBottom: '0.75rem', borderBottom: '2px solid #f0f0f0' }}>
+                                📞 Contact Information
+                            </h3>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                                <div>
+                                    <div style={{ fontSize: '0.8125rem', color: '#6c757d', marginBottom: '0.25rem' }}>Phone</div>
+                                    <div style={{ fontSize: '1rem', fontWeight: '500', color: '#2c3e50' }}>
+                                        {userData.phone || 'Not provided'}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style={{ fontSize: '0.8125rem', color: '#6c757d', marginBottom: '0.25rem' }}>Address</div>
+                                    <div style={{ fontSize: '1rem', fontWeight: '500', color: '#2c3e50' }}>
+                                        {userData.address || 'Not provided'}
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        {/* User Details Grid */}
-                        <div className={styles.userDetailsGrid}>
-                            {/* Contact Information */}
-                            <div className={styles.infoCard}>
-                                <h4 className={styles.infoCardTitle}>Contact Information</h4>
-                                <p className={styles.infoCardText}>
-                                    <strong>Phone:</strong> {userData.phone || 'Not provided'}
-                                </p>
-                                <p className={styles.infoCardText}>
-                                    <strong>Address:</strong> {userData.address || 'Not provided'}
-                                </p>
-                            </div>
-
-                            {/* Account Status */}
-                            <div className={styles.infoCard}>
-                                <h4 className={styles.infoCardTitle}>Account Status</h4>
-                                <p className={styles.infoCardText}>
-                                    <strong>User Type:</strong>
-                                    <span className={userData.type === 'admin' ? styles.statusAdmin : styles.statusUser}>
-                                        {userData.type === 1 ? 'Client' : 'User'}
-                                    </span>
-                                </p>
-                                <p className={styles.infoCardText}>
-                                    <strong>VIP Status:</strong>
-                                    <span className={userData.vip_status ? styles.statusVip : styles.statusRegular}>
-                                        {userData.vip_status}
-                                    </span>
-                                </p>
-                                <p className={styles.infoCardText}>
-                                    <strong>Account Status:</strong>
-                                    <span className={userData.deleted_at ? styles.statusDeleted : styles.statusActive}>
-                                        {userData.deleted_at ? 'Deleted' : 'Active'}
-                                    </span>
-                                </p>
-                            </div>
-
-                            {/* Timestamps */}
-                            <div className={styles.infoCard}>
-                                <h4 className={styles.infoCardTitle}>Account Timestamps</h4>
-                                <p className={styles.infoCardText}>
-                                    <strong>Created:</strong> {formatDate(userData.created_at)}
-                                </p>
-                                <p className={styles.infoCardText}>
-                                    <strong>Last Updated:</strong> {formatDate(userData.updated_at)}
-                                </p>
+                        {/* Timestamps */}
+                        <div className={styles.contentCard}>
+                            <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#2c3e50', margin: '0 0 1rem 0', paddingBottom: '0.75rem', borderBottom: '2px solid #f0f0f0' }}>
+                                📅 Account Timestamps
+                            </h3>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                                <div>
+                                    <div style={{ fontSize: '0.8125rem', color: '#6c757d', marginBottom: '0.25rem' }}>Created</div>
+                                    <div style={{ fontSize: '0.9375rem', fontWeight: '500', color: '#2c3e50' }}>
+                                        {formatDate(userData.created_at)}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style={{ fontSize: '0.8125rem', color: '#6c757d', marginBottom: '0.25rem' }}>Last Updated</div>
+                                    <div style={{ fontSize: '0.9375rem', fontWeight: '500', color: '#2c3e50' }}>
+                                        {formatDate(userData.updated_at)}
+                                    </div>
+                                </div>
                                 {userData.deleted_at && (
-                                    <p className={styles.infoCardText}>
-                                        <strong>Deleted:</strong> {formatDate(userData.deleted_at)}
-                                    </p>
+                                    <div>
+                                        <div style={{ fontSize: '0.8125rem', color: '#6c757d', marginBottom: '0.25rem' }}>Deleted</div>
+                                        <div style={{ fontSize: '0.9375rem', fontWeight: '500', color: '#c62828' }}>
+                                            {formatDate(userData.deleted_at)}
+                                        </div>
+                                    </div>
                                 )}
                             </div>
                         </div>
+                    </div>
 
-                        {/* Additional Information */}
-                        <div className={styles.infoCard}>
-                            <h4 className={styles.infoCardTitle}>Additional Information</h4>
-                            <p className={styles.infoCardText}>
-                                <strong>Remember Token:</strong> {userData.remember_token ? 'Set' : 'Not set'}
-                            </p>
-                        </div>
-                        <div>
-                            <h2>Foydalanuvchiga tegishli aktivlar :</h2>
-                            <SelectSection activeTab={activeTab} setActiveTab={setActiveTab} />
-
-                            {/* 🔽 Conditionally render based on tab */}
+                    {/* User Activities */}
+                    <div className={styles.contentCard}>
+                        <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#2c3e50', margin: '0 0 1.5rem 0' }}>
+                            User Activities & Assets
+                        </h3>
+                        <SelectSection activeTab={activeTab} setActiveTab={setActiveTab} />
+                        <div style={{ marginTop: '1.5rem' }}>
                             {activeTab === 'posts' && <UsersPosts />}
                             {activeTab === 'orders' && <BookingRequest />}
                             {activeTab === 'ratings' && <Rating />}
@@ -292,61 +312,42 @@ function DetailedUser() {
                             {activeTab === 'comments' && <Comments />}
                         </div>
                     </div>
-                ) : (
-                    <div className={styles.noDataContainer}>
-                        <p className={styles.noDataText}>
-                            No user data available.
-                        </p>
-                    </div>
-                )}
-
-                <div className={styles.userDetailedButtons}>
-                    <ButtonDefault
-                        onClick={handleBack}
-                        children={"Back to Dashboard"}
-                    />
-
-                    <ButtonDefault
-                        children={"Foydalanuvchini tahrirlash"}
-                        variant={"yellow"}
-                        onClick={handleEditClick}
-                    />
-
-                    <ButtonDefault
-                        children={"Foydalanuvchini o'chirish"}
-                        variant={"red"}
-                        onClick={handleDeleteClick}
-                    />
+                </>
+            ) : (
+                <div className={styles.emptyState}>
+                    <div className={styles.emptyStateIcon}>👤</div>
+                    <h2 className={styles.emptyStateTitle}>No User Data</h2>
+                    <p className={styles.emptyStateDescription}>
+                        The requested user information could not be found.
+                    </p>
                 </div>
+            )}
 
-                {/* Delete Confirmation Modal */}
-                <DelModal
-                    isOpen={showDeleteModal}
-                    onClose={handleDeleteCancel}
-                    onConfirm={handleDeleteConfirm}
-                    title="Delete User"
-                    message={`Are you sure you want to delete ${userData?.fullname || 'this user'}?`}
-                    confirmText="Delete User"
-                    cancelText="Cancel"
+            {/* Modals */}
+            <DelModal
+                isOpen={showDeleteModal}
+                onClose={handleDeleteCancel}
+                onConfirm={handleDeleteConfirm}
+                title="Delete User"
+                message={`Are you sure you want to delete ${userData?.fullname || 'this user'}? This action cannot be undone.`}
+                confirmText="Delete User"
+                cancelText="Cancel"
+            />
+
+            <Modal
+                isOpen={showEditModal}
+                onClose={handleEditCancel}
+                title="Edit User"
+                size="large"
+                closeOnOverlayClick={false}
+            >
+                <EditUserForm
+                    userData={userData}
+                    onSubmit={handleEditSubmit}
+                    onCancel={handleEditCancel}
+                    loading={updateLoading}
                 />
-
-                {/* Edit User Modal */}
-                <Modal
-                    isOpen={showEditModal}
-                    onClose={handleEditCancel}
-                    title="Edit User"
-                    size="large"
-                    closeOnOverlayClick={false}
-                >
-                    <EditUserForm
-                        userData={userData}
-                        onSubmit={handleEditSubmit}
-                        onCancel={handleEditCancel}
-                        loading={updateLoading}
-                    />
-                </Modal>
-
-            </div>
+            </Modal>
         </div>
     );
 }

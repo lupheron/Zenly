@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import styles from '../../../../assets/css/index.module.css';
+import styles from '../../../../assets/css/pages.module.css';
 import { usePostByIdHook } from '../../../../hooks/Posts/usePosts';
 import Features from '../../../Mircro/Features/Features';
-import ButtonDefault from '../../../Mircro/Button/ButtonDefault';
 import Gallery from '../../../Mircro/Gallery/Gallery';
 import Rating from '../../../Mircro/Rating/Rating';
 import DelModal from '../../Modals/DelModal';
@@ -46,162 +45,207 @@ const DetailedPosts = () => {
     };
 
     const handleBack = () => {
-        navigate('/dashboard');
+        navigate('/posts');
     };
 
     if (!postId) return null;
+    
     if (loading) return (
         <div className={styles.loadingContainer}>
-            <p>Yuklanmoqda...</p>
+            <div className={styles.loadingSpinner}></div>
+            <div className={styles.loadingText}>Loading post data...</div>
         </div>
     );
 
     if (error || !post) return (
-        <div className={styles.errorContainer}>
-            <p>Xatolik yuz berdi yoki post topilmadi</p>
-            <ButtonDefault onClick={handleBack}>
-                Orqaga qaytish
-            </ButtonDefault>
+        <div className={styles.pageContainer}>
+            <div className={styles.emptyState}>
+                <div className={styles.emptyStateIcon}>⚠️</div>
+                <h2 className={styles.emptyStateTitle}>Error Loading Post</h2>
+                <p className={styles.emptyStateDescription}>
+                    {error || 'Post not found'}
+                </p>
+                <button onClick={handleBack} className={styles.primaryButton} style={{ marginTop: '1rem' }}>
+                    Back to Posts
+                </button>
+            </div>
         </div>
     );
 
     const areaTitle = banners.find(b => b.id === post.area_id)?.title ?? 'Nomaʼlum tur';
 
     return (
-        <div className={styles.dashboardContainer}>
-            <div className={styles.mainContent}>
-                {/* Header */}
-                <div className={styles.header}>
-                    <h1 className={styles.dashboardTitle}>Post Details</h1>
-                    <ButtonDefault onClick={handleBack}>
-                        Orqaga
-                    </ButtonDefault>
+        <div className={styles.pageContainer}>
+            {/* Page Header */}
+            <div className={styles.pageHeader}>
+                <div>
+                    <h1 className={styles.pageTitle}>{post.title}</h1>
+                    <p className={styles.pageDescription}>
+                        {post.small_description}
+                    </p>
+                </div>
+                <div className={styles.cardActions}>
+                    <button onClick={handleBack} className={styles.secondaryButton}>
+                        ← Back to Posts
+                    </button>
+                    <button onClick={() => navigate(`/posts/${post.id}/edit`)} className={styles.primaryButton}>
+                        ✏️ Edit Post
+                    </button>
+                    <button onClick={() => setDeleteModalOpen(true)} className={styles.dangerButton}>
+                        🗑️ Delete Post
+                    </button>
+                </div>
+            </div>
+
+            {/* Main Content */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 400px), 1fr))', gap: '2rem', marginBottom: '2rem' }}>
+                {/* Gallery Section */}
+                <div className={styles.contentCard}>
+                    <h2 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#2c3e50', margin: '0 0 1.5rem 0' }}>
+                        📸 Gallery
+                    </h2>
+                    <Gallery postId={post.id} mainImg={post.img} />
                 </div>
 
-                {/* Main Content */}
-                <div className={styles.detailedPostContainer}>
-                    <div className={styles.postDetailsWrapper}>
-                        {/* Left Section - Gallery */}
-                        <div className={styles.gallerySection}>
-                            <Gallery postId={post.id} mainImg={post.img} />
+                {/* Post Information */}
+                <div className={styles.contentCard}>
+                    <h2 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#2c3e50', margin: '0 0 1.5rem 0' }}>
+                        📋 Post Information
+                    </h2>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem', background: '#f8f9fa', borderRadius: '0.5rem' }}>
+                            <span style={{ fontWeight: '500', color: '#6c757d' }}>Rating</span>
+                            <Rating
+                                rating={post.avg_rating || 0}
+                                size="small"
+                                showRatingNumber={true}
+                                showRatingText={false}
+                            />
                         </div>
-
-                        {/* Right Section - Details */}
-                        <div className={styles.detailsSection}>
-                            <h1 className={styles.postMainTitle}>{post.title}</h1>
-                            <p className={styles.postSmallDescription}>{post.small_description}</p>
-                            <p className={styles.postFullDescription}>{post.description}</p>
-
-                            {/* Features Section */}
-                            <div className={styles.featuresSection}>
-                                <h2 className={styles.sectionTitle}>Mavjud Bo'lgan Imkoniyatlar:</h2>
-                                <Features postId={post.id} />
-                            </div>
-
-                            {/* Post Information Grid */}
-                            <div className={styles.postInfoGrid}>
-                                <div className={styles.infoItem}>
-                                    <span className={styles.infoLabel}>Reyting:</span>
-                                    <Rating
-                                        rating={post.avg_rating || 0}
-                                        size="small"
-                                        showRatingNumber={true}
-                                        showRatingText={false}
-                                    />
-                                </div>
-                                <div className={styles.infoItem}>
-                                    <span className={styles.infoLabel}>Narxi:</span>
-                                    <span className={styles.infoValue}>${post.price_daily}</span>
-                                </div>
-                                <div className={styles.infoItem}>
-                                    <span className={styles.infoLabel}>Manzil:</span>
-                                    <span className={styles.infoValue}>{post.location}</span>
-                                </div>
-                                <div className={styles.infoItem}>
-                                    <span className={styles.infoLabel}>Odam Soni:</span>
-                                    <span className={styles.infoValue}>{post.members}</span>
-                                </div>
-                                <div className={styles.infoItem}>
-                                    <span className={styles.infoLabel}>Maskan turi:</span>
-                                    <span className={styles.infoValue}>{areaTitle}</span>
-                                </div>
-                                <div className={styles.infoItem}>
-                                    <span className={styles.infoLabel}>Ko'rilgan Soni:</span>
-                                    <span className={styles.infoValue}>{post.view_count}</span>
-                                </div>
-                            </div>
-
-                            {/* Comments Button */}
-                            <ButtonDefault
-                                onClick={() => setOpenCommentModal(true)}
-                                variant="orange"
-                                customClasses={styles.commentsButton}
-                            >
-                                Komentlarni ko'rish ({comments.length})
-                            </ButtonDefault>
-
-                            {/* Action Buttons */}
-                            <div className={styles.actionButtons}>
-                                <ButtonDefault
-                                    onClick={() => navigate(`/posts/${post.id}/edit`)}
-                                    variant="blue"
-                                >
-                                    Tahrirlash
-                                </ButtonDefault>
-                                <ButtonDefault
-                                    onClick={() => setDeleteModalOpen(true)}
-                                    variant="red"
-                                >
-                                    O'chirish
-                                </ButtonDefault>
-                            </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem', background: '#f8f9fa', borderRadius: '0.5rem' }}>
+                            <span style={{ fontWeight: '500', color: '#6c757d' }}>Price (Daily)</span>
+                            <span style={{ fontWeight: '600', color: '#2c3e50', fontSize: '1.125rem' }}>${post.price_daily}</span>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem', background: '#f8f9fa', borderRadius: '0.5rem' }}>
+                            <span style={{ fontWeight: '500', color: '#6c757d' }}>Location</span>
+                            <span style={{ fontWeight: '600', color: '#2c3e50' }}>{post.location}</span>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem', background: '#f8f9fa', borderRadius: '0.5rem' }}>
+                            <span style={{ fontWeight: '500', color: '#6c757d' }}>Capacity</span>
+                            <span style={{ fontWeight: '600', color: '#2c3e50' }}>{post.members} people</span>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem', background: '#f8f9fa', borderRadius: '0.5rem' }}>
+                            <span style={{ fontWeight: '500', color: '#6c757d' }}>Property Type</span>
+                            <span style={{ fontWeight: '600', color: '#2c3e50' }}>{areaTitle}</span>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem', background: '#f8f9fa', borderRadius: '0.5rem' }}>
+                            <span style={{ fontWeight: '500', color: '#6c757d' }}>Views</span>
+                            <span style={{ fontWeight: '600', color: '#2c3e50' }}>{post.view_count}</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Delete Modal */}
+            {/* Description */}
+            <div className={styles.contentCard} style={{ marginBottom: '2rem' }}>
+                <h2 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#2c3e50', margin: '0 0 1rem 0' }}>
+                    📝 Description
+                </h2>
+                <p style={{ fontSize: '1rem', lineHeight: '1.6', color: '#495057', margin: 0 }}>
+                    {post.description}
+                </p>
+            </div>
+
+            {/* Features Section */}
+            <div className={styles.contentCard} style={{ marginBottom: '2rem' }}>
+                <h2 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#2c3e50', margin: '0 0 1.5rem 0' }}>
+                    ✨ Available Features
+                </h2>
+                <Features postId={post.id} />
+            </div>
+
+            {/* Comments Section */}
+            <div className={styles.contentCard}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                    <h2 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#2c3e50', margin: 0 }}>
+                        💬 Comments ({comments.length})
+                    </h2>
+                    <button 
+                        onClick={() => setOpenCommentModal(true)} 
+                        className={styles.primaryButton}
+                    >
+                        View All Comments
+                    </button>
+                </div>
+                {comments.length > 0 ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        {comments.slice(0, 3).map((comment, index) => (
+                            <div key={comment.id || index} style={{ padding: '1rem', background: '#f8f9fa', borderRadius: '0.5rem', borderLeft: '4px solid #667eea' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                                    <span style={{ fontWeight: '600', color: '#2c3e50' }}>{comment.name}</span>
+                                    <span style={{ fontSize: '0.875rem', color: '#6c757d' }}>
+                                        {comment.created_at ? new Date(comment.created_at).toLocaleDateString() : ''}
+                                    </span>
+                                </div>
+                                <p style={{ margin: 0, color: '#495057' }}>{comment.text}</p>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <p style={{ color: '#6c757d', textAlign: 'center', padding: '2rem' }}>
+                        No comments yet
+                    </p>
+                )}
+            </div>
+
+
+            {/* Modals */}
             <DelModal
                 isOpen={deleteModalOpen}
                 onClose={() => setDeleteModalOpen(false)}
                 onConfirm={handleDelete}
-                title="Postni o'chirish"
-                message="Haqiqatan ham ushbu postni o'chirmoqchimisiz?"
-                confirmText="O'chirish"
-                cancelText="Bekor qilish"
+                title="Delete Post"
+                message="Are you sure you want to delete this post? This action cannot be undone."
+                confirmText="Delete Post"
+                cancelText="Cancel"
             />
 
-            {/* Comments Modal */}
             <Modal
                 isOpen={openCommentModal}
                 onClose={() => setOpenCommentModal(false)}
-                title="Foydalanuvchilar fikri"
+                title="User Comments"
                 size="large"
             >
-                <div className={styles.commentsContainer}>
+                <div style={{ padding: '1rem' }}>
                     {commentsLoading ? (
-                        <p className={styles.loadingText}>Yuklanmoqda...</p>
+                        <div style={{ textAlign: 'center', padding: '2rem' }}>
+                            <div className={styles.loadingSpinner}></div>
+                            <p>Loading comments...</p>
+                        </div>
                     ) : Array.isArray(comments) && comments.length > 0 ? (
-                        <SwiperDefault
-                            slidesPerView={1}
-                            spaceBetween={20}
-                            pagination={{ clickable: true }}
-                            className={styles.commentsSwiper}
-                        >
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                             {comments.map((comment, index) => (
-                                <div key={comment.id || index} className={styles.commentItem}>
-                                    <div className={styles.commentHeader}>
-                                        <h4 className={styles.commentAuthor}>{comment.name}</h4>
-                                        <span className={styles.commentDate}>
+                                <div key={comment.id || index} style={{ 
+                                    padding: '1.5rem', 
+                                    background: '#f8f9fa', 
+                                    borderRadius: '0.75rem',
+                                    borderLeft: '4px solid #667eea'
+                                }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                                        <h4 style={{ margin: 0, fontWeight: '600', color: '#2c3e50' }}>{comment.name}</h4>
+                                        <span style={{ fontSize: '0.875rem', color: '#6c757d' }}>
                                             {comment.created_at ? new Date(comment.created_at).toLocaleDateString() : ''}
                                         </span>
                                     </div>
-                                    <p className={styles.commentText}>{comment.text}</p>
+                                    <p style={{ margin: 0, lineHeight: '1.6', color: '#495057' }}>{comment.text}</p>
                                 </div>
                             ))}
-                        </SwiperDefault>
+                        </div>
                     ) : (
-                        <p className={styles.noCommentsText}>Hozircha hech qanday fikr mavjud emas.</p>
+                        <div style={{ textAlign: 'center', padding: '3rem', color: '#6c757d' }}>
+                            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>💬</div>
+                            <p>No comments yet</p>
+                        </div>
                     )}
                 </div>
             </Modal>
