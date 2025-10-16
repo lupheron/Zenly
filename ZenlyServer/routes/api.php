@@ -14,6 +14,7 @@ use App\Http\Controllers\Users;
 use App\Http\Controllers\AreaTypesController;
 use App\Http\Controllers\BookingRequest;
 use App\Http\Controllers\BookingChecking;
+use App\Http\Controllers\GudeController;
 use App\Http\Controllers\MapController;
 use App\Http\Middleware\Cors;
 use App\Http\Middleware\AdminAuth;
@@ -46,6 +47,10 @@ Route::group(['middleware' => [Cors::class]], function () {
     Route::put('/area-types/{id}', [AreaTypesController::class, 'update']);
     Route::get('/posts/top-rated', [Posts::class, 'topRated']);
     Route::get('/users/{id}/basic', [Users::class, 'getBasicUserInfo']);
+
+    // GUIDES
+    Route::get('/guides', [GudeController::class, 'index']);
+    Route::post('/guides', [GudeController::class, 'create']);
     
     // Map routes
     Route::get('/map/posts', [MapController::class, 'getMapPosts']);

@@ -17,6 +17,8 @@ function AdminLayout({ children }) {
     const menuItems = [
         { path: '/dashboard', label: 'Dashboard', icon: '📊' },
         { path: '/users', label: 'Users', icon: '👥' },
+        { path: '/guides', label: 'Guide', icon: '📚' },
+        { path: '/drivers', label: 'Driver', icon: '🚗' },
         { path: '/posts', label: 'Posts', icon: '📝' },
     ];
 

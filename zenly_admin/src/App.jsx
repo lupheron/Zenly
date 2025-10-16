@@ -9,6 +9,8 @@ import DetailedUser from "./Pages/users/[id]/DetailedUser";
 import useLoginStore from "./hooks/Auth/useLogin";
 import DetailedPosts from './Components/Macro/Posts/[id]/DetailedPosts';
 import PostEditForm from './Components/Macro/Forms/Post/PostEditForm';
+import Guides from './Pages/guides/Guides';
+import Drivers from './Pages/drivers/Drivers';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -83,6 +85,22 @@ function App() {
           element={
             <ProtectedRoute>
               <Users />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/guides"
+          element={
+            <ProtectedRoute>
+              <Guides />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/drivers"
+          element={
+            <ProtectedRoute>
+              <Drivers />
             </ProtectedRoute>
           }
         />
