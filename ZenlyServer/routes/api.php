@@ -128,6 +128,13 @@ Route::middleware(['auth.admin', Cors::class])->group(function () {
     Route::get('/admin/booking-requests/user/{user_id}', [BookingRequest::class, 'getUserBookingsForAdmin']);
     Route::put('/admin/booking-requests/{id}', [BookingRequest::class, 'update']);
     Route::delete('/admin/booking-requests/{id}', [BookingRequest::class, 'destroy']);
+
+    // GUIDES (Admin routes)
+    Route::get('/admin/guides', [GudeController::class, 'index']);
+    Route::post('/admin/guides', [GudeController::class, 'create']);
+    Route::get('/admin/guides/{id}', [GudeController::class, 'show']);
+    Route::put('/admin/guides/{id}', [GudeController::class, 'update']);
+    Route::delete('/admin/guides/{id}', [GudeController::class, 'destroy']);
 });
 
 // User routes (authenticated users only)
