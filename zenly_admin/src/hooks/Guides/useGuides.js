@@ -37,7 +37,9 @@ export const useGuidesStore = create((set, get) => ({
         set({ loading: true, error: null });
         
         try {
-            const response = await api.post("/admin/guides", guideData);
+            const response = await api.post("/admin/guides", guideData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
             if (response.data.status === 200) {
                 // Refresh the guides list
                 get().getGuides();
