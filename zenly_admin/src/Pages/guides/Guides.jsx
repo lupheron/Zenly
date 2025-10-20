@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import GuidesTable from '../../Components/Macro/Tables/GuidesTable';
 import CreateGuideForm from '../../Components/Macro/Forms/Guides/CreateGuideForm';
+import EditGuideForm from '../../Components/Macro/Forms/Guides/EditGuideForm';
 import ButtonDefault from '../../Components/Mircro/Button/ButtonDefault';
 import Modal from '../../Components/Macro/Modals/Modal';
 import DelModal from '../../Components/Macro/Modals/DelModal';
@@ -10,9 +11,11 @@ import styles from '../../assets/css/pages.module.css';
 
 function Guides() {
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedGuides, setSelectedGuides] = useState([]);
-    const { createGuide, deleteGuides, loading } = useGuidesStore();
+    const [editingGuide, setEditingGuide] = useState(null);
+    const { createGuide, updateGuide, deleteGuides, loading } = useGuidesStore();
 
     const handleCreateGuide = async (guideData) => {
         const result = await createGuide(guideData);
@@ -26,6 +29,27 @@ function Guides() {
 
     const handleCreateCancel = () => {
         setShowCreateModal(false);
+    };
+
+    const handleEditGuide = (guide) => {
+        setEditingGuide(guide);
+        setShowEditModal(true);
+    };
+
+    const handleUpdateGuide = async (guideData) => {
+        const result = await updateGuide(editingGuide.id, guideData);
+        if (result.success) {
+            setShowEditModal(false);
+            setEditingGuide(null);
+            AlertDefault.success('Guide updated successfully!');
+        } else {
+            AlertDefault.error(`Failed to update guide: ${result.error}`);
+        }
+    };
+
+    const handleEditCancel = () => {
+        setShowEditModal(false);
+        setEditingGuide(null);
     };
 
     const handleSelectionChange = (selectedRows) => {
@@ -90,7 +114,7 @@ function Guides() {
             </div>
 
             <div className={styles.contentCard}>
-                <GuidesTable onSelectionChange={handleSelectionChange} />
+                <GuidesTable onSelectionChange={handleSelectionChange} onEdit={handleEditGuide} />
             </div>
 
             <Modal
@@ -103,6 +127,21 @@ function Guides() {
                 <CreateGuideForm
                     onSubmit={handleCreateGuide}
                     onCancel={handleCreateCancel}
+                    loading={loading}
+                />
+            </Modal>
+
+            <Modal
+                isOpen={showEditModal}
+                onClose={handleEditCancel}
+                title="Edit Guide"
+                size="large"
+                closeOnOverlayClick={false}
+            >
+                <EditGuideForm
+                    guide={editingGuide}
+                    onSubmit={handleUpdateGuide}
+                    onCancel={handleEditCancel}
                     loading={loading}
                 />
             </Modal>

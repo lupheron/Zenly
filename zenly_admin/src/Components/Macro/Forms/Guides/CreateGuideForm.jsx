@@ -16,7 +16,7 @@ function CreateGuideForm({ onSubmit, onCancel, loading }) {
         experience_years: '',
         specialization: '',
         location: '',
-        available: '1',
+        available: 'yes',
         bio: ''
     });
 
@@ -131,8 +131,8 @@ function CreateGuideForm({ onSubmit, onCancel, loading }) {
     ];
 
     const availableOptions = [
-        { value: '1', label: 'Available' },
-        { value: '0', label: 'Not Available' }
+        { value: 'yes', label: 'Available' },
+        { value: 'no', label: 'Not Available' }
     ];
 
     return (

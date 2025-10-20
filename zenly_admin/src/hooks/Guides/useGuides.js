@@ -8,17 +8,17 @@ export const useGuidesStore = create((set, get) => ({
 
     getGuides: () => {
         set({ loading: true, error: null });
-        
+
         api.get("/admin/guides")
             .then((response) => {
                 if (response.data.status === 200 && response.data.data) {
-                    set({ 
+                    set({
                         guides: response.data.data,
                         loading: false,
                         error: null
                     });
                 } else {
-                    set({ 
+                    set({
                         error: response.data.message || 'Failed to fetch guides',
                         loading: false
                     });
@@ -26,7 +26,7 @@ export const useGuidesStore = create((set, get) => ({
             })
             .catch((error) => {
                 const errorMessage = error.response?.data?.message || 'Failed to fetch guides';
-                set({ 
+                set({
                     error: errorMessage,
                     loading: false
                 });
@@ -35,7 +35,7 @@ export const useGuidesStore = create((set, get) => ({
 
     createGuide: async (guideData) => {
         set({ loading: true, error: null });
-        
+
         try {
             const response = await api.post("/admin/guides", guideData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
@@ -44,7 +44,7 @@ export const useGuidesStore = create((set, get) => ({
                 get().getGuides();
                 return { success: true, data: response.data.data };
             } else {
-                set({ 
+                set({
                     error: response.data.message || 'Failed to create guide',
                     loading: false
                 });
@@ -52,7 +52,41 @@ export const useGuidesStore = create((set, get) => ({
             }
         } catch (error) {
             const errorMessage = error.response?.data?.message || 'Failed to create guide';
-            set({ 
+            set({
+                error: errorMessage,
+                loading: false
+            });
+            return { success: false, error: errorMessage };
+        }
+    },
+
+    updateGuide: async (guideId, guideData) => {
+        set({ loading: true, error: null });
+    
+        try {
+            const response = await api.post(`/admin/guides/${guideId}?_method=PUT`, guideData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+    
+            if (response.data.status === 200) {
+                get().getGuides();
+                return { success: true, data: response.data.data };
+            } else {
+                set({
+                    error: response.data.message || 'Failed to update guide',
+                    loading: false
+                });
+                return { success: false, error: response.data.message };
+            }
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || 'Failed to update guide';
+            console.error('Update guide error details:', {
+                message: errorMessage,
+                errors: error.response?.data?.errors,
+                validation_data: error.response?.data?.validation_data,
+                status: error.response?.status
+            });
+            set({
                 error: errorMessage,
                 loading: false
             });
@@ -62,14 +96,14 @@ export const useGuidesStore = create((set, get) => ({
 
     deleteGuide: async (guideId) => {
         set({ loading: true, error: null });
-        
+
         try {
             const response = await api.delete(`/admin/guides/${guideId}`);
             if (response.data.status === 200) {
                 get().getGuides();
                 return { success: true };
             } else {
-                set({ 
+                set({
                     error: response.data.message || 'Failed to delete guide',
                     loading: false
                 });
@@ -77,7 +111,7 @@ export const useGuidesStore = create((set, get) => ({
             }
         } catch (error) {
             const errorMessage = error.response?.data?.message || 'Failed to delete guide';
-            set({ 
+            set({
                 error: errorMessage,
                 loading: false
             });
@@ -87,18 +121,18 @@ export const useGuidesStore = create((set, get) => ({
 
     deleteGuides: async (guideIds) => {
         set({ loading: true, error: null });
-        
+
         try {
             const deletePromises = guideIds.map(id => api.delete(`/admin/guides/${id}`));
             const responses = await Promise.all(deletePromises);
-            
+
             const allSuccessful = responses.every(response => response.data.status === 200);
-            
+
             if (allSuccessful) {
                 get().getGuides();
                 return { success: true };
             } else {
-                set({ 
+                set({
                     error: 'Some guides could not be deleted',
                     loading: false
                 });
@@ -106,7 +140,7 @@ export const useGuidesStore = create((set, get) => ({
             }
         } catch (error) {
             const errorMessage = error.response?.data?.message || 'Failed to delete guides';
-            set({ 
+            set({
                 error: errorMessage,
                 loading: false
             });

@@ -2,6 +2,8 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
+import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -12,7 +14,7 @@ import TablePagination from '@mui/material/TablePagination';
 import { useGuidesStore } from '../../../hooks/Guides/useGuides';
 import styles from '../../../assets/css/index.module.css';
 
-export default function GuidesTable({ onSelectionChange }) {
+export default function GuidesTable({ onSelectionChange, onEdit }) {
   const { guides, loading, error, getGuides } = useGuidesStore();
   const [selectedRows, setSelectedRows] = useState([]);
   const [page, setPage] = useState(0);
@@ -126,6 +128,7 @@ export default function GuidesTable({ onSelectionChange }) {
               <TableCell>Location</TableCell>
               <TableCell>Available</TableCell>
               <TableCell>Created At</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -179,6 +182,18 @@ export default function GuidesTable({ onSelectionChange }) {
                   </TableCell>
                   <TableCell>
                     {new Date(guide.created_at).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell>
+                    <IconButton
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (onEdit) onEdit(guide);
+                      }}
+                      size="small"
+                      sx={{ color: '#1976d2' }}
+                    >
+                      <EditIcon />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               );

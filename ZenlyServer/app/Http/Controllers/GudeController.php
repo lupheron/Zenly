@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
 
 class GudeController extends Controller
 {
@@ -42,21 +43,21 @@ class GudeController extends Controller
             }
 
             $guide = DB::table('guides')->insertGetId([
-                "first_name" => $request['first_name'],
-                "last_name" => $request['last_name'],
-                "gender" => $request['gender'],
-                "date_of_birth" => $request['date_of_birth'],
-                "phone" => $request['phone'],
-                "email" => $request['email'],
-                "password" => Hash::make($request['password']),
-                "languages" => $request['languages'],
-                "experience_years" => $request['experience_years'],
-                "specialization" => $request['specialization'],
+                "first_name" => $request->get('first_name'),
+                "last_name" => $request->get('last_name'),
+                "gender" => $request->get('gender'),
+                "date_of_birth" => $request->get('date_of_birth'),
+                "phone" => $request->get('phone'),
+                "email" => $request->get('email'),
+                "password" => Hash::make($request->get('password')),
+                "languages" => $request->get('languages'),
+                "experience_years" => $request->get('experience_years'),
+                "specialization" => $request->get('specialization'),
                 "rating" => null,
-                "location" => $request['location'],
-                "available" => $request['available'] ?? 1,
+                "location" => $request->get('location'),
+                "available" => $request->get('available', 'yes'),
                 "profile_photo" => $profilePhotoPath,
-                "bio" => $request['bio'] ?? null,
+                "bio" => $request->get('bio'),
                 "created_at" => Carbon::now(),
             ]);
 
@@ -104,63 +105,91 @@ class GudeController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $guide = DB::table('guides')->where('id', $id)->first();
+            // Get existing guide
+            $existingGuide = DB::table('guides')->where('id', $id)->first();
 
-            if (!$guide) {
+            if (!$existingGuide) {
                 return response()->json([
                     'message' => 'Guide not found',
                     'status' => 404
                 ], 404);
             }
 
-            $updateData = [
-                "first_name" => $request['first_name'] ?? $guide->first_name,
-                "last_name" => $request['last_name'] ?? $guide->last_name,
-                "gender" => $request['gender'] ?? $guide->gender,
-                "date_of_birth" => $request['date_of_birth'] ?? $guide->date_of_birth,
-                "phone" => $request['phone'] ?? $guide->phone,
-                "email" => $request['email'] ?? $guide->email,
-                "languages" => $request['languages'] ?? $guide->languages,
-                "experience_years" => $request['experience_years'] ?? $guide->experience_years,
-                "specialization" => $request['specialization'] ?? $guide->specialization,
-                "rating" => $request['rating'] ?? $guide->rating,
-                "location" => $request['location'] ?? $guide->location,
-                "available" => $request['available'] ?? $guide->available,
-                "bio" => $request['bio'] ?? $guide->bio,
+            // Validate only provided fields
+            $rules = [
+                'first_name' => 'sometimes|string|max:255',
+                'last_name' => 'sometimes|string|max:255',
+                'gender' => 'sometimes|string|in:male,female',
+                'date_of_birth' => 'sometimes|date',
+                'phone' => 'sometimes|string|max:50',
+                'email' => 'sometimes|email|max:255',
+                'password' => 'sometimes|string|min:6',
+                'languages' => 'sometimes|string|max:500',
+                'experience_years' => 'sometimes|integer|min:0',
+                'specialization' => 'sometimes|string|max:500',
+                'location' => 'sometimes|string|max:255',
+                'available' => 'sometimes|string|in:yes,no',
+                'bio' => 'sometimes|string|max:1000',
+                'profile_photo' => 'sometimes|file|image|max:2048'
             ];
+            
+            $request->validate($rules);
 
-            // Handle password update if provided
+            $updateData = ['updated_at' => Carbon::now()];
+
+            // Only update fields that were sent in the request
+            foreach (['first_name', 'last_name', 'gender', 'date_of_birth', 'phone', 'email', 'languages', 'specialization', 'location', 'available', 'bio'] as $field) {
+                if ($request->filled($field)) {
+                    $updateData[$field] = $request->$field;
+                }
+            }
+
+            // Handle experience_years separately to ensure it's an integer
+            if ($request->filled('experience_years')) {
+                $updateData['experience_years'] = (int) $request->experience_years;
+            }
+
+            // Handle password separately to hash it
             if ($request->filled('password')) {
-                $updateData['password'] = Hash::make($request['password']);
+                $updateData['password'] = Hash::make($request->password);
             }
 
-            // Handle profile photo upload
+            // Handle profile photo upload if provided
             if ($request->hasFile('profile_photo')) {
-                $file = $request->file('profile_photo');
-                $filename = 'guide_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-                $uploadPath = public_path('uploads/guides');
+                try {
+                    $file = $request->file('profile_photo');
+                    $filename = 'guide_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                    $uploadPath = public_path('uploads/guides');
 
-                // Create directory if it doesn't exist
-                if (!file_exists($uploadPath)) {
-                    mkdir($uploadPath, 0777, true);
+                    // Create directory if it doesn't exist
+                    if (!file_exists($uploadPath)) {
+                        mkdir($uploadPath, 0777, true);
+                    }
+
+                    // Delete old profile photo if exists
+                    if ($existingGuide->profile_photo && file_exists(public_path($existingGuide->profile_photo))) {
+                        unlink(public_path($existingGuide->profile_photo));
+                    }
+
+                    // Move uploaded file
+                    $file->move($uploadPath, $filename);
+                    $updateData['profile_photo'] = 'uploads/guides/' . $filename;
+                } catch (\Exception $e) {
+                    // If image upload fails, keep existing photo
+                    // Don't update profile_photo field
                 }
-
-                // Delete old profile photo if exists
-                if ($guide->profile_photo && file_exists(public_path($guide->profile_photo))) {
-                    unlink(public_path($guide->profile_photo));
-                }
-
-                // Move uploaded file
-                $file->move($uploadPath, $filename);
-                $updateData['profile_photo'] = 'uploads/guides/' . $filename;
             }
 
-            $updated = DB::table('guides')->where('id', $id)->update($updateData);
+            // Apply updates
+            $updated = DB::table("guides")->where("id", $id)->update($updateData);
 
             if ($updated) {
+                // Fetch updated guide
+                $updatedGuide = DB::table('guides')->where('id', $id)->first();
                 return response()->json([
                     'message' => 'Guide updated successfully',
-                    'status' => 200
+                    'status' => 200,
+                    'data' => $updatedGuide
                 ]);
             } else {
                 return response()->json([
