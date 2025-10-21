@@ -15,6 +15,7 @@ use App\Http\Controllers\AreaTypesController;
 use App\Http\Controllers\BookingRequest;
 use App\Http\Controllers\BookingChecking;
 use App\Http\Controllers\GudeController;
+use App\Http\Controllers\DriverController;
 use App\Http\Controllers\MapController;
 use App\Http\Middleware\Cors;
 use App\Http\Middleware\AdminAuth;
@@ -51,6 +52,10 @@ Route::group(['middleware' => [Cors::class]], function () {
     // GUIDES
     Route::get('/guides', [GudeController::class, 'index']);
     Route::post('/guides', [GudeController::class, 'create']);
+    
+    // DRIVERS
+    Route::get('/drivers', [DriverController::class, 'index']);
+    Route::post('/drivers', [DriverController::class, 'create']);
     
     // Map routes
     Route::get('/map/posts', [MapController::class, 'getMapPosts']);
@@ -135,6 +140,13 @@ Route::middleware(['auth.admin', Cors::class])->group(function () {
     Route::get('/admin/guides/{id}', [GudeController::class, 'show']);
     Route::put('/admin/guides/{id}', [GudeController::class, 'update']);
     Route::delete('/admin/guides/{id}', [GudeController::class, 'destroy']);
+
+    // DRIVERS (Admin routes)
+    Route::get('/admin/drivers', [DriverController::class, 'index']);
+    Route::post('/admin/drivers', [DriverController::class, 'create']);
+    Route::get('/admin/drivers/{id}', [DriverController::class, 'show']);
+    Route::put('/admin/drivers/{id}', [DriverController::class, 'update']);
+    Route::delete('/admin/drivers/{id}', [DriverController::class, 'destroy']);
 });
 
 // User routes (authenticated users only)
