@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { MapPost } from './types'
 import { cleanLocation } from '@/src/utils/locationUtils'
+import { loadGoogleMaps } from '@/src/utils/googleMapsLoader'
 
 declare global {
   interface Window {
@@ -60,7 +61,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         <div className='absolute top-1/2 left-1/4 w-2 h-2 bg-blue-500 rounded-full'></div>
         <div className='absolute top-1/3 right-1/3 w-2 h-2 bg-blue-500 rounded-full'></div>
       </div>
-      
+
       {/* Main content */}
       <div className='absolute inset-4 bg-white rounded-lg shadow-inner flex flex-col items-center justify-center'>
         <div className='text-6xl mb-4'>🗺️</div>
@@ -68,7 +69,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         <p className='text-gray-600 text-center px-4'>
           {selectedRegion ? `Showing posts in ${selectedRegion}` : 'Select a region to view posts on map'}
         </p>
-        
+
         {/* Posts representation with better styling */}
         {posts.length > 0 && (
           <div className='mt-6 grid grid-cols-2 gap-4 max-w-md'>
@@ -79,8 +80,8 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
                 onClick={() => window.open(`/posts/${post.id}`, '_blank')}
               >
                 <div className='flex items-center mb-2'>
-                  <Image 
-                    src={post.img || '/logo/profile-default.png'} 
+                  <Image
+                    src={post.img || '/logo/profile-default.png'}
                     alt={post.title}
                     width={32}
                     height={32}
@@ -98,28 +99,28 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
             ))}
           </div>
         )}
-        
+
         {posts.length > 4 && (
           <p className='text-sm text-gray-500 mt-2'>
             +{posts.length - 4} more locations
           </p>
         )}
-        
+
         {/* Google Maps setup hint */}
-                <div className='mt-4 p-3 bg-blue-50 rounded-lg max-w-sm'>
-                  <p className='text-xs text-blue-800 text-center'>
-                    💡 Add Google Maps API key for full interactive map experience
-                  </p>
-                  <button
-                    onClick={() => {
-                      console.log('Manual Google Maps test')
-                      setShowGoogleMaps(true)
-                    }}
-                    className='mt-2 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700'
-                  >
-                    Test Google Maps
-                  </button>
-                </div>
+        <div className='mt-4 p-3 bg-blue-50 rounded-lg max-w-sm'>
+          <p className='text-xs text-blue-800 text-center'>
+            💡 Add Google Maps API key for full interactive map experience
+          </p>
+          <button
+            onClick={() => {
+              console.log('Manual Google Maps test')
+              setShowGoogleMaps(true)
+            }}
+            className='mt-2 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700'
+          >
+            Test Google Maps
+          </button>
+        </div>
       </div>
     </div>
   )
@@ -127,7 +128,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   useEffect(() => {
     const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'AIzaSyBcWHnpjwWA7Ju8-ZKL98uVb5QjYorrQsQ'
     console.log('Google Maps API Key check:', apiKey ? 'Present' : 'Missing', 'Length:', apiKey?.length)
-    
+
     if (apiKey && apiKey !== 'YOUR_API_KEY' && apiKey.length > 10) {
       console.log('Enabling Google Maps')
       setShowGoogleMaps(true)
@@ -141,7 +142,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   useEffect(() => {
     console.log('InteractiveMap - Posts:', posts.length, posts)
     console.log('InteractiveMap - ShowGoogleMaps:', showGoogleMaps)
-    
+
     // Log coordinate information for debugging
     posts.forEach((post, index) => {
       console.log(`Post ${index}: ${post.title}`, {
@@ -157,11 +158,11 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   useEffect(() => {
     if (mapInstance && selectedRegion && uzbekistanRegionsCoordinates[selectedRegion]) {
       const regionCoords = uzbekistanRegionsCoordinates[selectedRegion]
-      
+
       // Pan and zoom to the selected region
       mapInstance.panTo({ lat: regionCoords.lat, lng: regionCoords.lng })
       mapInstance.setZoom(regionCoords.zoom)
-      
+
       console.log('Map updated to region:', selectedRegion, 'at zoom level:', regionCoords.zoom)
     }
   }, [selectedRegion, selectedService, mapInstance])
@@ -175,20 +176,13 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   }, [posts])
 
   useEffect(() => {
-    const loadGoogleMaps = async () => {
+    const initializeGoogleMaps = async () => {
       if (!showGoogleMaps) return
 
       try {
-        const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'AIzaSyBcWHnpjwWA7Ju8-ZKL98uVb5QjYorrQsQ'
-        
-        if (window.google && window.google.maps) {
-          initializeMap()
-        } else {
-          const script = document.createElement('script')
-          script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`
-          script.onload = initializeMap
-          document.head.appendChild(script)
-        }
+        // Use the shared loader utility to prevent duplicate loading
+        await loadGoogleMaps()
+        initializeMap()
 
         function initializeMap() {
           console.log('Initializing Google Maps...')
@@ -210,56 +204,56 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
           console.log('Creating Google Maps instance...')
           const map = new window.google.maps.Map(mapElement, {
-          center: initialCenter,
-          zoom: initialZoom,
-          styles: [
-            { featureType: 'all', elementType: 'geometry.fill', stylers: [{ weight: '2.00' }] },
-            { featureType: 'all', elementType: 'geometry.stroke', stylers: [{ color: '#9c9c9c' }] },
-            { featureType: 'landscape', elementType: 'all', stylers: [{ color: '#f2f2f2' }] },
-            { featureType: 'water', elementType: 'all', stylers: [{ color: '#46bcec' }, { visibility: 'on' }] }
-          ]
-        })
+            center: initialCenter,
+            zoom: initialZoom,
+            styles: [
+              { featureType: 'all', elementType: 'geometry.fill', stylers: [{ weight: '2.00' }] },
+              { featureType: 'all', elementType: 'geometry.stroke', stylers: [{ color: '#9c9c9c' }] },
+              { featureType: 'landscape', elementType: 'all', stylers: [{ color: '#f2f2f2' }] },
+              { featureType: 'water', elementType: 'all', stylers: [{ color: '#46bcec' }, { visibility: 'on' }] }
+            ]
+          })
 
-        // Store map instance for later use
-        setMapInstance(map)
+          // Store map instance for later use
+          setMapInstance(map)
 
-        console.log('Adding markers for', posts.length, 'posts')
-        posts.forEach((post) => {
-          // Convert latitude and longitude to numbers and validate
-          const lat = parseFloat(String(post.latitude))
-          const lng = parseFloat(String(post.longitude))
-          
-          if (!isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0) {
-            console.log('Adding marker for post:', post.title, 'at', lat, lng)
-            
-            // Create circular marker icon with larger size
-            const markerIcon = {
-              url: post.img || '/logo/profile-default.png',
-              scaledSize: new window.google.maps.Size(50, 50), // Increased from 20x20 to 50x50
-              origin: new window.google.maps.Point(0, 0),
-              anchor: new window.google.maps.Point(25, 25), // Centered anchor
-              shape: {
-                type: 'circle',
-                coords: [25, 25, 25] // Circle with radius 25
+          console.log('Adding markers for', posts.length, 'posts')
+          posts.forEach((post) => {
+            // Convert latitude and longitude to numbers and validate
+            const lat = parseFloat(String(post.latitude))
+            const lng = parseFloat(String(post.longitude))
+
+            if (!isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0) {
+              console.log('Adding marker for post:', post.title, 'at', lat, lng)
+
+              // Create circular marker icon with larger size
+              const markerIcon = {
+                url: post.img || '/logo/profile-default.png',
+                scaledSize: new window.google.maps.Size(50, 50), // Increased from 20x20 to 50x50
+                origin: new window.google.maps.Point(0, 0),
+                anchor: new window.google.maps.Point(25, 25), // Centered anchor
+                shape: {
+                  type: 'circle',
+                  coords: [25, 25, 25] // Circle with radius 25
+                }
               }
-            }
-            
-            const marker = new window.google.maps.Marker({
-              position: { lat: lat, lng: lng },
-              map: map,
-              title: post.title,
-              icon: markerIcon,
-              animation: window.google.maps.Animation.DROP
-            })
 
-            const infoWindow = new window.google.maps.InfoWindow({
-              content: `
-                <div class="max-w-xs">
+              const marker = new window.google.maps.Marker({
+                position: { lat: lat, lng: lng },
+                map: map,
+                title: post.title,
+                icon: markerIcon,
+                animation: window.google.maps.Animation.DROP
+              })
+
+              const infoWindow = new window.google.maps.InfoWindow({
+                content: `
+                <div class="w-100">
                   <div class="flex items-start space-x-5">
                     <img src="${post.img || '/logo/profile-default.png'}" 
                          alt="${post.title}" 
-                         class="w-18 h-18 object-cover rounded-full" />
-                    <div class="flex-1">
+                         class="w-35 h-35 object-cover rounded-full" />
+                    <div class="flex-1 font-poppins">
                       <h3 class="font-semibold text-xl text-gray-900 mb-1">${post.title}</h3>
                       <p class="text-[14px] text-gray-600 mb-1">${post.area_type_name}</p>
                       <p class="text-[14px] text-gray-600 mb-1">${cleanLocation(post.location)}</p>
@@ -272,22 +266,22 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
                   </div>
                 </div>
               `
-            })
+              })
 
-            marker.addListener('click', () => {
-              infoWindow.open(map, marker)
-            })
-            
-            // Add double-click listener to redirect to post details
-            marker.addListener('dblclick', () => {
-              window.open(`/posts/${post.id}`, '_blank')
-            })
-          } else {
-            console.log('Skipping post due to invalid coordinates:', post.title, 'lat:', post.latitude, 'lng:', post.longitude)
-          }
-        })
+              marker.addListener('click', () => {
+                infoWindow.open(map, marker)
+              })
 
-        console.log('Google Maps initialized successfully with', posts.length, 'posts')
+              // Add double-click listener to redirect to post details
+              marker.addListener('dblclick', () => {
+                window.open(`/posts/${post.id}`, '_blank')
+              })
+            } else {
+              console.log('Skipping post due to invalid coordinates:', post.title, 'lat:', post.latitude, 'lng:', post.longitude)
+            }
+          })
+
+          console.log('Google Maps initialized successfully with', posts.length, 'posts')
         }
       } catch (error) {
         console.error('Error initializing Google Maps:', error)
@@ -295,7 +289,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       }
     }
 
-    loadGoogleMaps()
+    initializeGoogleMaps()
   }, [showGoogleMaps, posts, selectedRegion])
 
   return (
@@ -303,7 +297,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       {!showGoogleMaps ? (
         <>
           <SimpleMapFallback />
-          
+
           {isLoading && (
             <div className='absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center rounded-lg'>
               <div className='flex items-center space-x-2'>
@@ -355,7 +349,7 @@ The map will automatically switch to full interactive mode!
             className='w-full h-96 lg:h-[500px] rounded-lg shadow-lg'
             style={{ minHeight: '400px' }}
           />
-          
+
           {isLoading && (
             <div className='absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center rounded-lg'>
               <div className='flex items-center space-x-2'>

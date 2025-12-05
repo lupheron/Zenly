@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import ButtonDefault from '../Button/ButtonDefault'
+import { loadGoogleMaps } from '@/src/utils/googleMapsLoader'
 
 declare global {
   interface Window {
@@ -35,24 +36,21 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
   useEffect(() => {
     if (!isModalOpen) return
 
-    const loadGoogleMaps = () => {
-      if (window.google && window.google.maps) {
+    const initGoogleMaps = async () => {
+      // Use the shared loader utility to prevent duplicate loading
+      try {
+        await loadGoogleMaps()
         initializeMap()
-        return
+      } catch (error) {
+        console.error('Failed to load Google Maps:', error)
       }
-
-      const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'AIzaSyBcWHnpjwWA7Ju8-ZKL98uVb5QjYorrQsQ'
-      const script = document.createElement('script')
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`
-      script.onload = initializeMap
-      document.head.appendChild(script)
     }
 
     const initializeMap = () => {
       const mapElement = document.getElementById('location-picker-map')
       if (!mapElement || !window.google) return
 
-      const center = selectedLat && selectedLng 
+      const center = selectedLat && selectedLng
         ? { lat: selectedLat, lng: selectedLng }
         : { lat: 41.2995, lng: 69.2401 }
 
@@ -71,7 +69,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
       map.addListener('click', (event: any) => {
         const lat = event.latLng.lat()
         const lng = event.latLng.lng()
-        
+
         setSelectedLat(lat)
         setSelectedLng(lng)
 
@@ -102,7 +100,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
       setIsMapLoaded(true)
     }
 
-    loadGoogleMaps()
+    initGoogleMaps()
   }, [isModalOpen, selectedLat, selectedLng])
 
   const handleConfirmLocation = () => {
@@ -133,7 +131,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
       <label className="block text-sm font-medium text-gray-700 mb-2">
         Location
       </label>
-      
+
       <div className="flex gap-2">
         <input
           type="text"
@@ -170,7 +168,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
                 <p className="text-sm text-gray-600 mb-2">
                   Click on the map to select the exact location of your post
                 </p>
-                
+
                 {selectedLat && selectedLng && (
                   <div className="bg-green-50 p-3 rounded-md mb-4">
                     <p className="text-sm font-medium text-green-800">Selected Location:</p>
@@ -202,7 +200,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
               >
                 Clear Location
               </button>
-              
+
               <div className="flex gap-2">
                 <button
                   onClick={() => setIsModalOpen(false)}
