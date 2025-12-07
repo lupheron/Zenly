@@ -15,6 +15,12 @@ class DriverController extends Controller
         $drivers = DB::table('drivers')
             ->select('id', 'first_name', 'last_name', 'gender', 'phone', 'email', 'language', 'experience_years', 'license_number', 'vehicle_type', 'vehicle_model', 'plate_number', 'rating', 'available', 'location', 'price_per_day', 'profile_photo', 'bio', 'created_at')
             ->get();
+        
+        // Add full image URLs
+        foreach ($drivers as $driver) {
+            $driver->profile_photo = $driver->profile_photo ? asset($driver->profile_photo) : null;
+        }
+        
         return response()->json([
             'message' => 'Drivers fetched successfully',
             'status' => 200,
@@ -97,6 +103,9 @@ class DriverController extends Controller
                 'status' => 404
             ], 404);
         }
+
+        // Add full image URL
+        $driver->profile_photo = $driver->profile_photo ? asset($driver->profile_photo) : null;
 
         return response()->json([
             'message' => 'Driver fetched successfully',

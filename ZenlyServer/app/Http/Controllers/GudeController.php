@@ -15,6 +15,12 @@ class GudeController extends Controller
         $guides = DB::table('guides')
             ->select('id', 'first_name', 'last_name', 'gender', 'date_of_birth', 'phone', 'email', 'languages', 'experience_years', 'specialization', 'rating', 'location', 'available', 'profile_photo', 'bio', 'created_at')
             ->get();
+        
+        // Add full image URLs
+        foreach ($guides as $guide) {
+            $guide->profile_photo = $guide->profile_photo ? asset($guide->profile_photo) : null;
+        }
+        
         return response()->json([
             'message' => 'Guides fetched successfully',
             'status' => 200,
@@ -94,6 +100,9 @@ class GudeController extends Controller
                 'status' => 404
             ], 404);
         }
+
+        // Add full image URL
+        $guide->profile_photo = $guide->profile_photo ? asset($guide->profile_photo) : null;
 
         return response()->json([
             'message' => 'Guide fetched successfully',

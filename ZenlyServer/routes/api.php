@@ -82,6 +82,20 @@ Route::group(['middleware' => [Cors::class]], function () {
             ->header('Cache-Control', 'public, max-age=31536000');
     })->where('path', '.*');
 
+    // DRIVERS
+    Route::get('/drivers', [DriverController::class, 'index']);
+    Route::get('/drivers/{id}', [DriverController::class, 'show']);
+    Route::post('/drivers', [DriverController::class, 'create']);
+    Route::put('/drivers/{id}', [DriverController::class, 'update']);
+    Route::delete('/drivers/{id}', [DriverController::class, 'destroy']);
+
+    // GUIDES
+    Route::get('/guides', [GudeController::class, 'index']);
+    Route::get('/guides/{id}', [GudeController::class, 'show']);
+    Route::post('/guides', [GudeController::class, 'create']);
+    Route::put('/guides/{id}', [GudeController::class, 'update']);
+    Route::delete('/guides/{id}', [GudeController::class, 'destroy']);
+
     // MONUMENTS
     Route::get('/monuments', [MonumentsController::class, 'index']);
     Route::post('/monuments', [MonumentsController::class, 'create']);

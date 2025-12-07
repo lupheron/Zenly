@@ -1,7 +1,7 @@
 import React from 'react'
 import PageHeader from '../components/PageHeader'
 import AboutSection from '../components/About'
-import ReadySection from '../components/ReadySection'
+import GuideDriverSection from '../components/GuideDriverSection'
 import PopularActivity from '../components/PopActivitiy'
 import Comments from '../components/Comments'
 import PageFooter from '../components/PageFooter'
@@ -15,7 +15,7 @@ const LandingPage = () => {
             <NavbarSection />
             <PageHeader />
             <AboutSection />
-            <ReadySection />
+            <GuideDriverSection />
             <PopularActivity />
             <MapMain />
             <Comments />
