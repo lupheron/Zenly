@@ -17,6 +17,7 @@ use App\Http\Controllers\BookingChecking;
 use App\Http\Controllers\GudeController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\MapController;
+use App\Http\Controllers\MonumentsController;
 use App\Http\Middleware\Cors;
 use App\Http\Middleware\AdminAuth;
 use Illuminate\Http\Request;
@@ -80,6 +81,12 @@ Route::group(['middleware' => [Cors::class]], function () {
             ->header('Content-Type', $type)
             ->header('Cache-Control', 'public, max-age=31536000');
     })->where('path', '.*');
+
+    // MONUMENTS
+    Route::get('/monuments', [MonumentsController::class, 'index']);
+    Route::post('/monuments', [MonumentsController::class, 'create']);
+    Route::put('/monuments/{id}', [MonumentsController::class, 'update']);
+    Route::delete('/monuments/{id}', [MonumentsController::class, 'delete']);
 });
 
 // Admin routes (admin authentication required)

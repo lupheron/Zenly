@@ -1,55 +1,73 @@
-import React from 'react';
+import React, { useState } from 'react';
 import SwiperDefault from '../Swiper/SwiperDefault';
 import SerivecesBanner from '../Banners/SerivecesBanner';
 import TitleButtons from '../Button/TitleButtons';
 import Services from './Services';
 import { useTopRatedPosts, Post as TopRatedPost } from '@/src/hooks/posts/usePosts';
 import { useRouter } from 'next/navigation';
+import InputDefault from '../FormElements/Input/InputDefault';
+import LabelDefault from '../FormElements/label/LabelDefault';
+import { useMonuments } from '@/src/hooks/monuments/Monuments';
+import MonumentCard from '../Cart/MonumentCard';
 
 const PopularActivity = () => {
     const { data: topRatedPosts, isLoading } = useTopRatedPosts();
+    const { data: monuments, isLoading: monumentsLoading } = useMonuments();
+    const [searchQuery, setSearchQuery] = useState('');
     const router = useRouter();
 
+    // Filter monuments based on search query - only search after 3 letters
+    const filteredMonuments = monuments?.filter(monument => {
+        // If search query is less than 3 characters, show all monuments
+        if (searchQuery.length < 3) {
+            return true;
+        }
+        // Search by monument name only
+        return monument.name.toLowerCase().includes(searchQuery.toLowerCase());
+    });
+
     return (
-        <div className="popular-activities mt-20" id='activities'>
+        <div className="popular-activities mt-20 px-60" id='activities'>
             <div className="w-50 mx-auto mb-20" data-aos="fade-down">
-                <TitleButtons label="Mashhur servislar" customClasses="text-green-700 bg-green-50" />
+                <TitleButtons label="Tarixiy markazlar" customClasses="text-green-700 bg-green-50" />
             </div>
 
-            <div data-aos="fade-down">
-                {isLoading ? (
-                    <div className="text-center py-10">Eng yaxshi postlar yuklanmoqda...</div>
-                ) : (
-                    <SwiperDefault
-                        pagination={false}
-                        spaceBetween={5}
-                        className="bg-gray-50 rounded w-[75%] py-10"
-                        breakpoints={{
-                            0: {
-                                slidesPerView: 1
-                            },
-                            768: {
-                                slidesPerView: 2
-                            },
-                            1040: {
-                                slidesPerView: 2
-                            },
-                            1280: {
-                                slidesPerView: 3
-                            }
-                        }}
-                    >
-                        {topRatedPosts && topRatedPosts.map((post: TopRatedPost) => (
-                            <div key={post.id} className="py-4">
-                                <SerivecesBanner
-                                    title={post.title}
-                                    paragraph={post.small_description}
-                                    src={post.img}
-                                    onClick={() => router.push(`/posts/${post.id}`)}
-                                />
-                            </div>
+            <div className="mb-6 flex flex-col gap-2">
+                <LabelDefault label="Shaharni tanlang" htmlFor="search" />
+                <InputDefault
+                    type="text"
+                    name="search"
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Qidirish..."
+                    customClasses='w-full'
+                />
+            </div>
+
+            <div className="mb-10">
+                {monumentsLoading ? (
+                    <div className="text-center py-10">
+                        <p className="text-gray-500">Yuklanmoqda...</p>
+                    </div>
+                ) : filteredMonuments && filteredMonuments.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 items-start">
+                        {filteredMonuments.map((monument) => (
+                            <MonumentCard
+                                key={monument.id}
+                                img={monument.img}
+                                name={monument.name}
+                                description={monument.description}
+                                location={monument.location}
+                                onClick={() => {
+                                    // You can add navigation or modal logic here
+                                    console.log('Monument clicked:', monument.id);
+                                }}
+                            />
                         ))}
-                    </SwiperDefault>
+                    </div>
+                ) : (
+                    <div className="text-center py-10">
+                        <p className="text-gray-500">Hech qanday tarixiy joylar topilmadi</p>
+                    </div>
                 )}
             </div>
 
