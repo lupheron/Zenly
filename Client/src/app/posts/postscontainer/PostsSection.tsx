@@ -5,6 +5,7 @@ import PostsContainer from './PostsContainer';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import Drawer from '@mui/material/Drawer';
 import Filter from '../../filters/Filter';
+import { useLanguage } from '@/src/contexts/LanguageContext';
 
 interface Post {
     id: number;
@@ -26,6 +27,7 @@ const PostsSection = () => {
         guests: ''
     });
     const [isSearchActive, setIsSearchActive] = useState(false);
+    const { t } = useLanguage();
 
     const searchParams = useSearchParams()
     const areaId = searchParams.get('area_id')
@@ -119,7 +121,7 @@ const PostsSection = () => {
                         className="w-full h-15 flex items-center justify-center gap-3 bg-white p-2 rounded-lg shadow-md hover:shadow-lg transition-all cursor-pointer"
                     >
                         <AutoAwesomeIcon className="text-blue-600" />
-                        <span className="text-md font-medium">Imkoniyatlar</span>
+                        <span className="text-md font-medium">{t('post.amenities')}</span>
                     </button>
 
                     <Drawer

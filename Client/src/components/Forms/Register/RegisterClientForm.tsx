@@ -7,6 +7,7 @@ import InputDefault from '../../FormElements/Input/InputDefault'
 import LabelDefault from '../../FormElements/label/LabelDefault'
 import { useRegisterUser } from '@/src/hooks/useRegisterUser'
 import AnimatedSelect from '../../FormElements/Select/AnimatedSelect'
+import { useLanguage } from '@/src/contexts/LanguageContext'
 
 const uzbekistanProvinces = [
     { label: 'Andijon', value: 'Andijon' },
@@ -36,6 +37,7 @@ const RegisterClientForm = () => {
     })
 
     const router = useRouter()
+    const { t } = useLanguage()
     const { mutate, isPending, isSuccess, isError, error } = useRegisterUser()
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -69,9 +71,9 @@ const RegisterClientForm = () => {
     return (
         <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4 w-full">
             <div>
-                <LabelDefault 
-                    label="F.I.SH:" 
-                    htmlFor="fullname" 
+                <LabelDefault
+                    label={t('auth.fullname')}
+                    htmlFor="fullname"
                     customClasses="text-sm sm:text-base font-medium text-gray-700 block mb-1 sm:mb-2"
                 />
                 <InputDefault
@@ -81,14 +83,14 @@ const RegisterClientForm = () => {
                     onChange={handleChange}
                     customClasses='bg-white rounded border-1 border-light-green w-full'
                     required={true}
-                    placeholder="To'liq ism va familiya"
+                    placeholder={t('auth.enterFullname')}
                 />
             </div>
 
             <div>
-                <LabelDefault 
-                    label="Username:" 
-                    htmlFor="username" 
+                <LabelDefault
+                    label={t('auth.username')}
+                    htmlFor="username"
                     customClasses="text-sm sm:text-base font-medium text-gray-700 block mb-1 sm:mb-2"
                 />
                 <InputDefault
@@ -98,14 +100,14 @@ const RegisterClientForm = () => {
                     onChange={handleChange}
                     customClasses='bg-white rounded border-1 border-light-green w-full'
                     required={true}
-                    placeholder="Username kiriting"
+                    placeholder={t('auth.enterUsername')}
                 />
             </div>
 
             <div>
-                <LabelDefault 
-                    label="Telefon Raqamingiz:" 
-                    htmlFor="phone" 
+                <LabelDefault
+                    label={t('auth.phone')}
+                    htmlFor="phone"
                     customClasses="text-sm sm:text-base font-medium text-gray-700 block mb-1 sm:mb-2"
                 />
                 <InputDefault
@@ -115,13 +117,13 @@ const RegisterClientForm = () => {
                     onChange={handleChange}
                     customClasses='bg-white rounded border-1 border-light-green w-full'
                     required={true}
-                    placeholder="+998 XX XXX XX XX"
+                    placeholder={t('auth.enterPhone')}
                 />
             </div>
 
             <div>
                 <AnimatedSelect
-                    label="Yashash manzilingiz:"
+                    label={t('auth.address')}
                     htmlFor="address"
                     name="address"
                     value={form.address}
@@ -133,9 +135,9 @@ const RegisterClientForm = () => {
             </div>
 
             <div>
-                <LabelDefault 
-                    label="Parol:" 
-                    htmlFor="password" 
+                <LabelDefault
+                    label={t('auth.password')}
+                    htmlFor="password"
                     customClasses="text-sm sm:text-base font-medium text-gray-700 block mb-1 sm:mb-2"
                 />
                 <InputDefault
@@ -145,7 +147,7 @@ const RegisterClientForm = () => {
                     onChange={handleChange}
                     customClasses="bg-white rounded border-1 border-light-green w-full"
                     required
-                    placeholder="Parol kiriting"
+                    placeholder={t('auth.enterPassword')}
                 />
             </div>
 
@@ -166,7 +168,7 @@ const RegisterClientForm = () => {
                 disabled={isPending}
                 className="w-full cursor-pointer bg-light-green text-white px-4 sm:px-6 py-2 sm:py-3 rounded-md text-sm sm:text-base font-semibold hover:bg-green-600 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed mt-6"
             >
-                {isPending ? "Yuborilmoqda..." : "Ro'yxatdan o'tish"}
+                {isPending ? t('auth.registering') : t('auth.registerBtn')}
             </button>
         </form>
     )

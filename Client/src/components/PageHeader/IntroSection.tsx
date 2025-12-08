@@ -1,24 +1,27 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import IntroSlider from '../IntroSlider/IntroSlider';
-
-const slides = [
-    {
-        title: 'Sarguzasht Sizni Kutmoqda',
-        text: 'O\'rmonlar, tog\'lar va daryolar sizni kutmoqda — tabiat bilan uyg\'un sayohat qiling.',
-        src: "/intro/intro1.jpg",
-        alt: "Intro 1"
-    },
-    {
-        title: 'Tabiatga Sayohat Qiling',
-        text: 'Tabiat qo\'ynida dam oling, yangi joylarni kashf eting, sarguzashtlarga to\'la sayohat boshlang.',
-        src: "/intro/intro2.jpg",
-        alt: "Intro 2"
-    },
-];
+import { useLanguage } from '@/src/contexts/LanguageContext';
 
 const IntroSection = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
+    const { t } = useLanguage();
+
+    const slides = [
+        {
+            title: t('hero.title1'),
+            text: t('hero.text1'),
+            src: "/intro/intro1.jpg",
+            alt: "Intro 1"
+        },
+        {
+            title: t('hero.title2'),
+            text: t('hero.text2'),
+            src: "/intro/intro2.jpg",
+            alt: "Intro 2"
+        },
+    ];
+
 
     const nextSlide = () => {
         setCurrentSlide((prev) => (prev + 1) % slides.length);

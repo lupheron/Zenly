@@ -1,6 +1,9 @@
+'use client'
+
 import Image from 'next/image'
 import React from 'react'
 import { useRouter } from 'next/navigation'
+import { useLanguage } from '@/src/contexts/LanguageContext'
 
 interface DriverCardProps {
     driver: {
@@ -20,6 +23,7 @@ interface DriverCardProps {
 
 const DriverCard: React.FC<DriverCardProps> = ({ driver }) => {
     const router = useRouter()
+    const { t } = useLanguage()
 
     const formatImageUrl = (imgPath: string | null | undefined): string => {
         if (!imgPath) return '/no-image.jpg'
@@ -85,7 +89,7 @@ const DriverCard: React.FC<DriverCardProps> = ({ driver }) => {
 
                 <div className='mt-4 pt-4 border-t border-gray-100'>
                     <div className='flex items-center justify-between'>
-                        <span className='text-sm text-gray-500'>Kunlik narx</span>
+                        <span className='text-sm text-gray-500'>{t('drivers.dailyPrice')}</span>
                         <span className='text-xl font-bold text-green-600'>${driver.price_per_day}</span>
                     </div>
                 </div>

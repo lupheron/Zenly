@@ -8,6 +8,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import { LoaderProvider } from '../components/Loader/LoaderContext';
 import RouteChangeListener from '../components/Loader/RouteChangeListener';
 import LoaderOverlay from '../components/Loader/LoaderOverlay';
+import { LanguageProvider } from '../contexts/LanguageContext';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,16 +35,18 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <div className="w-full max-w-full overflow-x-hidden">
-          <QueryProvider>
-            <LoaderProvider>
-              <RouteChangeListener />
-              <LoaderOverlay />
-              <Toaster richColors position="top-center" />
-              {children}
-              <Analytics />
-              <SpeedInsights />
-            </LoaderProvider>
-          </QueryProvider>
+          <LanguageProvider>
+            <QueryProvider>
+              <LoaderProvider>
+                <RouteChangeListener />
+                <LoaderOverlay />
+                <Toaster richColors position="top-center" />
+                {children}
+                <Analytics />
+                <SpeedInsights />
+              </LoaderProvider>
+            </QueryProvider>
+          </LanguageProvider>
         </div>
       </body>
     </html>

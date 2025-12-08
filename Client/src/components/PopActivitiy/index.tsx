@@ -9,12 +9,14 @@ import InputDefault from '../FormElements/Input/InputDefault';
 import LabelDefault from '../FormElements/label/LabelDefault';
 import { useMonuments } from '@/src/hooks/monuments/Monuments';
 import MonumentCard from '../Cart/MonumentCard';
+import { useLanguage } from '@/src/contexts/LanguageContext';
 
 const PopularActivity = () => {
     const { data: topRatedPosts, isLoading } = useTopRatedPosts();
     const { data: monuments, isLoading: monumentsLoading } = useMonuments();
     const [searchQuery, setSearchQuery] = useState('');
     const router = useRouter();
+    const { t } = useLanguage();
 
     // Filter monuments based on search query - only search after 3 letters
     const filteredMonuments = monuments?.filter(monument => {
@@ -33,12 +35,12 @@ const PopularActivity = () => {
             </div>
 
             <div className="mb-6 flex flex-col gap-2">
-                <LabelDefault label="Shaharni tanlang" htmlFor="search" />
+                <LabelDefault label={t('monuments.selectCity')} htmlFor="search" />
                 <InputDefault
                     type="text"
                     name="search"
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Qidirish..."
+                    placeholder={t('monuments.search')}
                     customClasses='w-full'
                 />
             </div>
@@ -46,7 +48,7 @@ const PopularActivity = () => {
             <div className="mb-10">
                 {monumentsLoading ? (
                     <div className="text-center py-10">
-                        <p className="text-gray-500">Yuklanmoqda...</p>
+                        <p className="text-gray-500">{t('monuments.loading')}</p>
                     </div>
                 ) : filteredMonuments && filteredMonuments.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 items-start">
@@ -66,7 +68,7 @@ const PopularActivity = () => {
                     </div>
                 ) : (
                     <div className="text-center py-10">
-                        <p className="text-gray-500">Hech qanday tarixiy joylar topilmadi</p>
+                        <p className="text-gray-500">{t('monuments.noMonuments')}</p>
                     </div>
                 )}
             </div>

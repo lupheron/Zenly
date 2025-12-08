@@ -6,9 +6,11 @@ import InputDefault from '../FormElements/Input/InputDefault'
 import LabelDefault from '../FormElements/label/LabelDefault'
 import AlertDefault from '../Alert/AlertDefault'
 import { useRouter } from 'next/navigation'
+import { useLanguage } from '@/src/contexts/LanguageContext'
 
 const LoginForm = () => {
     const router = useRouter()
+    const { t } = useLanguage()
 
     const [form, setForm] = useState({
         username: '',
@@ -42,9 +44,9 @@ const LoginForm = () => {
     return (
         <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4 w-full">
             <div>
-                <LabelDefault 
-                    label="Username:" 
-                    htmlFor="username" 
+                <LabelDefault
+                    label={t('auth.username')}
+                    htmlFor="username"
                     customClasses="text-sm sm:text-base font-medium text-gray-700 block mb-1 sm:mb-2"
                 />
                 <InputDefault
@@ -53,15 +55,15 @@ const LoginForm = () => {
                     value={form.username}
                     onChange={handleChange}
                     required
-                    placeholder="Username kiriting"
+                    placeholder={t('auth.enterUsername')}
                     customClasses="w-full"
                 />
             </div>
 
             <div>
-                <LabelDefault 
-                    label="Parol:" 
-                    htmlFor="password" 
+                <LabelDefault
+                    label={t('auth.password')}
+                    htmlFor="password"
                     customClasses="text-sm sm:text-base font-medium text-gray-700 block mb-1 sm:mb-2"
                 />
                 <InputDefault
@@ -70,7 +72,7 @@ const LoginForm = () => {
                     value={form.password}
                     onChange={handleChange}
                     required
-                    placeholder="Parol kiriting"
+                    placeholder={t('auth.enterPassword')}
                     customClasses="w-full"
                 />
             </div>
@@ -80,7 +82,7 @@ const LoginForm = () => {
                 disabled={isPending}
                 className="w-full cursor-pointer bg-light-green text-white px-4 sm:px-6 py-2 sm:py-3 rounded-md text-sm sm:text-base font-semibold hover:bg-green-600 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed mt-6"
             >
-                {isPending ? 'Tekshirilmoqda...' : 'Kirish'}
+                {isPending ? t('auth.checking') : t('auth.loginBtn')}
             </button>
         </form>
     )

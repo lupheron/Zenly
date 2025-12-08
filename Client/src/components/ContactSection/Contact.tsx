@@ -1,34 +1,39 @@
+'use client'
+
 import React from 'react';
 import PhoneIcon from '@mui/icons-material/Phone';
 import EmailIcon from '@mui/icons-material/Email';
 import BusinessIcon from '@mui/icons-material/Business';
-
-const data = [
-    {
-        title: "Telefon Raqam",
-        icon: PhoneIcon,
-        info: "+998 (50) 883-99-11"
-    },
-    {
-        title: "Manzil",
-        icon: BusinessIcon,
-        info: "O'zbekiston, Samarqand"
-    },
-    {
-        title: "Email",
-        icon: EmailIcon,
-        info: "nuriddinovsuxrob27@gmail.com"
-    }
-];
+import { useLanguage } from '@/src/contexts/LanguageContext';
 
 const Contact = () => {
+    const { t } = useLanguage();
+
+    const data = [
+        {
+            title: t('contact.phone'),
+            icon: PhoneIcon,
+            info: "+998 (50) 883-99-11"
+        },
+        {
+            title: t('contact.address'),
+            icon: BusinessIcon,
+            info: "O'zbekiston, Samarqand"
+        },
+        {
+            title: t('contact.email'),
+            icon: EmailIcon,
+            info: "nuriddinovsuxrob27@gmail.com"
+        }
+    ];
+
     return (
         <div className="flex flex-col items-center mt-20 px-4 text-center">
             <h1
                 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6"
                 data-aos="fade-down"
             >
-                Biz Bilan Bog&apos;lanish
+                {t('contact.title')}
             </h1>
 
             <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-8 md:gap-24 mt-10">

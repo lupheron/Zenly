@@ -1,21 +1,24 @@
+'use client'
+
 import React from 'react'
 import { useRouter } from 'next/navigation'
+import { useLanguage } from '@/src/contexts/LanguageContext'
 
 const GuideDriverSection = () => {
     const router = useRouter()
+    const { t } = useLanguage()
 
     return (
         <div className="w-full py-16 px-4 bg-gradient-to-br from-blue-50 to-green-50 mt-20">
             <div className="max-w-6xl mx-auto">
                 <div className="text-center mb-10" data-aos="fade-down">
                     <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-800 max-w-3xl mx-auto mb-4">
-                        Sayohatingiz osonroq bo'lishini xohlaysizmi?
-                        <span className="block text-green-600 mt-2">Haydovchi va gid tanlang</span>
+                        {t('guideDriver.title')}
+                        <span className="block text-green-600 mt-2">{t('guideDriver.subtitle')}</span>
                     </h2>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8" data-aos="fade-up">
-                    {/* Drivers Card */}
                     <div
                         onClick={() => router.push('/drivers')}
                         className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer overflow-hidden"
@@ -28,13 +31,13 @@ const GuideDriverSection = () => {
                                 </svg>
                             </div>
                             <h3 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-3">
-                                Haydovchilar bilan tanishing
+                                {t('guideDriver.driverTitle')}
                             </h3>
                             <p className="text-gray-600 text-base sm:text-lg mb-6">
-                                Tajribali haydovchilarimiz sizni xavfsiz va qulay sayohatga olib boradi
+                                {t('guideDriver.driverDesc')}
                             </p>
                             <div className="flex items-center text-blue-600 font-semibold group-hover:translate-x-2 transition-transform duration-300">
-                                <span>Ko'proq</span>
+                                <span>{t('guideDriver.more')}</span>
                                 <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                 </svg>
@@ -42,7 +45,6 @@ const GuideDriverSection = () => {
                         </div>
                     </div>
 
-                    {/* Guides Card */}
                     <div
                         onClick={() => router.push('/guides')}
                         className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer overflow-hidden"
@@ -54,13 +56,13 @@ const GuideDriverSection = () => {
                                 </svg>
                             </div>
                             <h3 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-3">
-                                Gidlar bilan tanishing
+                                {t('guideDriver.guideTitle')}
                             </h3>
                             <p className="text-gray-600 text-base sm:text-lg mb-6">
-                                Professional gidlarimiz sizga tarixiy va madaniy joylari haqida to'liq ma'lumot beradi
+                                {t('guideDriver.guideDesc')}
                             </p>
                             <div className="flex items-center text-green-600 font-semibold group-hover:translate-x-2 transition-transform duration-300">
-                                <span>Ko'proq</span>
+                                <span>{t('guideDriver.more')}</span>
                                 <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                 </svg>

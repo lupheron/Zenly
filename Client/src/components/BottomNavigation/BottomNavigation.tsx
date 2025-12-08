@@ -6,8 +6,11 @@ import Image from 'next/image';
 import HomeIcon from '@mui/icons-material/Home';
 import PhotoIcon from '@mui/icons-material/Photo';
 import CallIcon from '@mui/icons-material/Call';
+import LanguageIcon from '@mui/icons-material/Language';
 import { useUser } from '@/src/hooks/users/useUser';
 import AuthChoiceModal from '../Modal/AuthChoiceModal';
+import { useLanguage } from '@/src/contexts/LanguageContext';
+import ReusableModal from '../Modal/ReusableModal';
 
 const BottomNavigation = () => {
     const router = useRouter();
@@ -15,6 +18,8 @@ const BottomNavigation = () => {
     const { data } = useUser();
     const [hasToken, setHasToken] = useState(false);
     const [showAuthModal, setShowAuthModal] = useState(false);
+    const [showLangModal, setShowLangModal] = useState(false);
+    const { language, setLanguage, t } = useLanguage();
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -30,6 +35,11 @@ const BottomNavigation = () => {
         }
     };
 
+    const handleLanguageChange = (lang: 'en' | 'ru') => {
+        setLanguage(lang);
+        setShowLangModal(false);
+    };
+
     const navItems = [
         {
             id: 'home',
@@ -41,7 +51,6 @@ const BottomNavigation = () => {
             id: 'posts',
             icon: <PhotoIcon className="w-8 h-8" />,
             action: () => {
-                // Scroll to Mashhur servislar section
                 const activitiesSection = document.getElementById('activities');
                 if (activitiesSection) {
                     activitiesSection.scrollIntoView({ behavior: 'smooth' });
@@ -50,10 +59,15 @@ const BottomNavigation = () => {
             isActive: pathname.startsWith('/posts')
         },
         {
+            id: 'language',
+            icon: <LanguageIcon className="w-8 h-8" />,
+            action: () => setShowLangModal(true),
+            isActive: false
+        },
+        {
             id: 'contact',
             icon: <CallIcon className="w-8 h-8" />,
             action: () => {
-                // Scroll to contact section
                 const contactSection = document.getElementById('coments');
                 if (contactSection) {
                     contactSection.scrollIntoView({ behavior: 'smooth' });
@@ -92,11 +106,10 @@ const BottomNavigation = () => {
                     <button
                         key={item.id}
                         onClick={item.action}
-                        className={`flex flex-col items-center justify-center p-2 min-w-0 flex-1 transition-colors duration-200 min-h-[60px] ${
-                            item.isActive 
-                                ? 'text-blue-600' 
+                        className={`flex flex-col items-center justify-center p-2 min-w-0 flex-1 transition-colors duration-200 min-h-[60px] ${item.isActive
+                                ? 'text-blue-600'
                                 : 'text-gray-600 hover:text-gray-800'
-                        }`}
+                            }`}
                     >
                         <div className="text-2xl">
                             {item.icon}
@@ -104,11 +117,34 @@ const BottomNavigation = () => {
                     </button>
                 ))}
             </div>
-            
-            <AuthChoiceModal 
-                open={showAuthModal} 
-                onClose={() => setShowAuthModal(false)} 
+
+            <AuthChoiceModal
+                open={showAuthModal}
+                onClose={() => setShowAuthModal(false)}
             />
+
+            <ReusableModal
+                open={showLangModal}
+                onClose={() => setShowLangModal(false)}
+                title={t("nav.selectLanguage")}
+            >
+                <div className="flex flex-col gap-3">
+                    <button
+                        onClick={() => handleLanguageChange('en')}
+                        className={`p-4 rounded hover:bg-gray-100 text-left transition ${language === 'en' ? 'bg-gray-100 font-semibold' : ''
+                            }`}
+                    >
+                        English
+                    </button>
+                    <button
+                        onClick={() => handleLanguageChange('ru')}
+                        className={`p-4 rounded hover:bg-gray-100 text-left transition ${language === 'ru' ? 'bg-gray-100 font-semibold' : ''
+                            }`}
+                    >
+                        Русский
+                    </button>
+                </div>
+            </ReusableModal>
         </div>
     );
 };
