@@ -9,6 +9,7 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import XIcon from '@mui/icons-material/X';
 import SocialMediaButton from '../Button/SocialMediaButton';
 import AOSInitializer from '../AOSInitializer';
+import { useLanguage } from '@/src/contexts/LanguageContext';
 
 const smData = [
     {
@@ -30,12 +31,13 @@ const smData = [
 ];
 
 const footerList = [
-    { id: 1, data: "Call center" },
-    { id: 2, data: "Terms" },
-    { id: 3, data: "Privacy&Policy" }
+    { id: 1, key: "callCenter" },
+    { id: 2, key: "terms" },
+    { id: 3, key: "privacy" }
 ];
 
 const PageFooter = () => {
+    const { t } = useLanguage();
     return (
         <div>
             <AOSInitializer />
@@ -55,7 +57,7 @@ const PageFooter = () => {
                             alt="Zenly Logo"
                         />
                         <p className="text-lg sm:text-xl md:text-lg mt-4 max-w-[400px]">
-                            Zenly — tabiat qo&apos;ynida hordiq chiqarish joylari va hashamatli maskanlar toping.
+                            {t('footer.description')}
                         </p>
                         <div className="flex gap-3 mt-6">
                             {smData.map((item, index) => (
@@ -72,11 +74,11 @@ const PageFooter = () => {
                         data-aos="fade-left"
                         className="flex flex-col items-center md:items-center justify-center w-full md:w-1/3"
                     >
-                        <h2 className="text-2xl sm:text-3xl mb-4 font-semibold">Support</h2>
+                        <h2 className="text-2xl sm:text-3xl mb-4 font-semibold">{t('footer.support')}</h2>
                         <ul>
                             {footerList.map((item) => (
                                 <li key={item.id} className="mt-2 text-lg md:text-xl cursor-pointer hover:underline">
-                                    {item.data}
+                                    {t(`footer.${item.key}`)}
                                 </li>
                             ))}
                         </ul>

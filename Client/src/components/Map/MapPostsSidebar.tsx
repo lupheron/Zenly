@@ -3,6 +3,7 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useLanguage } from '@/src/contexts/LanguageContext'
 import { MapPost } from './types'
 
 interface MapPostsSidebarProps {
@@ -16,6 +17,7 @@ const MapPostsSidebar: React.FC<MapPostsSidebarProps> = ({
   selectedRegion,
   isLoading
 }) => {
+  const { t } = useLanguage()
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -55,7 +57,7 @@ const MapPostsSidebar: React.FC<MapPostsSidebarProps> = ({
     return (
       <div className='bg-white rounded-lg shadow-lg p-6'>
         <h3 className='text-lg font-semibold text-gray-800 mb-4'>
-          Posts in {selectedRegion}
+          {t('map.postsIn')} {selectedRegion}
         </h3>
         <div className='space-y-4'>
           {[1, 2, 3].map((i) => (
@@ -73,21 +75,21 @@ const MapPostsSidebar: React.FC<MapPostsSidebarProps> = ({
   return (
     <div className='bg-white rounded-lg shadow-lg p-6 max-h-[600px] overflow-y-auto'>
       <h3 className='text-lg font-semibold text-gray-800 mb-4'>
-        {selectedRegion ? `Posts in ${selectedRegion}` : 'Select a region to view posts'}
+        {selectedRegion ? `${t('map.postsIn')} ${selectedRegion}` : t('map.selectRegionToView')}
       </h3>
 
       {!selectedRegion ? (
         <div className='text-center py-8'>
           <div className='text-gray-400 text-4xl mb-2'>🗺️</div>
           <p className='text-gray-600 text-sm'>
-            Choose a region from the dropdown above to see available posts
+            {t('map.chooseRegion')}
           </p>
         </div>
       ) : posts.length === 0 ? (
         <div className='text-center py-8'>
           <div className='text-gray-400 text-4xl mb-2'>📍</div>
           <p className='text-gray-600 text-sm'>
-            No posts found in this region
+            {t('map.noPostsFound')}
           </p>
         </div>
       ) : (
@@ -113,7 +115,7 @@ const MapPostsSidebar: React.FC<MapPostsSidebarProps> = ({
                     <span className='text-2xl'>🏨</span>
                   </div>
                 )}
-                
+
                 {/* Service Type Badge */}
                 <div className='absolute top-2 left-2'>
                   <span className='px-2 py-1 bg-green-600 text-white text-xs rounded-full'>
@@ -127,7 +129,7 @@ const MapPostsSidebar: React.FC<MapPostsSidebarProps> = ({
                 <h4 className='font-semibold text-gray-800 text-sm mb-1 line-clamp-2'>
                   {post.title}
                 </h4>
-                
+
                 <p className='text-gray-600 text-xs mb-2 line-clamp-2'>
                   {post.small_description}
                 </p>
@@ -138,16 +140,16 @@ const MapPostsSidebar: React.FC<MapPostsSidebarProps> = ({
                     {renderStars(post.avg_rating || 0)}
                   </div>
                   <span className='text-xs text-gray-600'>
-                    {post.avg_rating ? post.avg_rating.toFixed(1) : 'No rating'}
+                    {post.avg_rating ? post.avg_rating.toFixed(1) : t('map.noRating')}
                   </span>
                 </div>
 
                 {/* Price and Details */}
                 <div className='flex items-center justify-between text-xs text-gray-600'>
                   <span className='font-semibold text-green-600'>
-                    {formatPrice(post.price_daily)}/day
+                    {formatPrice(post.price_daily)}{t('map.perDay')}
                   </span>
-                  <span>{post.members} guests</span>
+                  <span>{post.members} {t('map.guests')}</span>
                 </div>
 
                 {/* Stats */}
@@ -172,7 +174,7 @@ const MapPostsSidebar: React.FC<MapPostsSidebarProps> = ({
             href={`/posts?location=${encodeURIComponent(selectedRegion)}`}
             className='block w-full text-center py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 text-sm'
           >
-            View All Posts in {selectedRegion}
+            {t('map.viewAllPostsIn')} {selectedRegion}
           </Link>
         </div>
       )}

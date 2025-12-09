@@ -20,12 +20,12 @@ const AboutSection = () => {
     return (
         <div className="mt-20 px-4 md:px-8" id='about-us'>
             <div className="max-w-[900px] mx-auto flex flex-col items-center text-center gap-5" data-aos="fade-down">
-                <TitleButtons label="Biz haqimizda" customClasses="text-green-700 bg-green-50" />
+                <TitleButtons label={t('about.title')} customClasses="text-green-700 bg-green-50" />
                 <h1 className="text-[28px] sm:text-[34px] md:text-[33px] font-semibold">
-                    Biz bilan shaharning shovqin-suronidan uzoqlashish uchun eng ideal dam olish joyini kashf eting.
+                    {t('about.heading')}
                 </h1>
                 <p className="leading-[28px] md:leading-[30px]">
-                    Zenly – bu shahar tashqarisidagi osoyishta dam olish joylariga yo‘l. Siz kamping, sog‘lomlashtiruvchi dam olish maskanlari yoki plyaj bo‘yidagi joylarni izlayapsizmi – Zenly sizga tabiatga boy maskanlarni topish, bron qilish va lazzatlanishda yordam beradi. Do‘stlaringiz, oilangiz yoki yolg‘iz o‘zingiz bilan ajoyib xotiralar yarating.
+                    {t('about.description')}
                 </p>
             </div>
 

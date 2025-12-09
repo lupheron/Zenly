@@ -32,7 +32,13 @@
         "internet": "Free Internet",
         "internetDesc": "Connect with fast internet in the lap of nature.",
         "swimming": "Swimming",
-        "swimmingDesc": "Refresh in clear water under the open sky."
+        "swimmingDesc": "Refresh in clear water under the open sky.",
+        "mountainBiking": "Mountain Biking",
+        "mountainBikingDesc": "Scenic trails for adventuring through nature.",
+        "fishing": "Fishing",
+        "fishingDesc": "Cast your line and relax in quiet spots.",
+        "gymYoga": "Gym & Yoga",
+        "gymYogaDesc": "Serenity classes for harmonizing body and mind."
     },
     "guideDriver": {
         "title": "Want to make your trip easier?",
@@ -195,7 +201,11 @@
     "comment": {
         "websiteFeedback": "Your feedback about the website",
         "leaveComment": "Leave your opinion about the site!",
-        "title": "Your Feedback"
+        "title": "Your Feedback",
+        "yourOpinionButton": "Your opinion about us",
+        "customerReviewsTitle": "Customer opinions about us",
+        "customerReviewsAlt": "Customer reviews",
+        "noComments": "No comments available yet."
     },
     "map": {
         "serviceTypes": "Service Types",
@@ -203,7 +213,41 @@
         "region": "Region",
         "allRegions": "All Regions",
         "clearAll": "Clear All",
-        "posts": "posts"
+        "posts": "posts",
+        "title": "Find out all types of services through the map",
+        "loadingMap": "Loading map...",
+        "selectServiceRegion": "Select Service & Region",
+        "selectServiceRegionDesc": "Please select a service type and region from the filters above to view posts on the interactive map.",
+        "postsWillAppear": "Posts Will Appear Here",
+        "selectToSeePosts": "Select service type and region to see available posts",
+        "postsIn": "Posts in",
+        "selectRegionToView": "Select a region to view posts",
+        "chooseRegion": "Choose a region from the dropdown above to see available posts",
+        "noPostsFound": "No posts found in this region",
+        "noRating": "No rating",
+        "perDay": "/day",
+        "guests": "guests",
+        "viewAllPostsIn": "View All Posts in",
+        "selectRegion": "Select Region",
+        "chooseRegionPlaceholder": "Choose a region...",
+        "activeFilters": "Active Filters:",
+        "service": "Service",
+        "regions": {
+            "Andijon": "Andijan",
+            "Buxoro": "Bukhara",
+            "Fargʻona": "Fergana",
+            "Jizzax": "Jizzakh",
+            "Xorazm": "Khorezm",
+            "Namangan": "Namangan",
+            "Navoiy": "Navoi",
+            "Qashqadaryo": "Kashkadarya",
+            "Qoraqalpogʻiston": "Karakalpakstan",
+            "Samarqand": "Samarkand",
+            "Sirdaryo": "Syrdarya",
+            "Surxondaryo": "Surkhandarya",
+            "Toshkent viloyati": "Tashkent region",
+            "Toshkent shahri": "Tashkent city"
+        }
     },
     "monuments": {
         "title": "Historical Centers",

@@ -6,21 +6,23 @@ import Image from 'next/image';
 import { useWebComments } from '@/src/hooks/comments/useWebComments';
 import ReusableModal from '../Modal/ReusableModal';
 import WebComment from '../Forms/Comments/WebComment';
+import { useLanguage } from '@/src/contexts/LanguageContext';
 
 const Comments = () => {
     const [openModal, setOpenModal] = useState(false);
     const { data } = useWebComments();
+    const { t } = useLanguage();
 
     return (
         <div className="py-20 mt-20" id='coments'>
             <div data-aos="fade-top" className="mb-20 flex flex-col text-center items-center px-4">
-                <TitleButtons 
-                    label="Biz haqimizda fikringiz" 
-                    customClasses="text-white bg-orange cursor-pointer hover:bg-orange-600 transition-colors duration-200" 
+                <TitleButtons
+                    label={t('comment.yourOpinionButton')}
+                    customClasses="text-white bg-orange cursor-pointer hover:bg-orange-600 transition-colors duration-200"
                     onClick={() => setOpenModal(true)}
                 />
                 <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold mt-5 max-w-[800px]">
-                    Biz haqimizda mijozlarning fikrlari
+                    {t('comment.customerReviewsTitle')}
                 </h1>
             </div>
 
@@ -30,7 +32,7 @@ const Comments = () => {
                         width={600}
                         height={450}
                         src="/comments/comment.jpg"
-                        alt="Mijozlar fikrlari"
+                        alt={t('comment.customerReviewsAlt')}
                         className="rounded-lg object-cover w-full h-full"
                     />
                 </div>
@@ -53,17 +55,17 @@ const Comments = () => {
                                 />
                             ))
                         ) : (
-                            <p className="text-center text-lg">Hozircha hech qanday fikr mavjud emas.</p>
+                            <p className="text-center text-lg">{t('comment.noComments')}</p>
                         )}
                     </SwiperDefault>
                 </div>
             </div>
-            
+
             {/* Comment Modal */}
             <ReusableModal
                 onClose={() => setOpenModal(false)}
                 open={openModal}
-                title="Sayt haqida o'z fikringizni qoldiring!"
+                title={t('comment.leaveComment')}
                 width={600}
             >
                 <WebComment onSuccess={() => setOpenModal(false)} closeModal={() => setOpenModal(false)} />

@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { AreaType } from './types'
+import { useLanguage } from '@/src/contexts/LanguageContext'
 import AnimatedSelect from '../FormElements/Select/AnimatedSelect'
 
 interface MapControlsProps {
@@ -36,21 +37,22 @@ const MapControls: React.FC<MapControlsProps> = ({
   onServiceChange,
   onRegionChange
 }) => {
+  const { t } = useLanguage()
   return (
     <div className='bg-white rounded-lg p-6 shadow-lg'>
       <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
         {/* Service Type Selection */}
         <div>
           <AnimatedSelect
-            label="Service Types"
+            label={t('map.serviceTypes')}
             name="service"
             value={selectedService}
             onChange={(e) => onServiceChange(e.target.value)}
-            placeholder="All Services"
+            placeholder={t('map.allServices')}
             variant="default"
             customClassesSelect="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
             options={[
-              { label: 'All Services', value: '' },
+              { label: t('map.allServices'), value: '' },
               ...areaTypes.map(areaType => ({
                 label: areaType.name,
                 value: areaType.id.toString()
@@ -62,15 +64,15 @@ const MapControls: React.FC<MapControlsProps> = ({
         {/* Region Selection */}
         <div>
           <AnimatedSelect
-            label="Select Region"
+            label={t('map.region')}
             name="region"
             value={selectedRegion}
             onChange={(e) => onRegionChange(e.target.value)}
-            placeholder="Choose a region..."
+            placeholder={t('map.allRegions')}
             variant="default"
             customClassesSelect="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
             options={uzbekistanRegions.map(region => ({
-              label: region,
+              label: t(`map.regions.${region}`),
               value: region
             }))}
           />
@@ -80,16 +82,16 @@ const MapControls: React.FC<MapControlsProps> = ({
       {/* Selected Filters Display */}
       {(selectedService || selectedRegion) && (
         <div className='mt-6 p-4 bg-green-50 rounded-lg'>
-          <h4 className='text-sm font-medium text-green-800 mb-2'>Active Filters:</h4>
+          <h4 className='text-sm font-medium text-green-800 mb-2'>{t('map.activeFilters')}</h4>
           <div className='flex flex-wrap gap-2'>
             {selectedService && (
               <span className='px-3 py-1 bg-green-200 text-green-800 rounded-full text-sm'>
-                {areaTypes.find(type => type.id.toString() === selectedService)?.name || 'Service'}
+                {areaTypes.find(type => type.id.toString() === selectedService)?.name || t('map.service')}
               </span>
             )}
             {selectedRegion && (
               <span className='px-3 py-1 bg-green-200 text-green-800 rounded-full text-sm'>
-                {selectedRegion}
+                {t(`map.regions.${selectedRegion}`)}
               </span>
             )}
             <button
@@ -99,7 +101,7 @@ const MapControls: React.FC<MapControlsProps> = ({
               }}
               className='px-3 py-1 bg-red-200 text-red-800 rounded-full text-sm hover:bg-red-300 transition-colors cursor-pointer'
             >
-              Clear All
+              {t('map.clearAll')}
             </button>
           </div>
         </div>

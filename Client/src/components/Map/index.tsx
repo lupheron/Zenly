@@ -3,20 +3,17 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import { useAreaTypes } from '@/src/hooks/area_types/useAreaType'
+import { useLanguage } from '@/src/contexts/LanguageContext'
 import MapControls from './MapControls'
 import MapPostsSidebar from './MapPostsSidebar'
 import { MapPost } from './types'
 
 const InteractiveMap = dynamic(() => import('./InteractiveMap'), {
-  ssr: false,
-  loading: () => (
-    <div className="w-full h-96 bg-gray-200 rounded-lg flex items-center justify-center">
-      <div className="text-gray-600">Loading map...</div>
-    </div>
-  )
+  ssr: false
 })
 
 const MapMain = () => {
+  const { t } = useLanguage()
   const [selectedService, setSelectedService] = useState<string>('')
   const [selectedRegion, setSelectedRegion] = useState<string>('')
   const [mapPosts, setMapPosts] = useState<MapPost[]>([])
@@ -34,7 +31,7 @@ const MapMain = () => {
 
       const response = await fetch(`http://zenlyserver.test/api/map/posts?${params}`)
       const data = await response.json()
-      
+
       if (data.status === 200) {
         console.log('Map posts fetched:', data.data.length, 'posts')
         console.log('Map posts data:', data.data)
@@ -57,7 +54,7 @@ const MapMain = () => {
 
       const response = await fetch(`http://zenlyserver.test/api/map/posts-by-region?${params}`)
       const data = await response.json()
-      
+
       if (data.status === 200) {
         console.log('Sidebar posts fetched:', data.data.length, 'posts')
         console.log('Sidebar posts data:', data.data)
@@ -96,7 +93,7 @@ const MapMain = () => {
     <div className='bg-dark-green mt-20 p-8 lg:p-20'>
       <div className='max-w-7xl mx-auto'>
         <h1 className='text-white text-3xl lg:text-4xl text-center font-bold mb-8'>
-          Find out all types of services through the map
+          {t('map.title')}
         </h1>
         <MapControls
           areaTypes={areaTypes || []}
@@ -121,9 +118,9 @@ const MapMain = () => {
               <div className='w-full h-96 lg:h-[500px] bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg shadow-lg flex items-center justify-center'>
                 <div className='text-center p-8'>
                   <div className='text-6xl mb-4'>🗺️</div>
-                  <h3 className='text-xl font-semibold text-gray-700 mb-2'>Select Service & Region</h3>
+                  <h3 className='text-xl font-semibold text-gray-700 mb-2'>{t('map.selectServiceRegion')}</h3>
                   <p className='text-gray-600 max-w-md'>
-                    Please select a service type and region from the filters above to view posts on the interactive map.
+                    {t('map.selectServiceRegionDesc')}
                   </p>
                 </div>
               </div>
@@ -142,9 +139,9 @@ const MapMain = () => {
               <div className='w-full h-96 lg:h-[500px] bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg shadow-lg flex items-center justify-center'>
                 <div className='text-center p-6'>
                   <div className='text-4xl mb-3'>📍</div>
-                  <h3 className='text-lg font-semibold text-gray-700 mb-2'>Posts Will Appear Here</h3>
+                  <h3 className='text-lg font-semibold text-gray-700 mb-2'>{t('map.postsWillAppear')}</h3>
                   <p className='text-gray-600 text-sm'>
-                    Select service type and region to see available posts
+                    {t('map.selectToSeePosts')}
                   </p>
                 </div>
               </div>

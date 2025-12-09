@@ -32,7 +32,13 @@
         "internet": "Бесплатный интернет",
         "internetDesc": "Подключайтесь к быстрому интернету на лоне природы.",
         "swimming": "Плавание",
-        "swimmingDesc": "Освежитесь в чистой воде под открытым небом."
+        "swimmingDesc": "Освежитесь в чистой воде под открытым небом.",
+        "mountainBiking": "Горный велосипед",
+        "mountainBikingDesc": "Живописные тропы для приключений на природе.",
+        "fishing": "Рыбалка",
+        "fishingDesc": "Закиньте удочку и отдохните в тихих местах.",
+        "gymYoga": "Тренажёрный зал и йога",
+        "gymYogaDesc": "Занятия для гармонии тела и разума."
     },
     "guideDriver": {
         "title": "Хотите сделать вашу поездку проще?",
@@ -195,7 +201,11 @@
     "comment": {
         "websiteFeedback": "Ваш отзыв о сайте",
         "leaveComment": "Оставьте свое мнение о сайте!",
-        "title": "Ваш отзыв"
+        "title": "Ваш отзыв",
+        "yourOpinionButton": "Ваше мнение о нас",
+        "customerReviewsTitle": "Отзывы клиентов о нас",
+        "customerReviewsAlt": "Отзывы клиентов",
+        "noComments": "Пока нет отзывов."
     },
     "map": {
         "serviceTypes": "Типы услуг",
@@ -203,7 +213,41 @@
         "region": "Регион",
         "allRegions": "Все регионы",
         "clearAll": "Очистить все",
-        "posts": "посты"
+        "posts": "посты",
+        "title": "Узнайте обо всех типах услуг через карту",
+        "loadingMap": "Загрузка карты...",
+        "selectServiceRegion": "Выберите услугу и регион",
+        "selectServiceRegionDesc": "Пожалуйста, выберите тип услуги и регион из фильтров выше, чтобы просмотреть посты на интерактивной карте.",
+        "postsWillAppear": "Посты появятся здесь",
+        "selectToSeePosts": "Выберите тип услуги и регион, чтобы увидеть доступные посты",
+        "postsIn": "Посты в",
+        "selectRegionToView": "Выберите регион для просмотра постов",
+        "chooseRegion": "Выберите регион из выпадающего списка выше, чтобы увидеть доступные посты",
+        "noPostsFound": "Посты в этом регионе не найдены",
+        "noRating": "Нет рейтинга",
+        "perDay": "/день",
+        "guests": "гостей",
+        "viewAllPostsIn": "Просмотреть все посты в",
+        "selectRegion": "Выберите регион",
+        "chooseRegionPlaceholder": "Выберите регион...",
+        "activeFilters": "Активные фильтры:",
+        "service": "Услуга",
+        "regions": {
+            "Andijon": "Андижан",
+            "Buxoro": "Бухара",
+            "Fargʻona": "Фергана",
+            "Jizzax": "Джизак",
+            "Xorazm": "Хорезм",
+            "Namangan": "Наманган",
+            "Navoiy": "Навои",
+            "Qashqadaryo": "Кашкадарья",
+            "Qoraqalpogʻiston": "Каракалпакстан",
+            "Samarqand": "Самарканд",
+            "Sirdaryo": "Сырдарья",
+            "Surxondaryo": "Сурхандарья",
+            "Toshkent viloyati": "Ташкентская область",
+            "Toshkent shahri": "г. Ташкент"
+        }
     },
     "monuments": {
         "title": "Исторические центры",

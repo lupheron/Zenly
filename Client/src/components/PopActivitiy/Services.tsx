@@ -17,9 +17,9 @@ const Services = () => {
         { icon: <GppGoodIcon fontSize="large" />, title: t('services.security'), paragraph: t('services.securityDesc') },
         { icon: <CompassCalibrationIcon fontSize="large" />, title: t('services.internet'), paragraph: t('services.internetDesc') },
         { icon: <PoolIcon fontSize="large" />, title: t('services.swimming'), paragraph: t('services.swimmingDesc') },
-        { icon: <DirectionsBikeIcon fontSize="large" />, title: "Mountain Biking", paragraph: "Scenic trails for adventuring through nature." },
-        { icon: <PhishingIcon fontSize="large" />, title: "Fishing", paragraph: "Cast your line and relax in quiet spots." },
-        { icon: <SelfImprovementIcon fontSize="large" />, title: "Gym & Yoga", paragraph: "Serenity classes for harmonizing body and mind." }
+        { icon: <DirectionsBikeIcon fontSize="large" />, title: t('services.mountainBiking'), paragraph: t('services.mountainBikingDesc') },
+        { icon: <PhishingIcon fontSize="large" />, title: t('services.fishing'), paragraph: t('services.fishingDesc') },
+        { icon: <SelfImprovementIcon fontSize="large" />, title: t('services.gymYoga'), paragraph: t('services.gymYogaDesc') }
     ];
 
     return (
