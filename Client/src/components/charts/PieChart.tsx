@@ -7,6 +7,7 @@ import {
     Tooltip,
     Legend
 } from "chart.js";
+import { useLanguage } from "@/src/contexts/LanguageContext";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -23,11 +24,12 @@ const COLORS = [
 ];
 
 const PieChart: React.FC<PieChartProps> = ({ labels, data }) => {
+    const { t } = useLanguage();
     // Check if there's data to display
     if (!data || data.length === 0 || data.every(value => value === 0)) {
         return (
             <div className="w-full min-h-[250px] h-[300px] md:h-[350px] xl:h-[400px] max-w-3xl mx-auto flex items-center justify-center">
-                <p className="text-gray-500 text-lg">Ma&apos;lumotlar mavjud emas</p>
+                <p className="text-gray-500 text-lg">{t('user.noData')}</p>
             </div>
         );
     }
@@ -49,12 +51,12 @@ const PieChart: React.FC<PieChartProps> = ({ labels, data }) => {
                 display: true,
                 position: 'top' as const,
                 align: 'center' as const,
-                fullSize: false, 
+                fullSize: false,
                 labels: {
                     boxWidth: 20,
                     padding: 20,
                 },
-                maxWidth: 400, 
+                maxWidth: 400,
             },
         },
         layout: {

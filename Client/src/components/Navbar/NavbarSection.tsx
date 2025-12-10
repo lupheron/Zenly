@@ -8,14 +8,13 @@ import { useUser } from '@/src/hooks/users/useUser';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/src/contexts/LanguageContext';
-import LanguageIcon from '@mui/icons-material/Language';
+import LanguageSelect from './LanguageSelect';
 
 const NavbarSection = () => {
     const [hasToken, setHasToken] = useState(false);
     const { data } = useUser();
     const router = useRouter();
-    const { language, setLanguage, t } = useLanguage();
-    const [showLangMenu, setShowLangMenu] = useState(false);
+    const { t } = useLanguage();
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -36,11 +35,6 @@ const NavbarSection = () => {
         } else if (data.type === 1) {
             router.push('/customer');
         }
-    };
-
-    const handleLanguageChange = (lang: 'en' | 'ru') => {
-        setLanguage(lang);
-        setShowLangMenu(false);
     };
 
     return (
@@ -69,32 +63,7 @@ const NavbarSection = () => {
                 </ul>
 
                 <div className="hidden lg:flex items-center space-x-4">
-                    <div className="relative">
-                        <button
-                            onClick={() => setShowLangMenu(!showLangMenu)}
-                            className="flex items-center space-x-2 text-white hover:text-light-green transition duration-300 px-3 py-2 rounded"
-                        >
-                            <LanguageIcon />
-                            <span className="text-sm font-semibold uppercase">{language}</span>
-                        </button>
-
-                        {showLangMenu && (
-                            <div className="absolute right-0 mt-2 bg-white rounded-lg shadow-lg py-2 w-32 z-50">
-                                <button
-                                    onClick={() => handleLanguageChange('en')}
-                                    className={`w-full text-left px-4 py-2 hover:bg-gray-100 transition ${language === 'en' ? 'bg-gray-100 font-semibold' : ''}`}
-                                >
-                                    English
-                                </button>
-                                <button
-                                    onClick={() => handleLanguageChange('ru')}
-                                    className={`w-full text-left px-4 py-2 hover:bg-gray-100 transition ${language === 'ru' ? 'bg-gray-100 font-semibold' : ''}`}
-                                >
-                                    Русский
-                                </button>
-                            </div>
-                        )}
-                    </div>
+                    <LanguageSelect />
 
                     {hasToken ? (
                         <>

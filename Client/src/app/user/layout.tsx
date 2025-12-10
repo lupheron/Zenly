@@ -10,14 +10,18 @@ import AlertDefault from '@/src/components/Alert/AlertDefault'
 import api from '@/src/utils/axios'
 import ProfileBottomNavigation from '@/src/components/BottomNavigation/ProfileBottomNavigation'
 
+import { useLanguage } from '@/src/contexts/LanguageContext'
+import LanguageSelect from '@/src/components/Navbar/LanguageSelect'
+
 export default function UserLayout({ children }: { children: React.ReactNode }) {
+    const { t } = useLanguage()
     const router = useRouter()
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         const token = localStorage.getItem("token")
         if (!token) {
-            AlertDefault.error("Avval identifikatsiyadan o'ting!")
+            AlertDefault.error(t('user.plzAuth'))
             router.push("/login")
             return
         }
@@ -26,12 +30,12 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
             .then((res) => {
                 const userType = res.data.type
                 if (userType === 1) {
-                    AlertDefault.error("Sizga bu sahifaga kirish taqiqlangan.")
+                    AlertDefault.error(t('user.noAccess'))
                     router.push("/")
                 }
             })
             .catch(() => {
-                AlertDefault.error("Token noto'g'ri yoki sessiya tugagan.")
+                AlertDefault.error(t('user.invalidToken'))
                 router.push("/login")
             })
             .finally(() => {
@@ -50,22 +54,25 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
             <Aside />
             <div className='w-full lg:ml-0 flex-1 overflow-auto'>
                 <div className='p-4 sm:p-6 lg:p-8'>
-                    <div className='flex items-center gap-5 mb-4 sm:mb-6'>
-                        <div className='cursor-pointer flex items-center' onClick={handleBack}>
-                            <ArrowBackIcon className="w-5 h-5 sm:w-6 sm:h-6" />
-                            <ButtonDefault
-                                label='Qaytish'
-                                onClick={() => { }}
-                                customClasses='bg-transparent !text-black tracking-[1px] text-sm sm:text-base lg:text-xl hover:bg-transparent !px-0 !py-0 ml-2'
-                            />
+                    <div className='flex items-center justify-between mb-4 sm:mb-6'>
+                        <div className="flex items-center gap-5">
+                            <div className='cursor-pointer flex items-center' onClick={handleBack}>
+                                <ArrowBackIcon className="w-5 h-5 sm:w-6 sm:h-6" />
+                                <ButtonDefault
+                                    label={t('user.back')}
+                                    onClick={() => { }}
+                                    customClasses='bg-transparent !text-black tracking-[1px] text-sm sm:text-base lg:text-xl hover:bg-transparent !px-0 !py-0 ml-2'
+                                />
+                            </div>
+                            <span className="text-gray-400">/</span>
+                            <Link
+                                href="/"
+                                className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium text-sm sm:text-base lg:text-lg transition-colors"
+                            >
+                                🏠 {t('user.home')}
+                            </Link>
                         </div>
-                        <span className="text-gray-400">/</span>
-                        <Link
-                            href="/"
-                            className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium text-sm sm:text-base lg:text-lg transition-colors"
-                        >
-                            🏠 Bosh sahifa
-                        </Link>
+                        <LanguageSelect isDark={true} />
                     </div>
                     <main className="min-h-[calc(100vh-120px)] border-1 rounded-xl sm:rounded-2xl bg-light-gray border-gray-200 shadow-[4px_0_6px_-1px_rgba(0,0,0,0.1)] p-4 sm:p-6 lg:p-10 pb-20 lg:pb-10">
                         {children}

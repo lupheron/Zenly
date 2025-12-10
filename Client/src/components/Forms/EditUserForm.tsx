@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 import { useUser } from '@/src/hooks/users/useUser'
 import ProfileImageUpload from '../FormElements/Uploads/ProfileImgUpload'
 import ButtonDefault from '../Button/ButtonDefault'
+import { useLanguage } from '@/src/contexts/LanguageContext'
 
 const EditUserForm = () => {
     const [form, setForm] = useState({
@@ -19,6 +20,7 @@ const EditUserForm = () => {
     })
 
     const router = useRouter()
+    const { t } = useLanguage()
     const { data, isLoading, updateUser } = useUser()
     const { mutate, isPending, isSuccess, isError, error } = updateUser
 
@@ -57,19 +59,19 @@ const EditUserForm = () => {
 
     useEffect(() => {
         if (isSuccess) {
-            AlertDefault.success("Ma'lumotlar muvaffaqiyatli yangilandi!")
+            AlertDefault.success(t('user.form.successUserUpdated'))
             router.push('/user/profile')
         }
         if (isError && error) {
             if (error.message === "USERNAME_CONFLICT") {
-                AlertDefault.error("Bu username allaqachon ishlatilgan!")
+                AlertDefault.error(t('user.form.usernameConflict'))
             } else {
-                AlertDefault.error("Taxrirlashda xatolik yuz berdi!")
+                AlertDefault.error(t('user.form.errorUserUpdate'))
             }
         }
     }, [isSuccess, isError, error, router])
 
-    if (isLoading) return <p>Yuklanmoqda...</p>
+    if (isLoading) return <p>{t('common.loading')}</p>
 
     return (
         <form onSubmit={handleSubmit} className="flex flex-col xl:flex-row gap-6 lg:gap-10 items-start">
@@ -79,9 +81,9 @@ const EditUserForm = () => {
 
             <div className="space-y-3 sm:space-y-4 flex-1 w-full">
                 <div>
-                    <LabelDefault 
-                        label="F.I.SH:" 
-                        htmlFor="fullname" 
+                    <LabelDefault
+                        label={t('user.form.fullname')}
+                        htmlFor="fullname"
                         customClasses="text-sm sm:text-base font-medium text-gray-700 block mb-1 sm:mb-2"
                     />
                     <InputDefault
@@ -90,15 +92,15 @@ const EditUserForm = () => {
                         value={form.fullname}
                         onChange={handleChange}
                         required
-                        placeholder="To'liq ism va familiya"
+                        placeholder={t('user.form.enterFullname')}
                         customClasses="w-full"
                     />
                 </div>
 
                 <div>
-                    <LabelDefault 
-                        label="Username:" 
-                        htmlFor="username" 
+                    <LabelDefault
+                        label={t('user.form.username')}
+                        htmlFor="username"
                         customClasses="text-sm sm:text-base font-medium text-gray-700 block mb-1 sm:mb-2"
                     />
                     <InputDefault
@@ -107,15 +109,15 @@ const EditUserForm = () => {
                         value={form.username}
                         onChange={handleChange}
                         required
-                        placeholder="Username kiriting"
+                        placeholder={t('user.form.enterUsername')}
                         customClasses="w-full"
                     />
                 </div>
 
                 <div>
-                    <LabelDefault 
-                        label="Telefon Raqamingiz:" 
-                        htmlFor="phone" 
+                    <LabelDefault
+                        label={t('user.form.phone')}
+                        htmlFor="phone"
                         customClasses="text-sm sm:text-base font-medium text-gray-700 block mb-1 sm:mb-2"
                     />
                     <InputDefault
@@ -130,9 +132,9 @@ const EditUserForm = () => {
                 </div>
 
                 <div>
-                    <LabelDefault 
-                        label="Manzilingiz:" 
-                        htmlFor="address" 
+                    <LabelDefault
+                        label={t('user.form.address')}
+                        htmlFor="address"
                         customClasses="text-sm sm:text-base font-medium text-gray-700 block mb-1 sm:mb-2"
                     />
                     <InputDefault
@@ -141,21 +143,21 @@ const EditUserForm = () => {
                         value={form.address}
                         onChange={handleChange}
                         required
-                        placeholder="Manzilingizni kiriting"
+                        placeholder={t('user.form.enterAddress')}
                         customClasses="w-full"
                     />
                 </div>
 
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-5 pt-2">
                     <ButtonDefault
-                        label={isPending ? 'Saqlanmoqda...' : 'Yangilash'}
+                        label={isPending ? t('user.form.updating') : t('user.form.update')}
                         type="submit"
                         isDisabled={isPending}
                         customClasses='w-full tracking-[1px]'
                     />
 
                     <ButtonDefault
-                        label="Bekor qilish"
+                        label={t('user.form.cancel')}
                         onClick={() => { window.history.back() }}
                         isDisabled={isPending}
                         customClasses='w-full !bg-gray-300 !text-black tracking-[1px]'

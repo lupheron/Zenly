@@ -10,7 +10,10 @@ import BarChart from '../../components/charts/BarChart'
 import DateFilter from '../../components/Filter/DateFilter'
 import { useState } from 'react'
 
+import { useLanguage } from '@/src/contexts/LanguageContext'
+
 export default function Dashboard() {
+    const { t } = useLanguage()
     const [dateFilter, setDateFilter] = useState<DateFilterValue>({
         startDate: '',
         endDate: '',
@@ -33,7 +36,7 @@ export default function Dashboard() {
 
     return (
         <div className="px-2 sm:px-4">
-            <h1 className="text-2xl font-bold mb-8 text-center">Boshqaruv paneli</h1>
+            <h1 className="text-2xl font-bold mb-8 text-center">{t('user.controlPanel')}</h1>
             <DateFilter value={dateFilter} onChange={setDateFilter} />
             <hr className='mb-5 mt-5' />
 
@@ -41,7 +44,7 @@ export default function Dashboard() {
                 {/* Pie Chart Section */}
                 <div className="flex-1 min-w-0">
                     <h1 className='text-2xl font-bold mb-4 text-center'>
-                        Manzillar bo&apos;yicha postlar soni
+                        {t('user.postsByLocation')}
                     </h1>
                     <PieChart labels={pieChartData.labels} data={pieChartData.data} />
                 </div>
@@ -49,19 +52,19 @@ export default function Dashboard() {
                 {/* Line Chart Section */}
                 <div className="flex-1 min-w-0 w-full">
                     <h1 className='text-2xl font-bold mb-4 text-center'>
-                        Eng ko&apos;p ko&apos;rilgan va reytingi yuqori postlar
+                        {t('user.topRatedPosts')}
                     </h1>
 
                     <div className="mb-4 flex items-center justify-center gap-2">
-                        <label htmlFor="sortBy" className="font-semibold">Tanlang:</label>
+                        <label htmlFor="sortBy" className="font-semibold">{t('user.select')}</label>
                         <AnimatedSelect
                             name="sortBy"
                             value={sortBy}
                             onChange={e => setSortBy(e.target.value as 'views' | 'rating')}
                             customClassesSelect="border rounded px-2 py-1 cursor-pointer outline-none"
                             options={[
-                                { label: 'Eng ko\'p ko\'rilganlar', value: 'views' },
-                                { label: 'Eng yuqori reyting', value: 'rating' }
+                                { label: t('user.mostViewed'), value: 'views' },
+                                { label: t('user.highestRating'), value: 'rating' }
                             ]}
                         />
                     </div>
@@ -75,7 +78,7 @@ export default function Dashboard() {
                         options={postOptions}
                         onChange={e => setSelectedPostId(Number(e.target.value))}
                         value={selectedPostId ? String(selectedPostId) : ''}
-                        label={"Postlar bo'yicha ko'rsatish:"}
+                        label={t('user.showByPosts')}
                         name={'posts_sort'}
                         htmlFor={'posts_sort'}
                         customClassesLabel={'text-lg font-bold'}
@@ -88,7 +91,7 @@ export default function Dashboard() {
                 {/* Booked Posts Bar Chart Section */}
                 <div className="w-full flex flex-col gap-4 min-w-0">
                     <h1 className="text-2xl font-bold mb-4 text-center">
-                        Postlar bo&apos;yicha band qilishlar soni
+                        {t('user.bookingsByPosts')}
                     </h1>
                     <BarChart labels={barChartData.labels} data={barChartData.data} />
                 </div>

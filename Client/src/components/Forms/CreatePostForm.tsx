@@ -17,6 +17,7 @@ import { useFeatures } from '@/src/hooks/features/useFeatures'
 import { useAreaTypes } from '@/src/hooks/area_types/useAreaType';
 import AnimatedSelect from '../FormElements/Select/AnimatedSelect';
 import LocationPicker from './LocationPicker';
+import { useLanguage } from '@/src/contexts/LanguageContext';
 
 interface GalleryFile {
     uid: string
@@ -42,6 +43,7 @@ const CreatePostForm = () => {
     const [createModalOpen, setCreateModalOpen] = useState(false)
     const { data: features = [], createMultipleFeatures, deleteFeature } = useFeatures(createdPostId ?? undefined)
     const { data: areaTypes, isLoading: isAreaTypesLoading } = useAreaTypes();
+    const { t } = useLanguage();
 
 
     const { createPost } = useUsersPosts(userId ?? 0, false)
@@ -71,14 +73,14 @@ const CreatePostForm = () => {
         // Check file type
         const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
         if (!isJpgOrPng) {
-            message.error('Faqat JPG va PNG formatdagi rasmlar qabul qilinadi!');
+            message.error(t('user.form.imageFormatError'));
             return false;
         }
 
         // Check file size (500KB = 500 * 1024 bytes)
         const isLt500KB = file.size / 1024 < 500;
         if (!isLt500KB) {
-            message.error('Rasm hajmi 500KB dan kam bo\'lishi kerak!');
+            message.error(t('user.form.imageSizeError'));
             return false;
         }
 
@@ -121,11 +123,11 @@ const CreatePostForm = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         if (!userId) {
-            message.error('Foydalanuvchi aniqlanmadi.')
+            message.error(t('user.form.userNotFound'))
             return
         }
         if (mainFileList.length === 0) {
-            message.error('Iltimos, asosiy rasm yuklang.')
+            message.error(t('user.form.mainImageRequired'))
             return
         }
 
@@ -143,7 +145,7 @@ const CreatePostForm = () => {
             }
 
             const response = await createPost.mutateAsync(payload)
-            message.success('Post muvaffaqiyatli yaratildi! Endi galereya rasmlarni yuklashingiz mumkin.')
+            message.success(t('user.form.successPostCreated'))
             setCreatedPostId(response.post_id)
 
             const staticFeatures: string[] = [
@@ -167,7 +169,7 @@ const CreatePostForm = () => {
             )
         } catch (error) {
             console.log('Xatolik:', error)
-            message.error('Post yaratishda xatolik yuz berdi.')
+            message.error(t('user.form.errorPostCreate'))
         } finally {
             setIsSubmitting(false)
         }
@@ -188,7 +190,7 @@ const CreatePostForm = () => {
                 <div className="lg:order-1 order-1 lg:min-w-[320px] lg:w-1/3 w-full">
                     {/* Main image */}
                     <div className='h-80 w-auto mb-6'>
-                        <LabelDefault label="Asosiy rasm:" htmlFor="main-img" />
+                        <LabelDefault label={t('user.form.mainImage')} htmlFor="main-img" />
                         <input
                             type="file"
                             ref={mainFileInputRef}
@@ -202,7 +204,7 @@ const CreatePostForm = () => {
                                 <div className="relative w-full h-full">
                                     <Image
                                         src={mainFileList[0].url}
-                                        alt="Asosiy rasm"
+                                        alt={t('user.form.mainImage')}
                                         fill
                                         className="object-cover rounded-lg"
                                     />
@@ -221,7 +223,7 @@ const CreatePostForm = () => {
                                     className="flex flex-col items-center justify-center text-gray-500"
                                 >
                                     <PlusOutlined className="text-2xl mb-2" />
-                                    <span>Asosiy rasm yuklash</span>
+                                    <span>{t('user.form.uploadMainImage')}</span>
                                 </button>
                             )}
                         </div>
@@ -230,7 +232,7 @@ const CreatePostForm = () => {
                     {/* Gallery & Features (only after post is created) */}
                     {createdPostId && (
                         <div className="mb-6">
-                            <LabelDefault label="Galereya rasmlari:" htmlFor='gallery' />
+                            <LabelDefault label={t('user.form.galleryImages')} htmlFor='gallery' />
                             <CreateGalleryForm
                                 postId={createdPostId}
                                 galleryFileList={galleryFileList}
@@ -241,7 +243,7 @@ const CreatePostForm = () => {
                             {/* Features */}
                             <div className="mt-6">
                                 <div className="flex items-center mb-2">
-                                    <h1 className="text-lg font-semibold">Sharoitlarni kiritish</h1>
+                                    <h1 className="text-lg font-semibold">{t('user.form.addFeaturesTitle')}</h1>
                                     <button
                                         type="button"
                                         onClick={() => setCreateModalOpen(true)}
@@ -277,7 +279,7 @@ const CreatePostForm = () => {
 
                             <div className="mt-4 flex justify-end">
                                 <ButtonDefault
-                                    label="Tugatish"
+                                    label={t('user.form.finish')}
                                     type="button"
                                     onClick={handleFinish}
                                     customClasses="bg-green-500 hover:bg-green-600 text-white"
@@ -291,7 +293,7 @@ const CreatePostForm = () => {
                 <div className="lg:order-2 order-2 flex-1 flex flex-col gap-4">
                     {!createdPostId ? (
                         <>
-                            <LabelDefault label="Sarlavha:" htmlFor="title" />
+                            <LabelDefault label={t('user.form.title')} htmlFor="title" />
                             <InputDefault
                                 type='text'
                                 name="title"
@@ -301,7 +303,7 @@ const CreatePostForm = () => {
                                 customClasses="w-full border border-gray-300 rounded px-3 py-2"
                             />
 
-                            <LabelDefault label="Qisqa tavsif:" htmlFor="small_description" />
+                            <LabelDefault label={t('user.form.shortDescription')} htmlFor="small_description" />
                             <textarea
                                 name="small_description"
                                 value={form.small_description}
@@ -311,7 +313,7 @@ const CreatePostForm = () => {
                                 rows={2}
                             />
 
-                            <LabelDefault label="Tavsif:" htmlFor="description" />
+                            <LabelDefault label={t('user.form.description')} htmlFor="description" />
                             <textarea
                                 name="description"
                                 value={form.description}
@@ -321,7 +323,7 @@ const CreatePostForm = () => {
                                 rows={4}
                             />
 
-                            <LabelDefault label="Kunlik narxi ($):" htmlFor="price_daily" />
+                            <LabelDefault label={t('user.form.dailyPrice')} htmlFor="price_daily" />
                             <InputDefault
                                 name="price_daily"
                                 type="number"
@@ -332,13 +334,13 @@ const CreatePostForm = () => {
                             />
 
                             <AnimatedSelect
-                                label="Dam olish zonasining turi:"
+                                label={t('user.form.placeType')}
                                 htmlFor="area_id"
                                 name="area_id"
                                 value={form.area_id}
                                 onChange={handleChange}
                                 required
-                                placeholder="Tanlang"
+                                placeholder={t('user.form.select')}
                                 customClassesSelect="w-full border border-gray-300 rounded px-3 py-2"
                                 options={isAreaTypesLoading ? [] : (areaTypes?.map((area) => ({
                                     label: area.name,
@@ -361,7 +363,7 @@ const CreatePostForm = () => {
                                 className="mb-4"
                             />
 
-                            <LabelDefault label="Odam soni:" htmlFor="members" />
+                            <LabelDefault label={t('user.form.peopleCount')} htmlFor="members" />
                             <InputDefault
                                 name="members"
                                 type="number"
@@ -373,13 +375,13 @@ const CreatePostForm = () => {
 
                             <div className="flex gap-4 mt-4">
                                 <ButtonDefault
-                                    label={isSubmitting ? "Yaratilmoqda..." : "Post yaratish"}
+                                    label={isSubmitting ? t('user.form.creating') : t('user.form.createPost')}
                                     type="submit"
                                     customClasses="w-full"
                                     isDisabled={isSubmitting}
                                 />
                                 <ButtonDefault
-                                    label="Bekor qilish"
+                                    label={t('user.form.cancel')}
                                     type="button"
                                     onClick={() => router.back()}
                                     customClasses="w-full !bg-gray-300 !text-black"
@@ -388,9 +390,9 @@ const CreatePostForm = () => {
                         </>
                     ) : (
                         <div className="bg-blue-50 p-4 rounded-lg">
-                            <h3 className="text-lg font-medium text-blue-800">Post muvaffaqiyatli yaratildi!</h3>
+                            <h3 className="text-lg font-medium text-blue-800">{t('user.form.successPostCreated')}</h3>
                             <p className="text-blue-600 mt-2">
-                                Endi galereya rasmlarni qo&apos;shishingiz mumkin. Tugatish uchun (Tugatish) tugmasini bosing.
+                                {t('user.form.postCreatedDesc')}
                             </p>
                         </div>
                     )}

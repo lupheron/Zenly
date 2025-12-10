@@ -20,6 +20,7 @@ import { GalleryFile, GalleryImage, MainFile } from '@/src/utils/Gallery'
 import { useAreaTypes } from '@/src/hooks/area_types/useAreaType';
 import AnimatedSelect from '../FormElements/Select/AnimatedSelect';
 import LocationPicker from './LocationPicker';
+import { useLanguage } from '@/src/contexts/LanguageContext';
 
 const uzbekistanProvinces = [
     { label: 'Andijon', value: 'Andijon' },
@@ -44,6 +45,7 @@ const EditPostForm = () => {
     const postId = Number(params.id)
     const [userId, setUserId] = useState<number | null>(null)
     const [createModalOpen, setCreateModalOpen] = useState(false)
+    const { t } = useLanguage();
 
     const { data: posts, isLoading: isPostsLoading } = useUsersPosts(userId ?? 0)
     const { data: featuresList = [], deleteFeature } = useFeatures(postId)
@@ -116,14 +118,14 @@ const EditPostForm = () => {
         // Check file type
         const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
         if (!isJpgOrPng) {
-            message.error('Faqat JPG va PNG formatdagi rasmlar qabul qilinadi!');
+            message.error(t('user.form.imageFormatError'));
             return false;
         }
 
         // Check file size (500KB = 500 * 1024 bytes)
         const isLt500KB = file.size / 1024 < 500;
         if (!isLt500KB) {
-            message.error('Rasm hajmi 500KB dan kam bo\'lishi kerak!');
+            message.error(t('user.form.imageSizeError'));
             return false;
         }
 
@@ -167,12 +169,13 @@ const EditPostForm = () => {
     const handleDeleteFeature = async (featureId: number) => {
         try {
             await deleteFeature.mutateAsync(featureId)
-            message.success('Sharoit o\'chirildi')
+            message.success(t('user.form.featureDeleted'))
         } catch (error: unknown) {
             console.error("Sharoitni o\'chirishda xatolik:", error)
-            message.error('Sharoitni o\'chirishda xatolik')
+            message.error(t('user.form.errorFeatureDelete'))
         }
     }
+
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -190,13 +193,14 @@ const EditPostForm = () => {
             }
 
             await editPost.mutateAsync({ postId, data: payload })
-            message.success('Post yangilandi')
+            message.success(t('user.form.successPostUpdated'))
             router.back()
         } catch (error: unknown) {
             console.error("Postni yangilashda xatolik:", error)
-            message.error('Postni yangilashda xatolik')
+            message.error(t('user.form.errorPostUpdate'))
         }
     }
+
 
 
     if (isPostsLoading || !isInitialized) {
@@ -214,7 +218,7 @@ const EditPostForm = () => {
                 <div className="lg:order-1 order-1 lg:min-w-[320px] lg:w-1/3 w-full">
                     {/* Main image */}
                     <div className='h-80 w-auto mb-6'>
-                        <LabelDefault label="Asosiy rasm:" htmlFor="main-img" />
+                        <LabelDefault label={t('user.form.mainImage')} htmlFor="main-img" />
                         <input
                             type="file"
                             ref={mainFileInputRef}
@@ -228,7 +232,7 @@ const EditPostForm = () => {
                                 <div className="relative w-full h-full">
                                     <Image
                                         src={mainFileList[0].url}
-                                        alt="Asosiy rasm"
+                                        alt={t('user.form.mainImage')}
                                         fill
                                         className="object-cover rounded-lg"
                                     />
@@ -247,7 +251,7 @@ const EditPostForm = () => {
                                     className="flex flex-col items-center justify-center text-gray-500"
                                 >
                                     <PlusOutlined className="text-2xl mb-2" />
-                                    <span>Asosiy rasm yuklash</span>
+                                    <span>{t('user.form.uploadMainImage')}</span>
                                 </button>
                             )}
                         </div>
@@ -255,7 +259,7 @@ const EditPostForm = () => {
 
                     {/* Gallery */}
                     <div className="mb-6">
-                        <LabelDefault label="Galereya rasmlari:" htmlFor='gallery' />
+                        <LabelDefault label={t('user.form.galleryImages')} htmlFor='gallery' />
                         <EditGalleryForm
                             postId={postId}
                             galleryFileList={galleryFileList}
@@ -267,7 +271,7 @@ const EditPostForm = () => {
                     {/* Features */}
                     <div>
                         <div className="flex items-center mb-2">
-                            <h1 className="text-lg font-semibold">Sharoitlar</h1>
+                            <h1 className="text-lg font-semibold">{t('user.form.features')}</h1>
                             <button
                                 type="button"
                                 onClick={() => setCreateModalOpen(true)}
@@ -297,7 +301,7 @@ const EditPostForm = () => {
 
                 {/* Form fields section - Right side on large screens, bottom on smaller screens */}
                 <div className="lg:order-2 order-2 flex-1 flex flex-col gap-4">
-                    <LabelDefault label="Sarlavha:" htmlFor="title" />
+                    <LabelDefault label={t('user.form.title')} htmlFor="title" />
                     <InputDefault
                         type='text'
                         name="title"
@@ -317,7 +321,7 @@ const EditPostForm = () => {
                         rows={2}
                     />
 
-                    <LabelDefault label="Tavsif:" htmlFor="description" />
+                    <LabelDefault label={t('user.form.description')} htmlFor="description" />
                     <textarea
                         name="description"
                         value={form.description}
@@ -338,7 +342,7 @@ const EditPostForm = () => {
                     />
 
                     <AnimatedSelect
-                        label="Viloyatni tanlang:"
+                        label={t('user.form.locationRegion')}
                         htmlFor="location"
                         name="location"
                         value={form.location}
@@ -363,7 +367,7 @@ const EditPostForm = () => {
                         className="mb-4"
                     />
 
-                    <LabelDefault label="Odam soni:" htmlFor="members" />
+                    <LabelDefault label={t('user.form.peopleCount')} htmlFor="members" />
                     <InputDefault
                         name="members"
                         type="number"
@@ -374,13 +378,13 @@ const EditPostForm = () => {
                     />
 
                     <AnimatedSelect
-                        label="Dam olish zonasining turi:"
+                        label={t('user.form.placeType')}
                         htmlFor="area_id"
                         name="area_id"
                         value={form.area_id}
                         onChange={handleChange}
                         required
-                        placeholder="Tanlang"
+                        placeholder={t('user.form.select')}
                         customClassesSelect="w-full border border-gray-300 rounded px-3 py-2"
                         options={isAreaTypesLoading ? [] : (areaTypes?.map((area) => ({
                             label: area.name,
@@ -389,9 +393,9 @@ const EditPostForm = () => {
                     />
 
                     <div className="flex gap-4 mt-4">
-                        <ButtonDefault label="Saqlash" type="submit" customClasses="w-full" />
+                        <ButtonDefault label={t('user.form.save')} type="submit" customClasses="w-full" />
                         <ButtonDefault
-                            label="Bekor qilish"
+                            label={t('user.form.cancel')}
                             type="button"
                             onClick={() => router.back()}
                             customClasses="w-full !bg-gray-300 !text-black"
@@ -400,7 +404,7 @@ const EditPostForm = () => {
                 </div>
             </div>
 
-            <ReusableModal open={createModalOpen} onClose={() => setCreateModalOpen(false)} title="Yangi sharoit qo'shish">
+            <ReusableModal open={createModalOpen} onClose={() => setCreateModalOpen(false)} title={t('user.form.addFeature')}>
                 <CreateFeatureForm
                     postId={postId}
                     onClose={() => setCreateModalOpen(false)}

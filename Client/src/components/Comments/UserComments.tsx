@@ -11,7 +11,10 @@ interface UserCommentsProps {
   dateFilter?: { startDate?: string; endDate?: string };
 }
 
+import { useLanguage } from '@/src/contexts/LanguageContext'
+
 const UserComments: React.FC<UserCommentsProps> = ({ postId, dateFilter }) => {
+  const { t } = useLanguage()
   const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -22,16 +25,16 @@ const UserComments: React.FC<UserCommentsProps> = ({ postId, dateFilter }) => {
   // If postId is provided, fetch comments for that post, else for the user
   const { data, isLoading, error } = useUserComments(postId ? String(postId) : userId, dateFilter);
 
-  if (isLoading) return <p>Yuklanmoqda...</p>
+  if (isLoading) return <p>{t('common.loading')}</p>
   if (error) {
-    AlertDefault.error("Fikrlarni yuklashda xatolik yuz berdi.")
-    return <p>Xatolik mavjud.</p>
+    AlertDefault.error(t('comment.fetchError'))
+    return <p>{t('common.error')}</p>
   }
 
 
   return (
     <div className="bg-white p-4 sm:p-6 rounded-xl shadow-xl w-full h-full min-h-60 sm:min-h-80 lg:min-h-85">
-      <h1 className="text-lg sm:text-xl lg:text-2xl font-bold mb-3 sm:mb-4">Mijozlar Fikri</h1>
+      <h1 className="text-lg sm:text-xl lg:text-2xl font-bold mb-3 sm:mb-4">{t('user.customerReviewsTitle')}</h1>
       <div className="space-y-3 sm:space-y-4">
         <SwiperDefault
           slidesPerView={1}
@@ -41,7 +44,7 @@ const UserComments: React.FC<UserCommentsProps> = ({ postId, dateFilter }) => {
           pagination={false}
         >
           {data?.length === 0 ? (
-            <p className="text-sm sm:text-base text-gray-500">Komentlar mavjud emas</p>
+            <p className="text-sm sm:text-base text-gray-500">{t('comment.noComments')}</p>
           ) : (
             Array.isArray(data) && data.map((comment, index) => (
               <CommentCart

@@ -8,7 +8,10 @@ import { useRouter } from 'next/navigation'
 import ButtonDefault from '@/src/components/Button/ButtonDefault'
 import Loader from '../../../components/Loader/Loader'
 
+import { useLanguage } from '@/src/contexts/LanguageContext'
+
 const UserPosts = () => {
+  const { t } = useLanguage()
   const [userId, setUserId] = useState<number | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const postsPerPage = 6
@@ -42,16 +45,18 @@ const UserPosts = () => {
   return (
     <div>
       <div className='flex flex-col sm:flex-row items-center justify-between gap-4'>
-        <h1 className='text-2xl sm:text-3xl lg:text-4xl font-bold tracking-[1px]'>Sizning Postlaringiz</h1>
+        <h1 className='text-2xl sm:text-3xl lg:text-4xl font-bold tracking-[1px]'>{t('user.yourPosts')}</h1>
         <ButtonDefault
-          label='Yangi Post Joylash'
+          label={t('user.addNewPost')}
           onClick={() => router.push('/user/posts/create')}
         />
       </div>
       <hr className='mt-5' />
 
-      {error && <p className="text-red-500">Olishda xatolik yuz berdi.</p>}
-      {!error && posts.length === 0 && <p>Postlar mavjud emas</p>}
+
+
+      {error && <p className="text-red-500">{t('user.fetchError')}</p>}
+      {!error && posts.length === 0 && <p>{t('user.noPosts')}</p>}
 
       {!error && posts.length > 0 && (
         <>

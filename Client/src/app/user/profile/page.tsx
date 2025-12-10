@@ -13,8 +13,10 @@ import DeleteModal from '@/src/components/Modal/DeleteModal';
 import AlertDefault from '@/src/components/Alert/AlertDefault';
 import Loader from '@/src/components/Loader/Loader';
 import SubscriptionCart from '@/src/components/Cart/SubscriptionCart';
+import { useLanguage } from '@/src/contexts/LanguageContext';
 
 const Profile = () => {
+    const { t } = useLanguage();
     const { data, deleteUser } = useUser()
     const router = useRouter()
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -22,13 +24,13 @@ const Profile = () => {
     const handleDelete = () => {
         deleteUser.mutate(undefined, {
             onSuccess: () => {
-                AlertDefault.success("Foydalanuvchi muvaffaqiyatli o'chirildi!");
+                AlertDefault.success(t('user.userDeleted'));
                 localStorage.removeItem("token");
                 localStorage.removeItem("user_id");
                 router.push('/login');
             },
             onError: () => {
-                AlertDefault.error("Foydalanuvchini o'chirishda xatolik yuz berdi.");
+                AlertDefault.error(t('user.deleteError'));
             }
         })
     }
@@ -53,40 +55,40 @@ const Profile = () => {
                 <div className='flex flex-col gap-2 sm:gap-3 text-center'>
                     <h1 className='text-gray-600 text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-[1px]'>{data?.fullname}</h1>
                     <p className='text-sm sm:text-base lg:text-lg flex items-center justify-center gap-1'>
-                        <LocationOnIcon className='text-black text-lg sm:text-xl' /> 
-                        {data?.address || "Joy ko'rsatilmagan"}
+                        <LocationOnIcon className='text-black text-lg sm:text-xl' />
+                        {data?.address || t('user.noLocation')}
                     </p>
                     <div className='flex flex-col sm:flex-row items-center gap-3 sm:gap-6 lg:gap-15 text-sm sm:text-base lg:text-xl mt-6 sm:mt-10 lg:mt-15 justify-center'>
                         <h2 className='flex items-center gap-1'>
-                            <InsertEmoticonIcon className='text-black text-lg sm:text-xl' /> 
+                            <InsertEmoticonIcon className='text-black text-lg sm:text-xl' />
                             {data?.username}
                         </h2>
                         <p className='flex items-center gap-1'>
-                            <LocalPhoneIcon className='text-black text-lg sm:text-xl' /> 
-                            {data?.phone || "Telefon mavjud emas"}
+                            <LocalPhoneIcon className='text-black text-lg sm:text-xl' />
+                            {data?.phone || t('user.noPhone')}
                         </p>
                         <p className='flex items-center gap-1'>
                             <VerifiedIcon className='text-black text-lg sm:text-xl' />
-                            {data.vip_status || "Noma'lum"}
+                            {data.vip_status || t('user.unknown')}
                         </p>
                     </div>
                 </div>
 
                 <div className='flex flex-col justify-center items-center sm:flex-row gap-3 sm:gap-5 mt-6 sm:mt-8 lg:mt-10'>
                     <ButtonDefault
-                        label='Tahrirlash'
+                        label={t('common.edit')}
                         onClick={() => router.push('/user/profile/edit')}
                         customClasses='w-full sm:w-full cursor-pointer'
                     />
                     <ButtonDefault
-                        label="O'chirish"
+                        label={t('common.delete')}
                         onClick={() => setDeleteModalOpen(true)}
                         customClasses='w-full sm:w-full cursor-pointer !bg-red-700'
                     />
                 </div>
                 <div className='flex justify-center mt-4'>
                     <ButtonDefault
-                        label='Chiqish'
+                        label={t('user.logout')}
                         onClick={() => {
                             localStorage.removeItem("token");
                             localStorage.removeItem("user_id");
@@ -107,7 +109,7 @@ const Profile = () => {
                 open={deleteModalOpen}
                 onConfirm={handleDelete}
                 onCancel={() => setDeleteModalOpen(false)}
-                text={"Siz haqiqatdan ham ushbu foydalanuvchini o'chirmoqchimisiz?"}
+                text={t('user.confirmDeleteUser')}
             />
         </div>
     )

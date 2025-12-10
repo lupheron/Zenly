@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import ButtonDefault from '../Button/ButtonDefault'
 import { loadGoogleMaps } from '@/src/utils/googleMapsLoader'
+import { useLanguage } from '@/src/contexts/LanguageContext'
 
 declare global {
   interface Window {
@@ -31,6 +32,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
   const [selectedLng, setSelectedLng] = useState<number | null>(longitude || null)
   const [selectedLocation, setSelectedLocation] = useState<string>(location || '')
   const [isMapLoaded, setIsMapLoaded] = useState(false)
+  const { t } = useLanguage()
 
   // Load Google Maps
   useEffect(() => {
@@ -129,7 +131,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
   return (
     <div className={className}>
       <label className="block text-sm font-medium text-gray-700 mb-2">
-        Location
+        {t('user.form.locationPicker')}
       </label>
 
       <div className="flex gap-2">
@@ -137,14 +139,14 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
           type="text"
           value={selectedLocation || ''}
           readOnly
-          placeholder="Click to select location on map"
+          placeholder={t('user.form.clickToSelect')}
           className="flex-1 px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-sm"
         />
         <ButtonDefault
           onClick={() => setIsModalOpen(true)}
           customClasses="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
         >
-          📍 Select Location
+          📍 {t('user.form.selectLocation')}
         </ButtonDefault>
       </div>
 
@@ -153,7 +155,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
           <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden">
             <div className="p-4 border-b border-gray-200">
               <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold">Select Location</h3>
+                <h3 className="text-lg font-semibold">{t('user.form.selectLocation')}</h3>
                 <button
                   onClick={() => setIsModalOpen(false)}
                   className="text-gray-500 hover:text-gray-700 text-xl"
@@ -166,12 +168,12 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
             <div className="p-4">
               <div className="mb-4">
                 <p className="text-sm text-gray-600 mb-2">
-                  Click on the map to select the exact location of your post
+                  {t('user.form.clickToSelect')}
                 </p>
 
                 {selectedLat && selectedLng && (
                   <div className="bg-green-50 p-3 rounded-md mb-4">
-                    <p className="text-sm font-medium text-green-800">Selected Location:</p>
+                    <p className="text-sm font-medium text-green-800">{t('user.form.selectedLocation')}</p>
                     <p className="text-sm text-green-700">Lat: {selectedLat.toFixed(6)}, Lng: {selectedLng.toFixed(6)}</p>
                     <p className="text-sm text-green-700">{selectedLocation}</p>
                   </div>
@@ -187,7 +189,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
                 <div className="w-full h-96 flex items-center justify-center bg-gray-100 rounded-md">
                   <div className="text-center">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
-                    <p className="text-sm text-gray-600">Loading map...</p>
+                    <p className="text-sm text-gray-600">{t('user.form.loadingMap')}</p>
                   </div>
                 </div>
               )}
@@ -198,7 +200,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
                 onClick={handleClearLocation}
                 className="px-4 py-2 text-gray-600 hover:text-gray-800 text-sm"
               >
-                Clear Location
+                {t('user.form.clearLocation')}
               </button>
 
               <div className="flex gap-2">
@@ -206,14 +208,14 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
                   onClick={() => setIsModalOpen(false)}
                   className="px-4 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50"
                 >
-                  Cancel
+                  {t('user.form.cancel')}
                 </button>
                 <button
                   onClick={handleConfirmLocation}
                   disabled={!selectedLat || !selectedLng || !selectedLocation}
                   className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm"
                 >
-                  Confirm Location
+                  {t('user.form.confirmLocation')}
                 </button>
               </div>
             </div>

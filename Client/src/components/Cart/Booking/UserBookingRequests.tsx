@@ -19,7 +19,10 @@ interface UserBookingRequestsProps {
     onBookingClick: (booking: PostBookingRequest) => void
 }
 
+import { useLanguage } from '@/src/contexts/LanguageContext'
+
 const UserBookingRequests: React.FC<UserBookingRequestsProps> = ({ bookings, onBookingClick }) => {
+    const { t } = useLanguage()
     const updateStatus = useUpdateBookingRequestStatus()
     const [checkingModalOpen, setCheckingModalOpen] = React.useState(false)
     const [selectedBooking, setSelectedBooking] = React.useState<PostBookingRequest | null>(null)
@@ -52,7 +55,7 @@ const UserBookingRequests: React.FC<UserBookingRequestsProps> = ({ bookings, onB
         })
     }
 
-    if (!bookings.length) return <div>Hech qanday so&apos;rov topilmadi.</div>
+    if (!bookings.length) return <div>{t('user.noBookingsFound')}</div>
 
     return (
         <div className="space-y-4">
@@ -64,9 +67,9 @@ const UserBookingRequests: React.FC<UserBookingRequestsProps> = ({ bookings, onB
                     <div className=' flex flex-col sm:flex-row sm:items-center sm:justify-between'>
                         <div>
                             <div className="font-bold text-lg cursor-pointer text-blue-500 hover:underline" onClick={() => onBookingClick(b)}>{b.post_title}</div>
-                            <div className="text-gray-600">Mijoz: {b.requester_fullname}</div>
-                            <div className="text-gray-500 text-sm">Yuborilgan: {new Date(b.send_date).toLocaleString()}</div>
-                            <div className="text-gray-500 text-sm">Telefon raqami: <a
+                            <div className="text-gray-600">{t('user.customer')} {b.requester_fullname}</div>
+                            <div className="text-gray-500 text-sm">{t('user.sentAt')} {new Date(b.send_date).toLocaleString()}</div>
+                            <div className="text-gray-500 text-sm">{t('user.phoneNumber')} <a
                                 href={`tel:${b.user_phone}`}
                                 className='text-blue-500 cursor-pointer hover:underline'
                             >
@@ -77,20 +80,20 @@ const UserBookingRequests: React.FC<UserBookingRequestsProps> = ({ bookings, onB
                             <span className={`px-3 py-1 rounded-full text-white ${b.status === 'pending' ? 'bg-yellow-500' : b.status === 'active' ? 'bg-green-600' : 'bg-red-600'}`}>{b.status}</span>
                         </div>
                     </div>
-                    <p className='text-red-500 text-sm mt-5'>So&apos;rovni qabul qilishdan avval mijoz bilan aloqaga chiqishingzni so&apos;rab qolamiz!!!</p>
+                    <p className='text-red-500 text-sm mt-5'>{t('user.contactBeforeAccept')}</p>
                     {/* Show waiting message if booking_checking exists and customer_confirmed is false */}
                     {b.status === 'active' && (
-                      <BookingCheckingStatus requestId={b.id} />
+                        <BookingCheckingStatus requestId={b.id} />
                     )}
                     {b.status === 'pending' && (
                         <div className='flex gap-2 items-center mt-5'>
                             <ButtonDefault
-                                label="Qabul qilish"
+                                label={t('booking.confirm')}
                                 onClick={() => handleAcceptBooking(b)}
                                 customClasses=''
                             />
                             <ButtonDefault
-                                label="Rad etish"
+                                label={t('booking.reject')}
                                 onClick={() => {
                                     handleRejectBooking(b.id);
                                 }}
@@ -101,7 +104,7 @@ const UserBookingRequests: React.FC<UserBookingRequestsProps> = ({ bookings, onB
                     {b.status === 'active' && (
                         <div className='flex gap-2 items-center mt-5'>
                             <ButtonDefault
-                                label="Bekor qilish"
+                                label={t('booking.cancel')}
                                 onClick={() => {
                                     handleRejectBooking(b.id);
                                 }}
@@ -123,12 +126,13 @@ const UserBookingRequests: React.FC<UserBookingRequestsProps> = ({ bookings, onB
 
 // Child component to use hook per booking
 const BookingCheckingStatus: React.FC<{ requestId: number }> = ({ requestId }) => {
-  const { data: checking, isLoading } = useBookingCheckingByRequestId(requestId)
-  if (isLoading) return null
-  if (checking && checking.owner_confirmed && !checking.customer_confirmed) {
-    return <div className="mt-3 text-yellow-600 font-semibold">Mijoz ma&apos;lumotini tasdiqlashini kutyapmiz...</div>
-  }
-  return null
+    const { t } = useLanguage()
+    const { data: checking, isLoading } = useBookingCheckingByRequestId(requestId)
+    if (isLoading) return null
+    if (checking && checking.owner_confirmed && !checking.customer_confirmed) {
+        return <div className="mt-3 text-yellow-600 font-semibold">{t('booking.waitingForCustomer')}</div>
+    }
+    return null
 }
 
 export default UserBookingRequests

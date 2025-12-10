@@ -16,7 +16,10 @@ import SwiperDefault from '@/src/components/Swiper/SwiperDefault'
 import CommentCart from '@/src/components/Cart/CommentCart'
 import { cleanLocation } from '@/src/utils/locationUtils'
 
+import { useLanguage } from '@/src/contexts/LanguageContext'
+
 const UserPostInfo = () => {
+    const { t } = useLanguage()
     const params = useParams()
     const router = useRouter()
     const [deleteModalOpen, setDeleteModalOpen] = useState(false)
@@ -25,10 +28,10 @@ const UserPostInfo = () => {
     const postId = Number(params?.id) || 0
 
     const banners = [
-        { id: 1, title: 'Dachalar' },
-        { id: 2, title: 'Touristic Zones' },
-        { id: 3, title: 'Guest Houses' },
-        { id: 4, title: 'Eko travels' },
+        { id: 1, title: t('user.placeTypes.dacha') },
+        { id: 2, title: t('user.placeTypes.touristZone') },
+        { id: 3, title: t('user.placeTypes.guestHouse') },
+        { id: 4, title: t('user.placeTypes.ecoTravel') },
     ]
 
     const { data: post, isLoading, error, deleteMutation } = usePostById(postId)
@@ -44,16 +47,16 @@ const UserPostInfo = () => {
                 router.push('/user/posts')
             },
             onError: () => {
-                alert("O'chirishda xatolik yuz berdi.")
+                alert(t('user.deleteError'))
             }
         })
     }
 
     if (!postId) return null
-    if (isLoading) return <p className="text-center py-10">Yuklanmoqda...</p>
-    if (error || !post) return <p className="text-center py-10 text-red-500">Xatolik yuz berdi yoki post topilmadi</p>
+    if (isLoading) return <p className="text-center py-10">{t('common.loading')}</p>
+    if (error || !post) return <p className="text-center py-10 text-red-500">{t('user.errorOrNotFound')}</p>
 
-    const areaTitle = banners.find(b => b.id === post.area_id)?.title ?? 'Nomaʼlum tur'
+    const areaTitle = banners.find(b => b.id === post.area_id)?.title ?? t('user.unknownType')
 
     return (
         <>
@@ -70,51 +73,51 @@ const UserPostInfo = () => {
                             <p className='text-gray-700 text-base md:text-lg font-bold tracking-[0.5px] md:tracking-[1px] mt-4 md:mt-5'>{post.description}</p>
 
                             <div className='mt-4 md:mt-6'>
-                                <h1 className='text-lg md:text-xl text-light-green font-bold tracking-[0.5px] md:tracking-[1px] mb-2'>Mavjud Bo&apos;lgan Imkoniyatlar:</h1>
+                                <h1 className='text-lg md:text-xl text-light-green font-bold tracking-[0.5px] md:tracking-[1px] mb-2'>{t('user.amenities')}</h1>
                                 <Features postId={post.id} />
                             </div>
 
                             <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mt-6 md:mt-8 lg:mt-10'>
                                 <div className="flex flex-col sm:flex-row gap-2 md:gap-3">
-                                    <span className="font-medium text-sm md:text-base">Reyting:</span>
+                                    <span className="font-medium text-sm md:text-base">{t('user.rating')}</span>
                                     <Rating postId={post.id} />
                                 </div>
                                 <div className='flex flex-col sm:flex-row gap-2 md:gap-3'>
-                                    <span className='font-medium text-sm md:text-base'>Narxi:</span>
+                                    <span className='font-medium text-sm md:text-base'>{t('user.price')}</span>
                                     <span className="text-gray-500 text-sm md:text-base">${post.price_daily}</span>
                                 </div>
                                 <div className='flex flex-col sm:flex-row gap-2 md:gap-3'>
-                                    <span className='font-medium text-sm md:text-base'>Manzil:</span>
+                                    <span className='font-medium text-sm md:text-base'>{t('user.location')}</span>
                                     <span className="text-gray-500 text-sm md:text-base">{cleanLocation(post.location)}</span>
                                 </div>
                                 <div className='flex flex-col sm:flex-row gap-2 md:gap-3'>
-                                    <span className='font-medium text-sm md:text-base'>Odam Soni:</span>
+                                    <span className='font-medium text-sm md:text-base'>{t('user.peopleCount')}</span>
                                     <span className="text-gray-500 text-sm md:text-base">{post.members}</span>
                                 </div>
                                 <div className='flex flex-col sm:flex-row gap-2 md:gap-3'>
-                                    <span className='font-medium text-sm md:text-base'>Maskan turi:</span>
+                                    <span className='font-medium text-sm md:text-base'>{t('user.placeType')}</span>
                                     <span className="text-gray-500 text-sm md:text-base">{areaTitle}</span>
                                 </div>
                                 <div className='flex flex-col sm:flex-row gap-2 md:gap-3'>
-                                    <span className='font-medium text-sm md:text-base'>Ko&apos;rilgan Soni:</span>
+                                    <span className='font-medium text-sm md:text-base'>{t('user.viewCount')}</span>
                                     <span className="text-gray-500 text-sm md:text-base">{totalViews}</span>
                                 </div>
                             </div>
 
                             <ButtonDefault
-                                label="Komentlarni ko'rish"
+                                label={t('user.viewComments')}
                                 customClasses='h-10 sm:h-12 !bg-orange-500 !rounded-lg !cursor-pointer !text-xs sm:!text-sm mt-6 md:mt-8 w-full'
                                 onClick={() => setOpenCommentModal(true)}
                             />
 
                             <div className='flex flex-col sm:flex-row gap-3 md:gap-5 mt-4 md:mt-5'>
                                 <ButtonDefault
-                                    label='Tahrirlash'
+                                    label={t('common.edit')}
                                     onClick={() => router.push(`/user/posts/${post.id}/edit`)}
                                     customClasses='h-10 sm:h-12 w-full tracking-[0.5px] md:tracking-[1px] text-sm md:text-base !rounded-lg'
                                 />
                                 <ButtonDefault
-                                    label="O'chirish"
+                                    label={t('common.delete')}
                                     onClick={() => setDeleteModalOpen(true)}
                                     customClasses='h-10 sm:h-12 w-full tracking-[0.5px] md:tracking-[1px] text-sm md:text-base bg-red-500 hover:bg-red-600 text-white !rounded-lg'
                                 />
@@ -128,16 +131,16 @@ const UserPostInfo = () => {
                 open={deleteModalOpen}
                 onConfirm={handleDelete}
                 onCancel={() => setDeleteModalOpen(false)}
-                text={"Haqiqatan ham ushbu postni o'chirmoqchimisiz?"}
+                text={t('user.confirmDeleteUser')}
             />
 
             <ReusableModal
                 open={openCommentModal}
                 onClose={() => setOpenCommentModal(false)}
-                title='Foydalanuvchilar fikri'
+                title={t('user.userReviews')}
             >
                 {commentsLoading ? (
-                    <p className="text-center text-lg">Yuklanmoqda...</p>
+                    <p className="text-center text-lg">{t('common.loading')}</p>
                 ) : (
                     <SwiperDefault
                         slidesPerView={1}
@@ -155,7 +158,7 @@ const UserPostInfo = () => {
                                 />
                             ))
                         ) : (
-                            <p className="text-center text-lg">Hozircha hech qanday fikr mavjud emas.</p>
+                            <p className="text-center text-lg">{t('user.noComments')}</p>
                         )}
                     </SwiperDefault>
                 )}

@@ -8,29 +8,32 @@ import DashboardIcon from '@mui/icons-material/Dashboard'
 import PanoramaIcon from '@mui/icons-material/Panorama'
 import { usePathname, useRouter } from 'next/navigation'
 import TurnedInIcon from '@mui/icons-material/TurnedIn'
+import { useLanguage } from '@/src/contexts/LanguageContext'
+import LanguageSelect from '@/src/components/Navbar/LanguageSelect'
 
 const Aside = () => {
     const pathname = usePathname()
     const router = useRouter()
+    const { t } = useLanguage()
 
     const routes = [
         {
-            label: "Boshqaruv paneli",
+            label: t('user.controlPanel'),
             route: "/user",
             icon: <DashboardIcon className="w-5 h-5 sm:w-6 sm:h-6" />
         },
         {
-            label: "Postlar",
+            label: t('user.posts'),
             route: "/user/posts",
             icon: <PanoramaIcon className="w-5 h-5 sm:w-6 sm:h-6" />
         },
         {
-            label: "Profil",
+            label: t('user.profile'),
             route: "/user/profile",
             icon: <AccountCircleIcon className="w-5 h-5 sm:w-6 sm:h-6" />
         },
         {
-            label: "Bron so'rovlari",
+            label: t('user.bookings'),
             route: "/user/booked",
             icon: <TurnedInIcon className="w-5 h-5 sm:w-6 sm:h-6" />
         }
@@ -46,7 +49,7 @@ const Aside = () => {
             {/* Sidebar */}
             <aside className={`
                 fixed lg:static inset-y-0 left-0 z-40
-                w-64 min-h-screen p-4 border-r border-gray-200 
+                w-80 min-h-screen p-4 border-r border-gray-200 
                 shadow-[4px_0_6px_-1px_rgba(0,0,0,0.1)] bg-white
                 transform transition-transform duration-300 ease-in-out
                 -translate-x-full lg:translate-x-0
@@ -72,8 +75,8 @@ const Aside = () => {
                             className={`
                                 text-sm sm:text-base lg:text-lg font-bold tracking-[1px] 
                                 flex items-center gap-2 p-2 sm:p-3 rounded transition-colors duration-200
-                                ${pathname === item.route 
-                                    ? 'bg-blue-100 text-blue-600' 
+                                ${pathname === item.route
+                                    ? 'bg-blue-100 text-blue-600'
                                     : 'hover:bg-gray-100 text-gray-700'
                                 }
                             `}
@@ -82,6 +85,9 @@ const Aside = () => {
                             <span className="whitespace-nowrap">{item.label}</span>
                         </Link>
                     ))}
+                </div>
+                <div className='absolute bottom-6 left-0 right-0 px-4'>
+                    <LanguageSelect isDark={true} />
                 </div>
             </aside>
         </>

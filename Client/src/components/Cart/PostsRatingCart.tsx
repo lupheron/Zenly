@@ -5,14 +5,17 @@ import Rating from '../Rating/Rating'
 import { usePosts } from '@/src/hooks/posts/usePosts'
 import Pagination from '../pagination/Pagination'
 
+import { useLanguage } from '@/src/contexts/LanguageContext'
+
 const PostsRatingCart = () => {
+    const { t } = useLanguage()
     const { data: posts, isLoading, error } = usePosts()
     const [currentPage, setCurrentPage] = useState(1)
     const postsPerPage = 3
     const user_id = typeof window !== "undefined" ? localStorage.getItem("user_id") : null
 
-    if (isLoading) return <p>Yuklanmoqda...</p>
-    if (error || !posts) return <p>Xatolik yuz berdi</p>
+    if (isLoading) return <p>{t('common.loading')}</p>
+    if (error || !posts) return <p>{t('common.error')}</p>
 
     // Filter posts where post.user_id matches the current user_id
     const userPosts = posts.filter((post) => String(post.user_id) === String(user_id))
@@ -24,10 +27,10 @@ const PostsRatingCart = () => {
 
     return (
         <div className='bg-white p-4 sm:p-6 rounded-xl shadow-xl w-full h-full'>
-            <h1 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Postlaringizning reytinglari</h1>
+            <h1 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">{t('user.postRatings')}</h1>
 
             {currentPosts.length === 0 ? (
-                <p className="text-sm sm:text-base text-gray-500">Sizda postlar mavjud emas!</p>
+                <p className="text-sm sm:text-base text-gray-500">{t('user.noPosts')}</p>
             ) : (
                 <div className="space-y-3 sm:space-y-4">
                     {currentPosts.map((post) => (
