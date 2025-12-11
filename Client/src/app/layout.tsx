@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import QueryProvider from "./providers/QueryProvider";
@@ -23,7 +23,13 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Zenly - Tabiat bilan sayohat",
   description: "Tabiat qo'ynida dam oling, yangi joylarni kashf eting, sarguzashtlarga to'la sayohat boshlang.",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
 };
 
 export default function RootLayout({

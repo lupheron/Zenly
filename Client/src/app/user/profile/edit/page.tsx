@@ -1,3 +1,4 @@
+'use client'
 import EditUserForm from '@/src/components/Forms/EditUserForm'
 import React from 'react'
 
