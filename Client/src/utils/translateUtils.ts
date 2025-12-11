@@ -24,7 +24,7 @@ export async function translateObject<T extends Record<string, any>>(
         fields.map(async (field) => {
             const value = obj[field];
             if (typeof value === 'string' && value) {
-                translatedObj[field] = await translateText(value, targetLang);
+                translatedObj[field] = await translateText(value, targetLang) as any;
             }
         })
     );
