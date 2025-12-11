@@ -353,8 +353,8 @@ const EditPostForm = () => {
                     />
 
                     <LocationPicker
-                        latitude={form.latitude ? Number(form.latitude) : null}
-                        longitude={form.longitude ? Number(form.longitude) : null}
+                        latitude={form.latitude !== null && form.latitude !== '' ? Number(form.latitude) : null}
+                        longitude={form.longitude !== null && form.longitude !== '' ? Number(form.longitude) : null}
                         location={form.location}
                         onLocationSelect={(data) => {
                             setForm(prev => ({
@@ -381,7 +381,7 @@ const EditPostForm = () => {
                         label={t('user.form.placeType')}
                         htmlFor="area_id"
                         name="area_id"
-                        value={form.area_id}
+                        value={form.area_id.toString()}
                         onChange={handleChange}
                         required
                         placeholder={t('user.form.select')}
