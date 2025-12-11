@@ -39,7 +39,7 @@ const LanguageSelect = ({ isDark = false }: { isDark?: boolean }) => {
             </button>
 
             {showLangMenu && (
-                <div className={`absolute ${isDark ? 'bottom-full mb-2' : 'top-full mt-2'} right-0 bg-white rounded-lg shadow-lg py-2 w-32 z-50 border border-gray-100`}>
+                <div className={`absolute top-full mt-2 right-0 bg-white rounded-lg shadow-lg py-2 w-32 z-50 border border-gray-100`}>
                     <button
                         onClick={() => handleLanguageChange('en')}
                         className={`w-full text-left px-4 py-2 hover:bg-gray-100 transition ${language === 'en' ? 'bg-gray-100 font-semibold' : 'text-gray-800'}`}

@@ -139,6 +139,7 @@
         "location": "Местоположение",
         "delete": "Удалить",
         "confirmDelete": "Вы уверены, что хотите удалить этот пост?",
+        "isBooked": "Этот пост забронирован",
         "features": "Особенности",
         "showAll": "Показать все",
         "showLess": "Показать меньше",
@@ -192,7 +193,9 @@
         "searchPlaceholder": "Поиск...",
         "noResults": "Результаты не найдены",
         "from": "От",
-        "to": "До"
+        "to": "До",
+        "details": "Подробнее",
+        "selectPlaceholder": "Выберите..."
     },
     "pagination": {
         "previous": "Предыдущий",
@@ -397,5 +400,19 @@
             "errorPostCreate": "Ошибка при создании поста.",
             "errorPostUpdate": "Ошибка при обновлении поста"
         }
+    },
+    "months": {
+        "january": "Январь",
+        "february": "Февраль",
+        "march": "Март",
+        "april": "Апрель",
+        "may": "Май",
+        "june": "Июнь",
+        "july": "Июль",
+        "august": "Август",
+        "september": "Сентябрь",
+        "october": "Октябрь",
+        "november": "Ноябрь",
+        "december": "Декабрь"
     }
 }

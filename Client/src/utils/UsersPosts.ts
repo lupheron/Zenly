@@ -14,6 +14,8 @@ export interface Post {
     created_at: string
     updated_at: string
     deleted_at: string | null
+    latitude?: string | number | null
+    longitude?: string | number | null
 }
 
 export interface CreatePostPayload {
@@ -23,6 +25,8 @@ export interface CreatePostPayload {
     description: string
     price_daily: string | number
     location: string
+    latitude?: string | number | null
+    longitude?: string | number | null
     members: string | number
     area_id: string | number
     img: string | null
@@ -39,6 +43,8 @@ export interface UpdatePostPayload {
     description: string
     price_daily: string | number
     location: string
+    latitude?: string | number | null
+    longitude?: string | number | null
     members: string | number
     area_id: string | number
     user_id: number

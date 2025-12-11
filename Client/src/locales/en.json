@@ -139,6 +139,7 @@
         "location": "Location",
         "delete": "Delete",
         "confirmDelete": "Are you sure you want to delete this post?",
+        "isBooked": "This post is booked",
         "features": "Features",
         "showAll": "Show All",
         "showLess": "Show Less",
@@ -192,7 +193,9 @@
         "searchPlaceholder": "Search...",
         "noResults": "No results found",
         "from": "From",
-        "to": "To"
+        "to": "To",
+        "details": "Details",
+        "selectPlaceholder": "Select..."
     },
     "pagination": {
         "previous": "Previous",
@@ -397,5 +400,19 @@
             "errorPostCreate": "Error creating post.",
             "errorPostUpdate": "Error updating post"
         }
+    },
+    "months": {
+        "january": "January",
+        "february": "February",
+        "march": "March",
+        "april": "April",
+        "may": "May",
+        "june": "June",
+        "july": "July",
+        "august": "August",
+        "september": "September",
+        "october": "October",
+        "november": "November",
+        "december": "December"
     }
 }

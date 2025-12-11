@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
+import { useLanguage } from '@/src/contexts/LanguageContext';
 import LabelDefault from '../label/LabelDefault';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
@@ -36,12 +37,14 @@ const AnimatedSelect: React.FC<AnimatedSelectProps> = ({
     options,
     value = '',
     onChange,
-    placeholder = 'Tanlang...',
+    placeholder,
     required = false,
     disabled = false,
     variant = 'default'
 }) => {
+    const { t } = useLanguage();
     const [isOpen, setIsOpen] = useState(false);
+    const displayPlaceholder = placeholder || t('common.selectPlaceholder');
     const [selectedValue, setSelectedValue] = useState(value);
     const [selectedLabel, setSelectedLabel] = useState('');
     const selectRef = useRef<HTMLDivElement>(null);
@@ -88,7 +91,7 @@ const AnimatedSelect: React.FC<AnimatedSelectProps> = ({
     // Update selected label when value changes
     useEffect(() => {
         if (value) {
-            const option = options.find(opt => 
+            const option = options.find(opt =>
                 typeof opt === 'string' ? opt === value : opt.value === value
             );
             if (option) {
@@ -105,7 +108,7 @@ const AnimatedSelect: React.FC<AnimatedSelectProps> = ({
         setSelectedValue(optionValue);
         setSelectedLabel(optionLabel);
         setIsOpen(false);
-        
+
         // Create synthetic event for onChange
         if (onChange) {
             const syntheticEvent = {
@@ -145,13 +148,13 @@ const AnimatedSelect: React.FC<AnimatedSelectProps> = ({
     return (
         <div className="w-full relative" ref={selectRef}>
             {label && (
-                <LabelDefault 
-                    label={label} 
-                    htmlFor={htmlFor || name} 
-                    customClasses={customClassesLabel} 
+                <LabelDefault
+                    label={label}
+                    htmlFor={htmlFor || name}
+                    customClasses={customClassesLabel}
                 />
             )}
-            
+
             <div
                 className={`
                     ${variantStyles.select}
@@ -172,12 +175,11 @@ const AnimatedSelect: React.FC<AnimatedSelectProps> = ({
                 aria-label={label || name}
             >
                 <span className={`${selectedLabel ? 'text-gray-900' : 'text-gray-500'} ${variantStyles.dropdown}`}>
-                    {selectedLabel || placeholder}
+                    {selectedLabel || displayPlaceholder}
                 </span>
-                <KeyboardArrowDownIcon 
-                    className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${
-                        isOpen ? 'rotate-180' : ''
-                    }`} 
+                <KeyboardArrowDownIcon
+                    className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''
+                        }`}
                 />
             </div>
 
@@ -187,8 +189,8 @@ const AnimatedSelect: React.FC<AnimatedSelectProps> = ({
                 className={`
                     absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg
                     transition-all duration-200 ease-in-out
-                    ${isOpen 
-                        ? 'opacity-100 visible transform translate-y-0' 
+                    ${isOpen
+                        ? 'opacity-100 visible transform translate-y-0'
                         : 'opacity-0 invisible transform -translate-y-2'
                     }
                     max-h-60 overflow-y-auto
@@ -234,7 +236,7 @@ const AnimatedSelect: React.FC<AnimatedSelectProps> = ({
                 className="sr-only"
                 tabIndex={-1}
             >
-                <option value="">{placeholder}</option>
+                <option value="">{displayPlaceholder}</option>
                 {options.map((option, index) => {
                     const optionValue = typeof option === 'string' ? option : option.value;
                     const optionLabel = typeof option === 'string' ? option : option.label;

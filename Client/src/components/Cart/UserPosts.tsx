@@ -3,6 +3,7 @@ import React from 'react'
 import ButtonDefault from '../Button/ButtonDefault'
 import Rating from '../Rating/Rating'
 import { cleanLocation } from '@/src/utils/locationUtils'
+import { useLanguage } from '@/src/contexts/LanguageContext';
 
 interface UsersPostsProps {
     src: string;
@@ -21,6 +22,7 @@ const UsersPosts: React.FC<UsersPostsProps> = ({
     src, title, description, location, rating, price,
     onClick, customClasses = '', postId, status
 }) => {
+    const { t } = useLanguage();
 
     const handleReadMoreClick = () => {
         const loggedInUserId = localStorage.getItem('user_id');
@@ -54,17 +56,17 @@ const UsersPosts: React.FC<UsersPostsProps> = ({
                 </div>
                 {/* Booked status message */}
                 {status === 0 && (
-                  <div className='text-red-600 font-semibold text-sm mt-2'>Bu post band qilingan</div>
+                    <div className='text-red-600 font-semibold text-sm mt-2'>{t('post.isBooked')}</div>
                 )}
             </div>
             <div className='flex flex-col gap-4 lg:gap-6 bg-blue-50 rounded-lg px-4 lg:px-6 py-3 lg:py-4 mt-4 lg:mt-5'>
                 <div>
-                    <p className='text-sm text-gray-500'>From</p>
+                    <p className='text-sm text-gray-500'>{t('common.from')}</p>
                     <h2 className='text-xl lg:text-2xl xl:text-3xl font-bold text-blue-800'>${price}</h2>
                 </div>
                 <div>
                     <ButtonDefault
-                        label="Batafsil"
+                        label={t('common.details')}
                         onClick={handleReadMoreClick}
                         customClasses='w-full tracking-[2px]'
                     />

@@ -353,8 +353,8 @@ const EditPostForm = () => {
                     />
 
                     <LocationPicker
-                        latitude={form.latitude ? parseFloat(form.latitude) : null}
-                        longitude={form.longitude ? parseFloat(form.longitude) : null}
+                        latitude={form.latitude ? Number(form.latitude) : null}
+                        longitude={form.longitude ? Number(form.longitude) : null}
                         location={form.location}
                         onLocationSelect={(data) => {
                             setForm(prev => ({

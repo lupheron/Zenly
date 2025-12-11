@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import AnimatedSelect from '../FormElements/Select/AnimatedSelect';
+import { useLanguage } from '@/src/contexts/LanguageContext';
 
 interface DateFilterValue {
   startDate: string;
@@ -19,12 +20,13 @@ const getYears = (min: number, max: number) => {
   return years;
 };
 
-const months = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December'
+const monthKeys = [
+  'months.january', 'months.february', 'months.march', 'months.april', 'months.may', 'months.june',
+  'months.july', 'months.august', 'months.september', 'months.october', 'months.november', 'months.december'
 ];
 
 export default function DateFilter({ value, onChange, minYear = 2020, maxYear }: DateFilterProps) {
+  const { t } = useLanguage();
   const today = useMemo(() => new Date(), []);
   maxYear = maxYear || today.getFullYear();
   const years = useMemo(() => getYears(minYear, maxYear), [minYear, maxYear]);
@@ -64,7 +66,7 @@ export default function DateFilter({ value, onChange, minYear = 2020, maxYear }:
       <div className="flex flex-col xl:flex-row lg:flex-row gap-4 w-full justify-center items-center">
         {/* Start Date */}
         <div className="flex-1 flex flex-col items-stretch">
-          <span className="font-semibold mb-1 text-center sm:text-left">From</span>
+          <span className="font-semibold mb-1 text-center sm:text-left">{t('common.from')}</span>
           <div className="flex flex-col sm:flex-row gap-2 w-full">
             <AnimatedSelect
               variant="filter"
@@ -78,7 +80,7 @@ export default function DateFilter({ value, onChange, minYear = 2020, maxYear }:
               name="startMonth"
               value={start ? start.getMonth().toString() : today.getMonth().toString()}
               onChange={e => handleMonthChange('start', Number(e.target.value))}
-              options={months.map((m, i) => ({ label: m, value: i.toString() }))}
+              options={monthKeys.map((key, i) => ({ label: t(key), value: i.toString() }))}
             />
             <input
               type="date"
@@ -91,7 +93,7 @@ export default function DateFilter({ value, onChange, minYear = 2020, maxYear }:
         </div>
         {/* End Date */}
         <div className="flex-1 flex flex-col items-stretch">
-          <span className="font-semibold mb-1 text-center sm:text-left">To</span>
+          <span className="font-semibold mb-1 text-center sm:text-left">{t('common.to')}</span>
           <div className="flex flex-col sm:flex-row gap-2 w-full">
             <AnimatedSelect
               variant="filter"
@@ -105,7 +107,7 @@ export default function DateFilter({ value, onChange, minYear = 2020, maxYear }:
               name="endMonth"
               value={end ? end.getMonth().toString() : today.getMonth().toString()}
               onChange={e => handleMonthChange('end', Number(e.target.value))}
-              options={months.map((m, i) => ({ label: m, value: i.toString() }))}
+              options={monthKeys.map((key, i) => ({ label: t(key), value: i.toString() }))}
             />
             <input
               type="date"
