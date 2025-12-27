@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import React, { useState } from 'react'
 import ButtonDefault from '../Button/ButtonDefault'
+import { useLanguage } from '@/src/contexts/LanguageContext';
 
 interface MonumentCardProps {
     img: string
@@ -38,6 +39,8 @@ const MonumentCard: React.FC<MonumentCardProps> = ({
         }
     }
 
+    const { t } = useLanguage()
+
     return (
         <div className={`w-full bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 ${customClasses}`}>
             <div className="relative w-full aspect-[4/3]">
@@ -71,7 +74,7 @@ const MonumentCard: React.FC<MonumentCardProps> = ({
 
                 <div className='mt-4'>
                     <ButtonDefault
-                        label={isExpanded ? "Yashirish" : "Batafsil"}
+                        label={isExpanded ? t("monuments.hide") : t("guideDriver.more")}
                         onClick={handleToggleDescription}
                         customClasses='w-full tracking-[1px] text-sm sm:text-base py-2 sm:py-2.5'
                     />

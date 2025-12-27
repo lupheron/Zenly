@@ -7,12 +7,14 @@ import NavbarSection from '@/src/components/Navbar/NavbarSection'
 import PageFooter from '@/src/components/PageFooter'
 import BottomNavigation from '@/src/components/BottomNavigation/BottomNavigation'
 import Image from 'next/image'
+import { useLanguage } from '@/src/contexts/LanguageContext'
 
 const GuideProfilePage = () => {
     const params = useParams()
     const router = useRouter()
     const id = params?.id as string
     const { data: guide, isLoading, error } = useGuide(id)
+    const { t } = useLanguage()
 
     const formatImageUrl = (imgPath: string | null | undefined): string => {
         if (!imgPath) return '/no-image.jpg'
@@ -28,7 +30,7 @@ const GuideProfilePage = () => {
                 <div className="flex items-center justify-center min-h-[60vh]">
                     <div className="text-center">
                         <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-green-600 border-r-transparent"></div>
-                        <p className="mt-4 text-gray-600">Yuklanmoqda...</p>
+                        <p className="mt-4 text-gray-600">{t('guides.loading')}</p>
                     </div>
                 </div>
             </div>
@@ -41,12 +43,12 @@ const GuideProfilePage = () => {
                 <NavbarSection />
                 <div className="flex items-center justify-center min-h-[60vh]">
                     <div className="text-center">
-                        <p className="text-red-500 text-lg">Gid topilmadi</p>
+                        <p className="text-red-500 text-lg">{t('guides.notFound')}</p>
                         <button
                             onClick={() => router.push('/guides')}
                             className="mt-4 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 cursor-pointer"
                         >
-                            Orqaga
+                            {t('guides.back')}
                         </button>
                     </div>
                 </div>
@@ -66,7 +68,7 @@ const GuideProfilePage = () => {
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                     </svg>
-                    Orqaga
+                    {t('guides.back')}
                 </button>
 
                 <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
@@ -109,22 +111,22 @@ const GuideProfilePage = () => {
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div className="bg-green-50 p-4 rounded-lg">
-                                    <p className="text-sm text-gray-600">Mutaxassislik</p>
+                                    <p className="text-sm text-gray-600">{t('guides.specialty')}</p>
                                     <p className="text-lg font-semibold text-gray-800">{guide.specialization}</p>
                                 </div>
                                 <div className="bg-green-50 p-4 rounded-lg">
-                                    <p className="text-sm text-gray-600">Tajriba</p>
-                                    <p className="text-lg font-semibold text-gray-800">{guide.experience_years} yil</p>
+                                    <p className="text-sm text-gray-600">{t('guides.experience')}</p>
+                                    <p className="text-lg font-semibold text-gray-800">{guide.experience_years} {t('guides.years')}</p>
                                 </div>
                                 <div className="bg-green-50 p-4 rounded-lg sm:col-span-2">
-                                    <p className="text-sm text-gray-600">Tillar</p>
+                                    <p className="text-sm text-gray-600">{t('guides.languages')}</p>
                                     <p className="text-lg font-semibold text-gray-800">{guide.languages}</p>
                                 </div>
                             </div>
 
                             {guide.bio && (
                                 <div>
-                                    <h2 className="text-xl font-bold text-gray-800 mb-3">Haqida</h2>
+                                    <h2 className="text-xl font-bold text-gray-800 mb-3">{t('guides.about')}</h2>
                                     <p className="text-gray-600 leading-relaxed">{guide.bio}</p>
                                 </div>
                             )}
@@ -132,17 +134,17 @@ const GuideProfilePage = () => {
                             <div className="pt-6 border-t border-gray-200">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm text-gray-600">Holat</p>
+                                        <p className="text-sm text-gray-600">{t('guides.status')}</p>
                                         <span className={`inline-block px-4 py-2 rounded-full text-sm font-semibold ${guide.available === 'yes' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
                                             }`}>
-                                            {guide.available === 'yes' ? 'Mavjud' : 'Band'}
+                                            {guide.available === 'yes' ? t('guides.available') : t('guides.busy')}
                                         </span>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="bg-gray-50 p-4 rounded-lg">
-                                <p className="text-sm text-gray-600 mb-2">Aloqa</p>
+                                <p className="text-sm text-gray-600 mb-2">{t('guides.contact')}</p>
                                 <p className="text-gray-800 font-medium">{guide.phone}</p>
                                 <p className="text-gray-800">{guide.email}</p>
                             </div>

@@ -31,7 +31,7 @@ const PopularActivity = () => {
     return (
         <div className="popular-activities mt-20 px-60" id='activities'>
             <div className="w-50 mx-auto mb-20" data-aos="fade-down">
-                <TitleButtons label="Tarixiy markazlar" customClasses="text-green-700 bg-green-50" />
+                <TitleButtons label={t('monuments.title')} customClasses="text-green-700 bg-green-50" />
             </div>
 
             <div className="mb-6 flex flex-col gap-2">

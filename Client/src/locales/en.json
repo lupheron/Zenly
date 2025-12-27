@@ -90,7 +90,14 @@
         "noGuides": "No guides available yet",
         "specialty": "Specialty",
         "experience": "Experience",
-        "languages": "Languages"
+        "languages": "Languages",
+        "notFound": "Guide not found",
+        "about": "About",
+        "status": "Status",
+        "contact": "Contact",
+        "available": "Available",
+        "busy": "Busy",
+        "years": "years"
     },
     "auth": {
         "loginTitle": "Login",
@@ -257,7 +264,8 @@
         "selectCity": "Select a city",
         "search": "Search...",
         "loading": "Loading...",
-        "noMonuments": "No historical places found"
+        "noMonuments": "No historical places found",
+        "hide": "Hide"
     },
     "aside": {
         "dashboard": "Dashboard",
@@ -414,5 +422,65 @@
         "october": "October",
         "november": "November",
         "december": "December"
+    },
+    "searchPosts": {
+        "title": "Search Places",
+        "location": "Location",
+        "locationPlaceholder": "E.g.: Tashkent, Samarkand...",
+        "locationError": "Select location",
+        "searchType": "Search Type",
+        "select": "Select...",
+        "searchTypeError": "Select search type",
+        "guests": "Guests",
+        "guestsPlaceholder": "How many people?",
+        "guestsError": "Enter number of guests (min 1)",
+        "search": "Search",
+        "fillAll": "Fill all fields",
+        "clear": "Clear",
+        "activeSearch": "Search active - showing places for {count} or more guests",
+        "startSearch": "Fill all fields to start searching",
+        "noPosts": "No places of this type available yet!",
+        "sort": {
+            "recent": "Newest",
+            "rating": "Highest Rating",
+            "priceLow": "Price: Low to High",
+            "priceHigh": "Price: High to Low",
+            "popular": "Popular"
+        }
+    },
+    "breadcrumbs": {
+        "home": "Home"
+    },
+    "amenities": {
+        "title": "Amenities",
+        "wifi": "Wi-Fi",
+        "kitchen": "Kitchen",
+        "bathroom": "Private Bathroom",
+        "climate": "Heating / AC",
+        "spa": "Sauna / Hot Tub",
+        "bbq": "Grill / Fireplace",
+        "parking": "Parking",
+        "pool": "Swimming Pool"
+    },
+    "postDetail": {
+        "back": "Back",
+        "loading": "Loading...",
+        "error": "Error occurred or post not found",
+        "unknownType": "Unknown Type",
+        "availableFeatures": "Available Amenities:",
+        "rating": "Rating:",
+        "price": "Price:",
+        "location": "Location:",
+        "peopleCount": "People:",
+        "placeType": "Place Type:",
+        "viewCount": "Views:",
+        "book": "Book Now",
+        "sending": "Sending...",
+        "viewComments": "View Comments",
+        "leaveReview": "Leave Review",
+        "ownerBookingError": "You cannot book your own post",
+        "commentsTitle": "User Reviews",
+        "noComments": "No comments available yet.",
+        "reviewTitle": "Your Review"
     }
 }

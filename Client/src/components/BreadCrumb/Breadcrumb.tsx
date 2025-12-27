@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import React from 'react'
+import { useLanguage } from '@/src/contexts/LanguageContext'
 
 const Breadcrumb = () => {
     const pathname = usePathname()
@@ -14,9 +15,11 @@ const Breadcrumb = () => {
         return str.charAt(0).toUpperCase() + str.slice(1);
     };
 
+    const { t } = useLanguage()
+
     return (
         <div className="text-xl text-gray-500 my-4">
-            <Link href="/" className="hover:underline">Home</Link>
+            <Link href="/" className="hover:underline">{t('breadcrumbs.home')}</Link>
             {pathParts.map((part, index) => {
                 const path = '/' + pathParts.slice(0, index + 1).join('/')
                 const isLast = index === pathParts.length - 1

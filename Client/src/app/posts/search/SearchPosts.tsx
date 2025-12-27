@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import AnimatedSelect from '@/src/components/FormElements/Select/AnimatedSelect';
+import { useLanguage } from '@/src/contexts/LanguageContext';
 
 interface SearchPostsProps {
     onSearch: (params: { location: string; sort: string; guests: string }) => void;
 }
 
 const SearchPosts: React.FC<SearchPostsProps> = ({ onSearch }) => {
+    const { t } = useLanguage();
     const [searchData, setSearchData] = useState({
         location: '',
         sort: '',
@@ -50,15 +52,15 @@ const SearchPosts: React.FC<SearchPostsProps> = ({ onSearch }) => {
         };
 
         if (!searchData.location.trim()) {
-            newErrors.location = 'Joylashuvni tanlang';
+            newErrors.location = t('searchPosts.locationError');
         }
 
         if (!searchData.sort) {
-            newErrors.sort = 'Qidiruv turini tanlang';
+            newErrors.sort = t('searchPosts.searchTypeError');
         }
 
         if (!searchData.guests || parseInt(searchData.guests) < 1) {
-            newErrors.guests = 'A&apos;zolar sonini kiriting (1 dan kam bo&apos;lmasligi kerak)';
+            newErrors.guests = t('searchPosts.guestsError');
         }
 
         setErrors(newErrors);
@@ -81,31 +83,31 @@ const SearchPosts: React.FC<SearchPostsProps> = ({ onSearch }) => {
     };
 
     const sortOptions = [
-        { value: 'recent', label: 'Eng yangi' },
-        { value: 'rating', label: 'Eng yuqori reyting' },
-        { value: 'price_low', label: 'Arzon narx' },
-        { value: 'price_high', label: 'Qimmat narx' },
-        { value: 'popular', label: 'Mashhur' }
+        { value: 'recent', label: t('searchPosts.sort.recent') },
+        { value: 'rating', label: t('searchPosts.sort.rating') },
+        { value: 'price_low', label: t('searchPosts.sort.priceLow') },
+        { value: 'price_high', label: t('searchPosts.sort.priceHigh') },
+        { value: 'popular', label: t('searchPosts.sort.popular') }
     ];
 
     const hasAllFields = Boolean(searchData.location && searchData.sort && searchData.guests);
 
     return (
         <div className="mt-10 max-w-6xl mx-auto bg-white rounded-lg shadow-lg p-4 md:p-6">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">Joy qidirish</h2>
+            <h2 className="text-xl font-semibold mb-4 text-gray-800">{t('searchPosts.title')}</h2>
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {/* Location Field */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Joylashuv *
+                            {t('searchPosts.location')} *
                         </label>
                         <input
                             type="text"
                             value={searchData.location}
                             onChange={(e) => handleInputChange('location', e.target.value)}
-                            placeholder="Masalan: Toshkent, Samarqand..."
+                            placeholder={t('searchPosts.locationPlaceholder')}
                             className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.location ? 'border-red-500' : 'border-gray-300'
                                 }`}
                         />
@@ -117,13 +119,13 @@ const SearchPosts: React.FC<SearchPostsProps> = ({ onSearch }) => {
                     {/* Sort Field */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Qidiruv turi *
+                            {t('searchPosts.searchType')} *
                         </label>
                         <AnimatedSelect
                             name="sort"
                             value={searchData.sort}
                             onChange={(e) => handleInputChange('sort', e.target.value)}
-                            placeholder="Tanlang..."
+                            placeholder={t('searchPosts.select')}
                             customClassesSelect={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.sort ? 'border-red-500' : 'border-gray-300'}`}
                             options={sortOptions}
                         />
@@ -135,14 +137,14 @@ const SearchPosts: React.FC<SearchPostsProps> = ({ onSearch }) => {
                     {/* Guests Field */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                            A&apos;zolar soni *
+                            {t('searchPosts.guests')} *
                         </label>
                         <input
                             type="number"
                             min="1"
                             value={searchData.guests}
                             onChange={(e) => handleInputChange('guests', e.target.value)}
-                            placeholder="Necha kishi?"
+                            placeholder={t('searchPosts.guestsPlaceholder')}
                             className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.guests ? 'border-red-500' : 'border-gray-300'
                                 }`}
                         />
@@ -162,7 +164,7 @@ const SearchPosts: React.FC<SearchPostsProps> = ({ onSearch }) => {
                             : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                             }`}
                     >
-                        {hasAllFields ? 'Qidirish' : "Barcha maydonlarni to'ldiring"}
+                        {hasAllFields ? t('searchPosts.search') : t('searchPosts.fillAll')}
                     </button>
 
                     {hasAllFields && (
@@ -171,7 +173,7 @@ const SearchPosts: React.FC<SearchPostsProps> = ({ onSearch }) => {
                             onClick={clearSearch}
                             className="flex-1 sm:flex-none px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-md font-medium transition-colors"
                         >
-                            Tozalash
+                            {t('searchPosts.clear')}
                         </button>
                     )}
                 </div>
@@ -183,11 +185,11 @@ const SearchPosts: React.FC<SearchPostsProps> = ({ onSearch }) => {
                             <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                             </svg>
-                            Qidiruv faol - {searchData.guests} va undan ko&apos;p a&apos;zoga mo&apos;ljallangan joylar ko&apos;rsatilmoqda
+                            {t('searchPosts.activeSearch').replace('{count}', searchData.guests)}
                         </div>
                     ) : (
                         <div className="text-gray-500">
-                            Qidirishni boshlash uchun barcha maydonlarni to&apos;ldiring
+                            {t('searchPosts.startSearch')}
                         </div>
                     )}
                 </div>

@@ -4,6 +4,7 @@ import { useFeatures } from '@/src/hooks/features/useFeatures'
 import React, { useState } from 'react'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import { ApiError } from '@/src/utils/ApiError'
+import { useLanguage } from '@/src/contexts/LanguageContext'
 
 interface FeatureProps {
     postId: number
@@ -12,17 +13,30 @@ interface FeatureProps {
 const Features: React.FC<FeatureProps> = ({ postId }) => {
     const { data: features, isLoading, error } = useFeatures(postId)
     const [showAll, setShowAll] = useState(false)
+    const { t } = useLanguage()
 
-    if (isLoading) return <div>Yuklanmoqda...</div>
-
+    if (isLoading) return <div>{t('features.loading')}</div>
     if (error instanceof ApiError && error.status === 404) {
         return <div>{error.message}</div>
     }
+    if (error) return <div>{t('features.errorLoading')}</div>
+    if (!features || features.length === 0) return <div>{t('features.noFeatures')}</div>
 
-    if (error) return <div>Sharoitlarni yuklashda xatolik yuz berdi.</div>
-    if (!features || features.length === 0) return <div>Hech qanday sharoit mavjud emas.</div>
+    const getTranslatedFeatureName = (name: string) => {
+        const mapping: { [key: string]: string } = {
+            'Wi-Fi': 'amenities.wifi',
+            'Tashqi va ichki oshxona': 'amenities.kitchen',
+            'Shaxsiy hammom': 'amenities.bathroom',
+            'Isitish / Konditsioner': 'amenities.climate',
+            'Sauna / Issiq vannalar': 'amenities.spa',
+            'Mangal / Kamin': 'amenities.bbq',
+            'Avtoturargoh': 'amenities.parking',
+            'Suzish havzasi': 'amenities.pool',
+        }
+        return mapping[name] ? t(mapping[name]) : name
+    }
 
-    const firstSix = features.slice(0, 6)   
+    const firstSix = features.slice(0, 6)
     const remaining = features.slice(6)
 
     return (
@@ -31,7 +45,7 @@ const Features: React.FC<FeatureProps> = ({ postId }) => {
                 {firstSix.map((feature, index) => (
                     <div key={index} className="flex gap-3 p-2 border rounded">
                         <CheckCircleIcon className="text-green-600" />
-                        {feature.name}
+                        {getTranslatedFeatureName(feature.name)}
                     </div>
                 ))}
             </div>
@@ -41,7 +55,7 @@ const Features: React.FC<FeatureProps> = ({ postId }) => {
                     {remaining.map((feature, index) => (
                         <div key={index + 6} className="flex gap-3 p-2 border rounded">
                             <CheckCircleIcon className="text-green-600" />
-                            {feature.name}
+                            {getTranslatedFeatureName(feature.name)}
                         </div>
                     ))}
                 </div>
@@ -52,7 +66,7 @@ const Features: React.FC<FeatureProps> = ({ postId }) => {
                     onClick={() => setShowAll(!showAll)}
                     className="text-blue-500 underline mt-3 block cursor-pointer"
                 >
-                    {showAll ? "Kamrog'ini ko'rish" : "Hammasini ko'rish"}
+                    {showAll ? t('features.showLess') : t('features.showAll')}
                 </button>
             )}
         </div>

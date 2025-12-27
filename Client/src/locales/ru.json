@@ -90,7 +90,14 @@
         "noGuides": "Гиды пока недоступны",
         "specialty": "Специальность",
         "experience": "Опыт",
-        "languages": "Языки"
+        "languages": "Языки",
+        "notFound": "Гид не найден",
+        "about": "О гиде",
+        "status": "Статус",
+        "contact": "Контакты",
+        "available": "Доступен",
+        "busy": "Занят",
+        "years": "лет"
     },
     "auth": {
         "loginTitle": "Войти",
@@ -257,7 +264,8 @@
         "selectCity": "Выберите город",
         "search": "Поиск...",
         "loading": "Загрузка...",
-        "noMonuments": "Исторические места не найдены"
+        "noMonuments": "Исторические места не найдены",
+        "hide": "Скрыть"
     },
     "aside": {
         "dashboard": "Панель управления",
@@ -414,5 +422,65 @@
         "october": "Октябрь",
         "november": "Ноябрь",
         "december": "Декабрь"
+    },
+    "searchPosts": {
+        "title": "Поиск мест",
+        "location": "Местоположение",
+        "locationPlaceholder": "Напр.: Ташкент, Самарканд...",
+        "locationError": "Выберите местоположение",
+        "searchType": "Тип поиска",
+        "select": "Выберите...",
+        "searchTypeError": "Выберите тип поиска",
+        "guests": "Количество гостей",
+        "guestsPlaceholder": "Сколько человек?",
+        "guestsError": "Введите количество гостей (мин 1)",
+        "search": "Поиск",
+        "fillAll": "Заполните все поля",
+        "clear": "Очистить",
+        "activeSearch": "Поиск активен - показаны места для {count} и более гостей",
+        "startSearch": "Заполните все поля, чтобы начать поиск",
+        "noPosts": "Места такого типа пока отсутствуют!",
+        "sort": {
+            "recent": "Новинки",
+            "rating": "Высокий рейтинг",
+            "priceLow": "Дешевые",
+            "priceHigh": "Дорогие",
+            "popular": "Популярные"
+        }
+    },
+    "breadcrumbs": {
+        "home": "Главная"
+    },
+    "amenities": {
+        "title": "Удобства",
+        "wifi": "Wi-Fi",
+        "kitchen": "Кухня",
+        "bathroom": "Личная ванная",
+        "climate": "Отопление / Кондиционер",
+        "spa": "Сауна / Джакузи",
+        "bbq": "Мангал / Камин",
+        "parking": "Парковка",
+        "pool": "Бассейн"
+    },
+    "postDetail": {
+        "back": "Назад",
+        "loading": "Загрузка...",
+        "error": "Произошла ошибка или пост не найден",
+        "unknownType": "Неизвестный тип",
+        "availableFeatures": "Доступные удобства:",
+        "rating": "Рейтинг:",
+        "price": "Цена:",
+        "location": "Адрес:",
+        "peopleCount": "Человек:",
+        "placeType": "Тип места:",
+        "viewCount": "Просмотры:",
+        "book": "Забронировать",
+        "sending": "Отправка...",
+        "viewComments": "Смотреть отзывы",
+        "leaveReview": "Оставить отзыв",
+        "ownerBookingError": "Вы не можете забронировать свой собственный пост",
+        "commentsTitle": "Отзывы пользователей",
+        "noComments": "Отзывов пока нет.",
+        "reviewTitle": "Ваш отзыв"
     }
 }
