@@ -6,27 +6,42 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::table('booking_checking', function (Blueprint $table) {
-            $table->boolean('owner_confirmed')->default(false);
-            $table->boolean('customer_confirmed')->default(false);
-            $table->json('owner_data')->nullable();
-            $table->json('customer_data')->nullable();
-            $table->string('status')->default('waiting_customer');
+
+            if (!Schema::hasColumn('booking_checking', 'owner_confirmed')) {
+                $table->boolean('owner_confirmed')->default(false);
+            }
+
+            if (!Schema::hasColumn('booking_checking', 'customer_confirmed')) {
+                $table->boolean('customer_confirmed')->default(false);
+            }
+
+            if (!Schema::hasColumn('booking_checking', 'owner_data')) {
+                $table->json('owner_data')->nullable();
+            }
+
+            if (!Schema::hasColumn('booking_checking', 'customer_data')) {
+                $table->json('customer_data')->nullable();
+            }
+
+            if (!Schema::hasColumn('booking_checking', 'status')) {
+                $table->string('status')->default('waiting_customer');
+            }
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table('booking_checking', function (Blueprint $table) {
-            $table->dropColumn(['owner_confirmed', 'customer_confirmed', 'owner_data', 'customer_data', 'status']);
+            $table->dropColumn([
+                'owner_confirmed',
+                'customer_confirmed',
+                'owner_data',
+                'customer_data',
+                'status'
+            ]);
         });
     }
 };
