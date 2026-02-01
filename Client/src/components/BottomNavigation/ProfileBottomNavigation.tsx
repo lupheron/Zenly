@@ -7,6 +7,7 @@ import PieChartIcon from '@mui/icons-material/PieChart';
 import PhotoIcon from '@mui/icons-material/Photo';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import { useUser } from '@/src/hooks/users/useUser';
+import { getImageUrl } from '@/src/utils/axios';
 
 interface ProfileBottomNavigationProps {
     userType: 'user' | 'customer';
@@ -42,7 +43,7 @@ const ProfileBottomNavigation: React.FC<ProfileBottomNavigationProps> = ({ userT
                     id: 'profile',
                     icon: (
                         <Image
-                            src={data?.img && data.img.trim() !== "" ? data.img : "/logo/profile-default.png"}
+                            src={getImageUrl(data?.img)}
                             alt="Profile"
                             width={32}
                             height={32}
@@ -81,7 +82,7 @@ const ProfileBottomNavigation: React.FC<ProfileBottomNavigationProps> = ({ userT
                     id: 'profile',
                     icon: (
                         <Image
-                            src={data?.img && data.img.trim() !== "" ? data.img : "/logo/profile-default.png"}
+                            src={getImageUrl(data?.img)}
                             alt="Profile"
                             width={32}
                             height={32}
@@ -108,11 +109,10 @@ const ProfileBottomNavigation: React.FC<ProfileBottomNavigationProps> = ({ userT
                     <button
                         key={item.id}
                         onClick={item.action}
-                        className={`flex flex-col items-center justify-center p-2 min-w-0 flex-1 transition-colors duration-200 min-h-[60px] ${
-                            item.isActive 
-                                ? 'text-blue-600' 
+                        className={`flex flex-col items-center justify-center p-2 min-w-0 flex-1 transition-colors duration-200 min-h-[60px] ${item.isActive
+                                ? 'text-blue-600'
                                 : 'text-gray-600 hover:text-gray-800'
-                        }`}
+                            }`}
                     >
                         <div className="text-2xl">
                             {item.icon}

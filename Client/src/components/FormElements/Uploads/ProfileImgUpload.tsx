@@ -9,7 +9,7 @@ import { Area } from 'react-easy-crop';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
-const ProfileImageUpload = ({ value, onChange }: { value: string; onChange: (img: string, file?: File) => void }) => {
+const ProfileImageUpload = ({ value, onChange }: { value: string; onChange: (img: string | File) => void }) => {
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -79,7 +79,7 @@ const ProfileImageUpload = ({ value, onChange }: { value: string; onChange: (img
         const blob = await fetch(croppedImage).then(res => res.blob());
         const file = new File([blob], 'profile.jpg', { type: 'image/jpeg' });
 
-        onChange(croppedImage, file);
+        onChange(file); // Pass only the File object
         setFileList([{
             uid: '-1',
             name: 'profile.jpg',

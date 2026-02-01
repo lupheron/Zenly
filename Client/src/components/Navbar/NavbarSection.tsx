@@ -9,6 +9,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/src/contexts/LanguageContext';
 import LanguageSelect from './LanguageSelect';
+import { getImageUrl } from '@/src/utils/axios';
 
 const NavbarSection = () => {
     const [hasToken, setHasToken] = useState(false);
@@ -72,7 +73,7 @@ const NavbarSection = () => {
                                 onClick={handleProfileClick}
                             >
                                 <Image
-                                    src={data?.img && data.img.trim() !== "" ? data.img : "/logo/profile-default.png"}
+                                    src={getImageUrl(data?.img)}
                                     alt="Profile"
                                     width={60}
                                     height={60}

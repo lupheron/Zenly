@@ -28,8 +28,19 @@ const fetchUserById = async (user_id: number): Promise<User> => {
     return res.data as User
 }
 
-const editUser = async (data: Partial<User>) => {
+const editUser = async (data: Partial<User> | FormData) => {
     const id = Number(localStorage.getItem('user_id'))
+
+    if (data instanceof FormData) {
+        data.append('_method', 'PUT'); // Laravel method spoofing
+        const res = await api.post(`/users/${id}`, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        })
+        return res.data as User
+    }
+
     const res = await api.put(`/users/${id}`, data)
     return res.data as User
 }

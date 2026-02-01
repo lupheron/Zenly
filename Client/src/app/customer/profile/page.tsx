@@ -12,6 +12,8 @@ import DeleteModal from '@/src/components/Modal/DeleteModal';
 import AlertDefault from '@/src/components/Alert/AlertDefault';
 import Loader from '@/src/components/Loader/Loader';
 
+import { getImageUrl } from '@/src/utils/axios';
+
 const CustomerProfile = () => {
     const { data, deleteUser } = useUser()
     const router = useRouter()
@@ -43,7 +45,7 @@ const CustomerProfile = () => {
                     <Image
                         width={200}
                         height={200}
-                        src={data?.img && data.img.trim() !== "" ? data.img : "/logo/profile-default.png"}
+                        src={getImageUrl(data?.img)}
                         alt='Profile Picture'
                         className='rounded-full w-32 h-32 sm:w-40 sm:h-40 lg:w-48 lg:h-48 xl:w-56 xl:h-56 mt-2 sm:mt-5 mb-6 sm:mb-10'
                     />

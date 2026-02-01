@@ -16,8 +16,9 @@ const EditUserForm = () => {
         username: '',
         phone: '',
         address: '',
-        img: '',
+        img: '' as string | File,
     })
+    const [imagePreviewUrl, setImagePreviewUrl] = useState<string>('')
 
     const router = useRouter()
     const { t } = useLanguage()
@@ -33,6 +34,7 @@ const EditUserForm = () => {
                 address: data.address || '',
                 img: data.img || '',
             })
+            setImagePreviewUrl(data.img || '')
         }
     }, [data])
 
@@ -41,20 +43,37 @@ const EditUserForm = () => {
         setForm((prev) => ({ ...prev, [name]: value }))
     }
 
-    const handleImageChange = (imgData: string) => {
-        setForm((prev) => ({ ...prev, img: imgData }))
+    const handleImageChange = (file: string | File) => {
+        if (file instanceof File) {
+            setForm((prev) => ({ ...prev, img: file }))
+            setImagePreviewUrl(URL.createObjectURL(file))
+        } else {
+            setForm((prev) => ({ ...prev, img: file }))
+            setImagePreviewUrl(file)
+        }
     }
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
-        const payload = {
-            fullname: form.fullname,
-            username: form.username,
-            phone: form.phone,
-            address: form.address,
-            img: form.img,
+
+        if (form.img instanceof File) {
+            const formData = new FormData()
+            formData.append('fullname', form.fullname)
+            formData.append('username', form.username)
+            formData.append('phone', form.phone)
+            formData.append('address', form.address)
+            formData.append('img', form.img)
+            mutate(formData as any)
+        } else {
+            const payload = {
+                fullname: form.fullname,
+                username: form.username,
+                phone: form.phone,
+                address: form.address,
+                img: form.img as string,
+            }
+            mutate(payload)
         }
-        mutate(payload)
     }
 
     useEffect(() => {
@@ -76,7 +95,7 @@ const EditUserForm = () => {
     return (
         <form onSubmit={handleSubmit} className="flex flex-col xl:flex-row gap-6 lg:gap-10 items-start">
             <div className="w-full lg:w-auto flex justify-center lg:justify-start">
-                <ProfileImageUpload value={form.img} onChange={handleImageChange} />
+                <ProfileImageUpload value={imagePreviewUrl} onChange={handleImageChange} />
             </div>
 
             <div className="space-y-3 sm:space-y-4 flex-1 w-full">

@@ -10,6 +10,7 @@ import LanguageIcon from '@mui/icons-material/Language';
 import { useUser } from '@/src/hooks/users/useUser';
 import AuthChoiceModal from '../Modal/AuthChoiceModal';
 import { useLanguage } from '@/src/contexts/LanguageContext';
+import { getImageUrl } from '@/src/utils/axios';
 import ReusableModal from '../Modal/ReusableModal';
 
 const BottomNavigation = () => {
@@ -79,7 +80,7 @@ const BottomNavigation = () => {
             id: 'profile',
             icon: hasToken ? (
                 <Image
-                    src={data?.img && data.img.trim() !== "" ? data.img : "/logo/profile-default.png"}
+                    src={getImageUrl(data?.img)}
                     alt="Profile"
                     width={32}
                     height={32}
@@ -107,8 +108,8 @@ const BottomNavigation = () => {
                         key={item.id}
                         onClick={item.action}
                         className={`flex flex-col items-center justify-center p-2 min-w-0 flex-1 transition-colors duration-200 min-h-[60px] ${item.isActive
-                                ? 'text-blue-600'
-                                : 'text-gray-600 hover:text-gray-800'
+                            ? 'text-blue-600'
+                            : 'text-gray-600 hover:text-gray-800'
                             }`}
                     >
                         <div className="text-2xl">
