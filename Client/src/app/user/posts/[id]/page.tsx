@@ -158,7 +158,7 @@ const UserPostInfo = () => {
                                 />
                             ))
                         ) : (
-                            <p className="text-center text-lg">{t('user.noComments')}</p>
+                            <p className="text-center text-lg">{t('postDetail.noComments')}</p>
                         )}
                     </SwiperDefault>
                 )}
