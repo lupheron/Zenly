@@ -21,9 +21,12 @@ class BookingChecking extends Controller
             'price' => 'required|numeric|min:0',
         ]);
 
+        $startDate = Carbon::parse($request->input('start_date'))->format('Y-m-d');
+        $endDate = Carbon::parse($request->input('end_date'))->format('Y-m-d');
+
         $ownerData = [
-            'start_date' => $request->input('start_date'),
-            'end_date' => $request->input('end_date'),
+            'start_date' => $startDate,
+            'end_date' => $endDate,
             'price' => $request->input('price'),
         ];
 
@@ -31,8 +34,8 @@ class BookingChecking extends Controller
             'request_id' => $request->input('request_id'),
             'user_id' => $request->input('user_id'),
             'post_id' => $request->input('post_id'),
-            'start_date' => $request->input('start_date'),
-            'end_date' => $request->input('end_date'),
+            'start_date' => $startDate,
+            'end_date' => $endDate,
             'price' => $request->input('price'),
             'owner_confirmed' => true,
             'customer_confirmed' => false,
@@ -63,8 +66,8 @@ class BookingChecking extends Controller
         ]);
 
         $customerData = [
-            'start_date' => $request->input('start_date'),
-            'end_date' => $request->input('end_date'),
+            'start_date' => Carbon::parse($request->input('start_date'))->format('Y-m-d'),
+            'end_date' => Carbon::parse($request->input('end_date'))->format('Y-m-d'),
             'price' => $request->input('price'),
         ];
 

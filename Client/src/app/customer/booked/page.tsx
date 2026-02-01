@@ -5,8 +5,15 @@ import { useUserBookingRequests } from '@/src/hooks/booking/useBookingRequests'
 import { useRouter } from 'next/navigation'
 
 const BookedPlaces = () => {
-  const user_id = typeof window !== 'undefined' ? Number(localStorage.getItem('user_id')) : null
+  const [user_id, setUserId] = React.useState<number | null>(null)
   const { data = [], isLoading, isError } = useUserBookingRequests(user_id)
+
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const id = localStorage.getItem('user_id')
+      if (id) setUserId(Number(id))
+    }
+  }, [])
   const router = useRouter()
 
   if (isLoading) return <div>Yuklanmoqda...</div>
