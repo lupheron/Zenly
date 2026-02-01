@@ -69,8 +69,10 @@ export const useUsersPosts = (user_id: number, fetchOnMount: boolean = true) => 
 
     const updateMutation = useMutation<Post, Error, { postId: number; data: UpdatePostPayload }>({
         mutationFn: updatePost,
-        onSuccess: () => {
+        onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ['user-posts', user_id] })
+            queryClient.invalidateQueries({ queryKey: ['posts'] })
+            queryClient.invalidateQueries({ queryKey: ['post', variables.postId] })
             AlertDefault.success("Post yangilandi.")
         },
     })
