@@ -11,6 +11,29 @@ use Illuminate\Support\Facades\Log;
 
 class Admins extends Controller
 {
+    public function register(Request $request)
+    {
+        $user = DB::table('admins')->where('username', $request['username'])->first();
+        if ($user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User already exists',
+                'status' => 400
+            ], 400);
+        }
+        $user = DB::table('admins')->insert([
+            'username' => $request['username'],
+            'password' => Hash::make($request['password']),
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
+        ]);
+        return response()->json([
+            'success' => true,
+            'message' => 'User registered successfully',
+            'status' => 201
+        ], 201);
+    }
+
     public function login(Request $request)
     {
         $user = DB::table('admins')->where('username', $request['username'])->first();
@@ -45,7 +68,7 @@ class Admins extends Controller
     public function me(Request $request)
     {
         $admin = $request->user();
-        
+
         if (!$admin) {
             return response()->json([
                 'success' => false,
@@ -63,7 +86,7 @@ class Admins extends Controller
     public function logout(Request $request)
     {
         $admin = $request->user();
-        
+
         if ($admin) {
             // Clear the remember token
             DB::table('admins')

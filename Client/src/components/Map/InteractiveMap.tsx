@@ -145,7 +145,9 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
                           src={post.img || '/logo/profile-default.png'}
                           alt={post.title}
                           className="w-16 h-16 object-cover rounded-full shadow-sm"
-                          onerror="this.src='/logo/profile-default.png'"
+                          onError={(e) => {
+                            e.currentTarget.src = '/logo/profile-default.png'
+                          }}
                         />
                         <div className="flex-1">
                           <h3 className="font-bold text-base text-gray-900 leading-tight mb-1">{post.title}</h3>

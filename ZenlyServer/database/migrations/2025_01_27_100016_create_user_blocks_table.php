@@ -11,18 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_blocks', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->timestamp('blocked_at');
-            $table->timestamp('blocked_until')->nullable();
-            $table->string('reason');
-            $table->json('details')->nullable();
-            $table->string('ip_address', 45)->nullable();
-            $table->timestamps();
+        if (!Schema::hasTable('user_blocks')) {
+            Schema::create('user_blocks', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('user_id');
+                $table->timestamp('blocked_at');
+                $table->timestamp('blocked_until')->nullable();
+                $table->string('reason');
+                $table->json('details')->nullable();
+                $table->string('ip_address', 45)->nullable();
+                $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-        });
+                $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            });
+        }
     }
 
     /**

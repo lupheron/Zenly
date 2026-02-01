@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('suspicious_activities', function (Blueprint $table) {
+        if (!Schema::hasTable('suspicious_activities')) {
+            Schema::create('suspicious_activities', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->string('activity_type');
@@ -24,7 +25,8 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-        });
+            });
+        }
     }
 
     /**
