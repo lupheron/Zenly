@@ -1,6 +1,7 @@
 'use client'
 
 import { useGalleryByPostId } from '@/src/hooks/gallery/useGalleryByPostId'
+import { getImageUrl } from '@/src/utils/axios'
 import Image from 'next/image'
 import React, { useState, useEffect, useMemo } from 'react'
 
@@ -14,24 +15,17 @@ const Gallery: React.FC<GalleryProps> = ({ postId, mainImg }) => {
     const [displayedImage, setDisplayedImage] = useState<string>('')
     const [imageError, setImageError] = useState(false)
 
-    const formatImageUrl = (imgPath: string | null | undefined): string => {
-        if (!imgPath) return '';
-        if (imgPath.startsWith('http')) return imgPath;
-        const cleanPath = imgPath.startsWith('/') ? imgPath.slice(1) : imgPath;
-        return `http://zenlyserver.test/${cleanPath}`;
-    };
-
     const allImages = useMemo(() => [
-        { id: 'main', img: formatImageUrl(mainImg) },
+        { id: 'main', img: getImageUrl(mainImg) },
         ...galleryImages.map(img => ({
             ...img,
-            img: formatImageUrl(img.img)
+            img: getImageUrl(img.img)
         }))
     ], [mainImg, galleryImages]);
 
     useEffect(() => {
         if (mainImg) {
-            const formattedUrl = formatImageUrl(mainImg);
+            const formattedUrl = getImageUrl(mainImg);
             setDisplayedImage(formattedUrl);
             setImageError(false);
         } else {
@@ -72,8 +66,8 @@ const Gallery: React.FC<GalleryProps> = ({ postId, mainImg }) => {
                     <div
                         key={image.id}
                         className={`flex-shrink-0 w-25 h-20 relative rounded-lg overflow-hidden cursor-pointer border-2 transition-all min-h-[60px] min-w-[80px] ${displayedImage === image.img
-                                ? 'border-blue-500 scale-105'
-                                : 'border-transparent hover:scale-105'
+                            ? 'border-blue-500 scale-105'
+                            : 'border-transparent hover:scale-105'
                             }`}
                         onClick={() => handleImageClick(image.img)}
                     >

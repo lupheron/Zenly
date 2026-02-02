@@ -97,16 +97,6 @@ const PostsSection = () => {
     return (
         <div>
             <SearchPosts onSearch={handleSearch} />
-
-            {/* Search Status Indicator */}
-            {isSearchActive && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mx-4 mt-4">
-                    <p className="text-blue-700 text-sm">
-                        Qidiruv faol: {searchFilters.location} - {searchFilters.sort} - {searchFilters.guests} kishi
-                    </p>
-                </div>
-            )}
-
             <div className="flex flex-col lg:flex-row justify-between items-start gap-6 lg:gap-10 p-4 lg:p-5 mt-6 lg:mt-10 bg-light-gray">
 
                 <Filter

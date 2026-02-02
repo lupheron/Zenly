@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 // Export API_BASE_URL so it can be used in other files
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
 /**
  * Helper function to get the full image URL from a relative path
@@ -9,19 +9,27 @@ export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL
  * @param fallback - Fallback image if imagePath is empty or undefined
  * @returns Full URL to the image
  */
-export const getImageUrl = (imagePath: string | undefined | null, fallback: string = "/logo/profile-default.png"): string => {
+export function getImageUrl(imagePath: string | undefined | null, fallback: string = "/logo/profile-default.png"): string {
     if (!imagePath || imagePath.trim() === "") {
         return fallback;
     }
-    // If it's already an absolute URL (http/https) or starts with /, return as-is
-    // Note: If it starts with / but isn't a public asset, it might still need API_BASE_URL, 
-    // but usually "uploads/" paths come without leading slash from this API.
-    if (imagePath.startsWith("http://") || imagePath.startsWith("https://") || imagePath.startsWith("/")) {
+
+    // If it's already an absolute URL (http/https), return as-is
+    if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
         return imagePath;
     }
-    // Otherwise, prefix with API base URL
-    return `${API_BASE_URL}/${imagePath}`;
-};
+
+    // If it's a known public frontend asset (like /logo/), return as-is
+    if (imagePath.startsWith("/logo/")) {
+        return imagePath;
+    }
+
+    // Ensure no double slash when joining
+    const cleanPath = imagePath.startsWith('/') ? imagePath.slice(1) : imagePath;
+
+    // Prefix with API base URL for uploads or other backend paths
+    return `${API_BASE_URL}/${cleanPath}`;
+}
 
 const api = axios.create({
     baseURL: API_BASE_URL,
