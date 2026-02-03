@@ -99,21 +99,17 @@ const NavbarSection = () => {
                     ) : (
                         <>
                             <Link href="/register">
-                                <ButtonDefault label={t("nav.register")} onClick={() => { }} />
+                                <ButtonDefault customClasses="w-30" label={t("nav.register")} onClick={() => { }} />
                             </Link>
                             <Link href="/login">
-                                <ButtonDefault customClasses="w-45" label={t("nav.login")} onClick={() => { }} />
+                                <ButtonDefault customClasses="w-30" label={t("nav.login")} onClick={() => { }} />
                             </Link>
                         </>
                     )}
                 </div>
-
-                <div className="lg:hidden">
-                </div>
             </div>
 
             <div className="w-[90%] h-[0.1px] bg-black-muted mx-auto"></div>
-
 
         </nav>
     );
