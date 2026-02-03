@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
-import AnimatedSelect from '../FormElements/Select/AnimatedSelect';
 import { useLanguage } from '@/src/contexts/LanguageContext';
+import { DatePickerDefault } from '../FormElements/DatePicker/DatePicker';
 
 interface DateFilterValue {
   startDate: string;
@@ -10,113 +10,55 @@ interface DateFilterValue {
 interface DateFilterProps {
   value: DateFilterValue;
   onChange: (value: DateFilterValue) => void;
-  minYear?: number;
-  maxYear?: number;
+  showTimeSelect?: boolean;
 }
 
-const getYears = (min: number, max: number) => {
-  const years = [];
-  for (let y = max; y >= min; y--) years.push(y);
-  return years;
-};
-
-const monthKeys = [
-  'months.january', 'months.february', 'months.march', 'months.april', 'months.may', 'months.june',
-  'months.july', 'months.august', 'months.september', 'months.october', 'months.november', 'months.december'
-];
-
-export default function DateFilter({ value, onChange, minYear = 2020, maxYear }: DateFilterProps) {
+export default function DateFilter({ value, onChange, showTimeSelect = false }: DateFilterProps) {
   const { t } = useLanguage();
-  const today = useMemo(() => new Date(), []);
-  maxYear = maxYear || today.getFullYear();
-  const years = useMemo(() => getYears(minYear, maxYear), [minYear, maxYear]);
 
   // Parse current values
-  const start = value.startDate ? new Date(value.startDate) : null;
-  const end = value.endDate ? new Date(value.endDate) : null;
+  const start = useMemo(() => value.startDate ? new Date(value.startDate) : null, [value.startDate]);
+  const end = useMemo(() => value.endDate ? new Date(value.endDate) : null, [value.endDate]);
 
-  // Handlers
-  const handleYearChange = (which: 'start' | 'end', year: number) => {
-    const date = which === 'start' ? start || today : end || today;
-    const newDate = new Date(date);
-    newDate.setFullYear(year);
+  const handleStartChange = (date: Date | null) => {
     onChange({
-      startDate: which === 'start' ? newDate.toISOString().slice(0, 10) : value.startDate,
-      endDate: which === 'end' ? newDate.toISOString().slice(0, 10) : value.endDate,
+      ...value,
+      startDate: date ? (showTimeSelect ? date.toISOString() : date.toISOString().split('T')[0]) : '',
     });
   };
-  const handleMonthChange = (which: 'start' | 'end', month: number) => {
-    const date = which === 'start' ? start || today : end || today;
-    const newDate = new Date(date);
-    newDate.setMonth(month);
+
+  const handleEndChange = (date: Date | null) => {
     onChange({
-      startDate: which === 'start' ? newDate.toISOString().slice(0, 10) : value.startDate,
-      endDate: which === 'end' ? newDate.toISOString().slice(0, 10) : value.endDate,
-    });
-  };
-  const handleDateChange = (which: 'start' | 'end', dateStr: string) => {
-    onChange({
-      startDate: which === 'start' ? dateStr : value.startDate,
-      endDate: which === 'end' ? dateStr : value.endDate,
+      ...value,
+      endDate: date ? (showTimeSelect ? date.toISOString() : date.toISOString().split('T')[0]) : '',
     });
   };
 
   return (
-    <div className="flex flex-col gap-4 w-full mx-auto max-w-5xl bg-white rounded-lg shadow p-4">
-      <div className="flex flex-col xl:flex-row lg:flex-row gap-4 w-full justify-center items-center">
-        {/* Start Date */}
-        <div className="flex-1 flex flex-col items-stretch">
-          <span className="font-semibold mb-1 text-center sm:text-left">{t('common.from')}</span>
-          <div className="flex flex-col sm:flex-row gap-2 w-full">
-            <AnimatedSelect
-              variant="filter"
-              name="startYear"
-              value={start ? start.getFullYear().toString() : today.getFullYear().toString()}
-              onChange={e => handleYearChange('start', Number(e.target.value))}
-              options={years.map(y => ({ label: y.toString(), value: y.toString() }))}
-            />
-            <AnimatedSelect
-              variant="filter"
-              name="startMonth"
-              value={start ? start.getMonth().toString() : today.getMonth().toString()}
-              onChange={e => handleMonthChange('start', Number(e.target.value))}
-              options={monthKeys.map((key, i) => ({ label: t(key), value: i.toString() }))}
-            />
-            <input
-              type="date"
-              className="border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-400 transition cursor-pointer w-full sm:w-auto"
-              value={value.startDate}
-              onChange={e => handleDateChange('start', e.target.value)}
-              max={value.endDate || ''}
-            />
-          </div>
+    <div className="w-fit mx-auto bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div className="flex flex-col md:flex-row gap-6">
+        <div className="w-60">
+          <DatePickerDefault
+            label={t('common.from')}
+            value={start}
+            onChange={handleStartChange}
+            placeholder={t('common.selectDate')}
+            showTimeSelect={showTimeSelect}
+            maxDate={end}
+            className="cursor-pointer"
+          />
         </div>
-        {/* End Date */}
-        <div className="flex-1 flex flex-col items-stretch">
-          <span className="font-semibold mb-1 text-center sm:text-left">{t('common.to')}</span>
-          <div className="flex flex-col sm:flex-row gap-2 w-full">
-            <AnimatedSelect
-              variant="filter"
-              name="endYear"
-              value={end ? end.getFullYear().toString() : today.getFullYear().toString()}
-              onChange={e => handleYearChange('end', Number(e.target.value))}
-              options={years.map(y => ({ label: y.toString(), value: y.toString() }))}
-            />
-            <AnimatedSelect
-              variant="filter"
-              name="endMonth"
-              value={end ? end.getMonth().toString() : today.getMonth().toString()}
-              onChange={e => handleMonthChange('end', Number(e.target.value))}
-              options={monthKeys.map((key, i) => ({ label: t(key), value: i.toString() }))}
-            />
-            <input
-              type="date"
-              className="border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-400 transition cursor-pointer w-full sm:w-auto"
-              value={value.endDate}
-              onChange={e => handleDateChange('end', e.target.value)}
-              min={value.startDate || ''}
-            />
-          </div>
+
+        <div className="w-60">
+          <DatePickerDefault
+            label={t('common.to')}
+            value={end}
+            onChange={handleEndChange}
+            placeholder={t('common.selectDate')}
+            showTimeSelect={showTimeSelect}
+            minDate={start}
+            className="cursor-pointer"
+          />
         </div>
       </div>
     </div>

@@ -202,7 +202,8 @@
         "from": "От",
         "to": "До",
         "details": "Подробнее",
-        "selectPlaceholder": "Выберите..."
+        "selectPlaceholder": "Выберите...",
+        "selectDate": "Выберите дату"
     },
     "pagination": {
         "previous": "Предыдущий",

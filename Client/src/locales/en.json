@@ -202,7 +202,8 @@
         "from": "From",
         "to": "To",
         "details": "Details",
-        "selectPlaceholder": "Select..."
+        "selectPlaceholder": "Select...",
+        "selectDate": "Select Date"
     },
     "pagination": {
         "previous": "Previous",

@@ -162,7 +162,7 @@ const AnimatedSelect: React.FC<AnimatedSelectProps> = ({
                     cursor-pointer
                     flex items-center justify-between
                     transition-all duration-200 ease-in-out
-                    ${isOpen ? 'ring-2 ring-light-green border-transparent' : ''}
+                    ${isOpen ? 'border-gray-400' : ''}
                     ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:border-gray-400'}
                 `}
                 onClick={() => !disabled && setIsOpen(!isOpen)}

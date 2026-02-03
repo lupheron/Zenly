@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import ReusableModal from '@/src/components/Modal/ReusableModal'
 import LabelDefault from '../FormElements/label/LabelDefault'
-import { DateRangePicker } from '../FormElements/DatePciker/DatePicker'
+import { DateRangePicker } from '../FormElements/DatePicker/DatePicker'
 
 interface BookingCheckingFormProps {
     open: boolean
@@ -54,7 +54,7 @@ const BookingCheckingForm: React.FC<BookingCheckingFormProps> = ({ open, onClose
                     checkOutLabel="Tugash sanasi"
                 />
                 <div>
-                    <LabelDefault label='Narxi' htmlFor='price'/>
+                    <LabelDefault label='Narxi' htmlFor='price' />
                     <input
                         type="number"
                         value={price}
