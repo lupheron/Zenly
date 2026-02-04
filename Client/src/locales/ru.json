@@ -171,8 +171,13 @@
         "status": "Статус",
         "pending": "В ожидании",
         "confirmed": "Подтверждено",
-        "rejected": "Отклонено",
-        "cancel": "Отмена"
+        "rejected": "Подтверждено",
+        "cancel": "Отмена",
+        "detailsChecking": "Детали бронирования (Checking)",
+        "startDateLabel": "Дата начала",
+        "endDateLabel": "Дата окончания",
+        "priceLabel": "Цена",
+        "submitting": "Отправка..."
     },
     "modal": {
         "attention": "Внимание!",

@@ -172,7 +172,12 @@
         "pending": "Pending",
         "confirmed": "Confirmed",
         "rejected": "Rejected",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "detailsChecking": "Booking Details (Checking)",
+        "startDateLabel": "Start Date",
+        "endDateLabel": "End Date",
+        "priceLabel": "Price",
+        "submitting": "Sending..."
     },
     "modal": {
         "attention": "Attention!",

@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import ReusableModal from '@/src/components/Modal/ReusableModal'
 import LabelDefault from '../FormElements/label/LabelDefault'
 import { DateRangePicker } from '../FormElements/DatePicker/DatePicker'
+import { useLanguage } from '@/src/contexts/LanguageContext'
 
 interface BookingCheckingFormProps {
     open: boolean
@@ -11,6 +12,7 @@ interface BookingCheckingFormProps {
 }
 
 const BookingCheckingForm: React.FC<BookingCheckingFormProps> = ({ open, onClose, onSubmit, onSuccess }) => {
+    const { t } = useLanguage()
     const [checkIn, setCheckIn] = useState<Date | null>(null)
     const [checkOut, setCheckOut] = useState<Date | null>(null)
     const [price, setPrice] = useState('')
@@ -43,18 +45,18 @@ const BookingCheckingForm: React.FC<BookingCheckingFormProps> = ({ open, onClose
     }
 
     return (
-        <ReusableModal open={open} onClose={onClose} title="Bron tafsilotlari (Checking)" width={500}>
+        <ReusableModal open={open} onClose={onClose} title={t('booking.detailsChecking')} width={500}>
             <form onSubmit={handleSubmit} className="flex flex-col gap-6 sm:gap-8 p-2 sm:p-4">
                 <DateRangePicker
                     onDateChange={handleDateChange}
                     initialCheckIn={checkIn}
                     initialCheckOut={checkOut}
                     showTimeSelect={true}
-                    checkInLabel="Boshlanish sanasi"
-                    checkOutLabel="Tugash sanasi"
+                    checkInLabel={t('booking.startDateLabel')}
+                    checkOutLabel={t('booking.endDateLabel')}
                 />
                 <div>
-                    <LabelDefault label='Narxi' htmlFor='price' />
+                    <LabelDefault label={t('booking.priceLabel')} htmlFor='price' />
                     <input
                         type="number"
                         value={price}
@@ -65,7 +67,7 @@ const BookingCheckingForm: React.FC<BookingCheckingFormProps> = ({ open, onClose
                     />
                 </div>
                 <button type="submit" className="bg-blue-600 text-white rounded px-4 py-2 cursor-pointer" disabled={loading}>
-                    {loading ? 'Yuborilmoqda...' : 'Tasdiqlash'}
+                    {loading ? t('booking.submitting') : t('booking.confirm')}
                 </button>
             </form>
         </ReusableModal>
