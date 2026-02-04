@@ -108,7 +108,7 @@ const SearchPosts: React.FC<SearchPostsProps> = ({ onSearch }) => {
                             value={searchData.location}
                             onChange={(e) => handleInputChange('location', e.target.value)}
                             placeholder={t('searchPosts.locationPlaceholder')}
-                            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.location ? 'border-red-500' : 'border-gray-300'
+                            className={`w-full h-12.5 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.location ? 'border-red-500' : 'border-gray-300'
                                 }`}
                         />
                         {errors.location && (
@@ -145,7 +145,7 @@ const SearchPosts: React.FC<SearchPostsProps> = ({ onSearch }) => {
                             value={searchData.guests}
                             onChange={(e) => handleInputChange('guests', e.target.value)}
                             placeholder={t('searchPosts.guestsPlaceholder')}
-                            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.guests ? 'border-red-500' : 'border-gray-300'
+                            className={`w-full h-12.5 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.guests ? 'border-red-500' : 'border-gray-300'
                                 }`}
                         />
                         {errors.guests && (
