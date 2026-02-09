@@ -196,7 +196,7 @@ class BookingRequest extends Controller
         $booking = DB::table('booking_requests')
             ->join('posts', 'booking_requests.post_id', '=', 'posts.id')
             ->where('booking_requests.id', $id)
-            ->select('posts.user_id as post_owner_id')
+            ->select('posts.user_id as post_owner_id', 'booking_requests.post_id')
             ->first();
 
         if (!$booking || $authUser->id != $booking->post_owner_id) {
@@ -214,10 +214,23 @@ class BookingRequest extends Controller
             ], 422);
         }
 
-        DB::table('booking_requests')->where('id', $id)->update([
-            'status' => $status,
-            'updated_at' => now(),
-        ]);
+        DB::transaction(function () use ($id, $status, $booking) {
+            DB::table('booking_requests')->where('id', $id)->update([
+                'status' => $status,
+                'updated_at' => now(),
+            ]);
+
+            if ($status === 'cancelled') {
+                // Set post as available again
+                DB::table('posts')->where('id', $booking->post_id)->update(['status' => 1]);
+                
+                // Clear book_status
+                DB::table('booking_requests')->where('id', $id)->update(['book_status' => 0]);
+
+                // Delete the booking checking record if it exists
+                DB::table('booking_checking')->where('request_id', $id)->delete();
+            }
+        });
 
         return response()->json([
             "message" => "Booking request status updated",
