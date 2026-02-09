@@ -69,7 +69,7 @@ export function DateRangePicker({
                     startDate={checkIn}
                     endDate={checkOut}
                     minDate={new Date()}
-                    placeholderText={checkInLabel + ' Kuni'}
+                    placeholderText={checkInLabel}
                     customInput={<CustomInput />}
                     dateFormat={showTimeSelect ? 'MMM d, yyyy HH:mm' : 'MMM d, yyyy'}
                     isClearable
@@ -88,7 +88,7 @@ export function DateRangePicker({
                     startDate={checkIn}
                     endDate={checkOut}
                     minDate={checkIn || new Date()}
-                    placeholderText={checkOutLabel + ' Kuni'}
+                    placeholderText={checkOutLabel}
                     customInput={<CustomInput />}
                     dateFormat={showTimeSelect ? 'MMM d, yyyy HH:mm' : 'MMM d, yyyy'}
                     isClearable
