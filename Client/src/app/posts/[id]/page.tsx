@@ -115,6 +115,10 @@ const PostInfo = () => {
                                 label={bookingMutation.isPending ? t('postDetail.sending') : t('postDetail.book')}
                                 customClasses='h-10 sm:h-12 !rounded-lg !cursor-pointer !text-xs sm:!text-sm mt-0 w-full'
                                 onClick={() => {
+                                    if (!currentUser) {
+                                        AlertDefault.error(t('auth.loginRequired'))
+                                        return
+                                    }
                                     console.log('Bron qilish bosildi', { isCurrentUserOwner, postId: post.id });
                                     if (isCurrentUserOwner) {
                                         AlertDefault.error(t('postDetail.ownerBookingError'))
@@ -133,7 +137,13 @@ const PostInfo = () => {
                             <ButtonDefault
                                 label={t('postDetail.leaveReview')}
                                 customClasses='w-full h-10 sm:h-12 mt-4 md:mt-5 !rounded-lg !cursor-pointer bg-purple-500 !text-xs sm:!text-sm'
-                                onClick={() => setOpenModal(true)}
+                                onClick={() => {
+                                    if (!currentUser) {
+                                        AlertDefault.error(t('auth.loginRequired'))
+                                        return
+                                    }
+                                    setOpenModal(true)
+                                }}
                             />
                         )}
                     </div>

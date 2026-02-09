@@ -118,7 +118,8 @@
         "registerBtn": "Register",
         "profileAccess": "Login or Register",
         "loginChoice": "Login",
-        "registerChoice": "Register"
+        "registerChoice": "Register",
+        "loginRequired": "You have to sign in or register firstly to perform this action."
     },
     "profile": {
         "dashboard": "Dashboard",

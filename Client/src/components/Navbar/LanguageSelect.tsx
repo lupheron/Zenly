@@ -9,7 +9,7 @@ const LanguageSelect = ({ isDark = false }: { isDark?: boolean }) => {
     const [showLangMenu, setShowLangMenu] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
-    const handleLanguageChange = (lang: 'en' | 'ru') => {
+    const handleLanguageChange = (lang: 'en' | 'ru' | 'uz') => {
         setLanguage(lang);
         setShowLangMenu(false);
     };
@@ -51,6 +51,12 @@ const LanguageSelect = ({ isDark = false }: { isDark?: boolean }) => {
                         className={`w-full text-left px-4 py-2 hover:bg-gray-100 transition ${language === 'ru' ? 'bg-gray-100 font-semibold' : 'text-gray-800'}`}
                     >
                         Русский
+                    </button>
+                    <button
+                        onClick={() => handleLanguageChange('uz')}
+                        className={`w-full text-left px-4 py-2 hover:bg-gray-100 transition ${language === 'uz' ? 'bg-gray-100 font-semibold' : 'text-gray-800'}`}
+                    >
+                        Oʻzbekcha
                     </button>
                 </div>
             )}

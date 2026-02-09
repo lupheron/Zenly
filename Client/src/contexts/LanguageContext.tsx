@@ -3,8 +3,9 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import en from '../locales/en.json';
 import ru from '../locales/ru.json';
+import uz from '../locales/uz.json';
 
-type Language = 'en' | 'ru';
+type Language = 'en' | 'ru' | 'uz';
 
 interface LanguageContextType {
     language: Language;
@@ -14,7 +15,8 @@ interface LanguageContextType {
 
 const translations = {
     en,
-    ru
+    ru,
+    uz
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);

@@ -7,11 +7,14 @@ import { useWebComments } from '@/src/hooks/comments/useWebComments';
 import ReusableModal from '../Modal/ReusableModal';
 import WebComment from '../Forms/Comments/WebComment';
 import { useLanguage } from '@/src/contexts/LanguageContext';
+import { useUser } from '@/src/hooks/users/useUser';
+import AlertDefault from '../Alert/AlertDefault';
 
 const Comments = () => {
     const [openModal, setOpenModal] = useState(false);
     const { data } = useWebComments();
     const { t } = useLanguage();
+    const { data: currentUser } = useUser();
 
     return (
         <div className="py-20 mt-20" id='coments'>
@@ -19,7 +22,13 @@ const Comments = () => {
                 <TitleButtons
                     label={t('comment.yourOpinionButton')}
                     customClasses="text-white bg-orange cursor-pointer hover:bg-orange-600 transition-colors duration-200"
-                    onClick={() => setOpenModal(true)}
+                    onClick={() => {
+                        if (!currentUser) {
+                            AlertDefault.error(t('auth.loginRequired'));
+                            return;
+                        }
+                        setOpenModal(true);
+                    }}
                 />
                 <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold mt-5 max-w-[800px]">
                     {t('comment.customerReviewsTitle')}

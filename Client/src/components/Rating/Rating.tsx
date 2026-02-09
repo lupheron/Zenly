@@ -6,6 +6,9 @@ import StarRatings from 'react-star-ratings'
 import React, { useState } from 'react'
 import ReusableModal from '../Modal/ReusableModal'
 
+import AlertDefault from '../Alert/AlertDefault'
+import { useLanguage } from '@/src/contexts/LanguageContext'
+
 interface RatingProps {
     postId: number
     postUserId?: number
@@ -17,6 +20,7 @@ const Rating: React.FC<RatingProps> = ({
     postUserId,
     allowRating = true
 }) => {
+    const { t } = useLanguage()
     const { data: averageRating, isLoading, error } = usePostRating(postId)
     const { data: userRatingData } = useUserRating(postId)
     const { data: currentUser } = useUser()
@@ -58,23 +62,27 @@ const Rating: React.FC<RatingProps> = ({
     }
 
     const handleStarClick = () => {
+        if (!currentUser) {
+            AlertDefault.error(t('auth.loginRequired'))
+            return
+        }
         if (canRate) {
             setShowModal(true)
         }
     }
 
-    if (isLoading) return <p className="text-sm text-gray-400">Yuklanmoqda...</p>
-    if (error || averageRating === undefined) return <p className="text-sm text-red-500">Reyting yo&apos;q</p>
+    if (isLoading) return <p className="text-sm text-gray-400">{t('common.loading')}</p>
+    if (error || averageRating === undefined) return <p className="text-sm text-red-500">{t('common.noRating')}</p>
 
     return (
         <>
             <div className="flex flex-col xl:flex-col gap-2">
                 <div
                     className="relative"
-                    onMouseEnter={() => canRate && setShowHoverText(true)}
+                    onMouseEnter={() => (canRate || !currentUser) && setShowHoverText(true)}
                     onMouseLeave={() => setShowHoverText(false)}
-                    onClick={canRate ? handleStarClick : undefined}
-                    style={{ cursor: canRate ? 'pointer' : 'default' }}
+                    onClick={(canRate || !currentUser) ? handleStarClick : undefined}
+                    style={{ cursor: (canRate || !currentUser) ? 'pointer' : 'default' }}
                 >
                     <StarRatings
                         rating={averageRating}

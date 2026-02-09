@@ -99,10 +99,10 @@ const NavbarSection = () => {
                     ) : (
                         <>
                             <Link href="/register">
-                                <ButtonDefault customClasses="w-30" label={t("nav.register")} onClick={() => { }} />
+                                <ButtonDefault customClasses="w-44 sm:w-48 whitespace-nowrap" label={t("nav.register")} onClick={() => { }} />
                             </Link>
                             <Link href="/login">
-                                <ButtonDefault customClasses="w-30" label={t("nav.login")} onClick={() => { }} />
+                                <ButtonDefault customClasses="w-44 sm:w-48 whitespace-nowrap" label={t("nav.login")} onClick={() => { }} />
                             </Link>
                         </>
                     )}
